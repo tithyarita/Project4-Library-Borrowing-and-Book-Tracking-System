@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "borrow_records")
-public class BorrowRecord {
+public class BorrowRecord { 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
