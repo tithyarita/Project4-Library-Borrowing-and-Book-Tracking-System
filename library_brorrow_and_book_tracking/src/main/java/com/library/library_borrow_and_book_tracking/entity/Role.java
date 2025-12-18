@@ -1,4 +1,4 @@
-package com.library.library_brorrow_and_book_tracking.Entity;
+package com.library.library_borrow_and_book_tracking.entity;
 
 import jakarta.persistence.*;
 

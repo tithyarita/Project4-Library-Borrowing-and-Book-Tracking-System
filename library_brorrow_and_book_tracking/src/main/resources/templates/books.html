@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Books</title>
+</head>
+<body>
+<h2>Book List</h2>
+
+<a th:href="@{/books/add}">Add New Book</a>
+
+<table border="1">
+    <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>ISBN</th>
+        <th>PublishYear</th>
+        <th>Category</th>
+        <th>Available</th>
+        <th>CreatedAt</th>
+        <th>UpdatedAt</th>
+
+    </tr>
+
+    <tr th:each="book : ${books}">
+        <td th:text="${book.title}"></td>
+        <td th:text="${book.author}"></td>
+        <td th:text="${book.isbn}"></td>
+        <td th:text="${book.publishYear}"></td>
+        <td th:text="${book.category}"></td>
+        <td th:text="${book.available}"></td>
+        <td th:text="${book.createdAt}"></td>
+        <td th:text="${book.updatedAt}"></td>
+        <td>
+            <a th:href="@{/books/edit/{id}(id=${book.id})}">Edit</a>
+            <a th:href="@{/books/delete/{id}(id=${book.id})}"
+               onclick="return confirm('Are you sure?')">Delete</a>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
