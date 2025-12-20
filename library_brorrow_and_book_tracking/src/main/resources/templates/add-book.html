@@ -10,10 +10,17 @@
     Title: <input type="text" th:field="*{title}" /><br><br>
     Author: <input type="text" th:field="*{author}" /><br><br>
     ISBN: <input type="text" th:field="*{isbn}" /><br><br>
-    Quantity: <input type="number" th:field="*{quantity}" /><br><br>
+    Publisher<input type="text" th:field="*{publisher}" /><br><br>
+    PublishYear: <input type="number" th:field="*{publishYear}" /><br><br>
+    Category: <input type="text" th:field="*{category}" /><br><br>
+    Available: <input type="checkbox" th:field="*{available}" /><br><br>
+    CreatedAt: <input type="datetime-local" th:field="*{createdAt}" /><br><br>
+    UpdatedAt: <input type="datetime-local" th:field="*{updatedAt}" /><br><br>
+
 
     <button type="submit">Save</button>
 </form>
+<a th:href="@{/books}">Back to list</a>
 
 </body>
 </html>

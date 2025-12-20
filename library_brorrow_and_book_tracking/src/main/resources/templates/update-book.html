@@ -4,18 +4,26 @@
     <title>Edit Book</title>
 </head>
 <body>
-<h2>Edit Book</h2>
+<h2 th:text="${book.id != null} ? 'Edit Book' : 'Add Book'"></h2>
 
-<form th:action="@{/books/save}" th:object="${book}" method="post">
+<form th:action="@{${book.id != null} ? '/books/edit/' + ${book.id} : '/books/add'}" 
+      th:object="${book}" method="post">
+
     <input type="hidden" th:field="*{id}" />
 
-    Title: <input type="text" th:field="*{title}" /><br><br>
-    Author: <input type="text" th:field="*{author}" /><br><br>
+    Title: <input type="text" th:field="*{title}" required/><br><br>
+    Author: <input type="text" th:field="*{author}" required/><br><br>
     ISBN: <input type="text" th:field="*{isbn}" /><br><br>
-    Quantity: <input type="number" th:field="*{quantity}" /><br><br>
+    Publisher: <input type="text" th:field="*{publisher}" /><br><br>
+    Publish Year: <input type="number" th:field="*{publishYear}" /><br><br>
+    Category: <input type="text" th:field="*{category}" /><br><br>
+    Available: <input type="checkbox" th:field="*{available}" /><br><br>
+    Created At: <input type="datetime-local" th:field="*{createdAt}" readonly/><br><br>
+    Updated At: <input type="datetime-local" th:field="*{updatedAt}" readonly/><br><br>
 
-    <button type="submit">Update</button>
+    <button type="submit">Save</button>
 </form>
 
+<a th:href="@{/books}">Back to list</a>
 </body>
 </html>
