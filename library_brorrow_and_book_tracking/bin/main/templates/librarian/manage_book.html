@@ -1,0 +1,38 @@
+<!-- src/main/resources/templates/librarian/manage_book.html -->
+<th:block th:fragment="content">
+  <h2 class="text-2xl font-bold mb-4">Manage Books</h2>
+
+  <div class="flex justify-between mb-4">
+    <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">+ Add New Book</a>
+    <input type="text" placeholder="Search books..." class="border px-3 py-2 rounded" />
+  </div>
+
+  <table class="min-w-full bg-white border border-gray-200">
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="py-2 px-4 border">ID</th>
+        <th class="py-2 px-4 border">Title</th>
+        <th class="py-2 px-4 border">Author</th>
+        <th class="py-2 px-4 border">Available</th>
+        <th class="py-2 px-4 border">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="book : ${books}">
+        <td class="py-2 px-4 border" th:text="${book.id}">1</td>
+        <td class="py-2 px-4 border" th:text="${book.title}">The Great Gatsby</td>
+        <td class="py-2 px-4 border" th:text="${book.author}">F. Scott Fitzgerald</td>
+        <td class="py-2 px-4 border">
+          <span th:if="${book.available}" class="text-green-600">✅ Yes</span>
+          <span th:unless="${book.available}" class="text-red-600">❌ No</span>
+        </td>
+        <td class="py-2 px-4 border">
+          <a href="#" class="text-blue-600 hover:underline">Edit</a> |
+          <a href="#" class="text-red-600 hover:underline">Delete</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</th:block>
+
+<th:block th:replace="~{layout :: layout(content=~{this :: content})}"></th:block>
