@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-LibraryBorrowAndBookTrackingApplication<library_brorrow_and_book_tracking>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.library.library_borrow_and_book_tracking.LibraryBorrowAndBookTrackingApplication",
+            "projectName": "library_brorrow_and_book_tracking",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
