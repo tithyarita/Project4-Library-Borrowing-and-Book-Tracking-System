@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borrow Book</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+
+    <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Borrow Book</h2>
+
+        <form th:action="@{/borrow/save}" th:object="${borrowRecord}" method="post" class="space-y-6">
+
+            <input type="hidden" th:field="*{book.id}" />
+
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">Book:</label>
+                <p class="text-gray-900 text-lg" th:text="${borrowRecord.book.title}"></p>
+            </div>
+
+     
+            <div>
+                <button type="submit" 
+                        class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition-colors">
+                    Confirm Borrow
+                </button>
+            </div>
+        </form>
+
+        <div class="mt-4 text-center">
+            <a href="/books" class="text-gray-500 hover:text-gray-700 font-medium transition-colors">&larr; Cancel</a>
+        </div>
+    </div>
+
+</body>
+</html>
