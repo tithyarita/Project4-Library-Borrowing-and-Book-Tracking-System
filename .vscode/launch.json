@@ -1,0 +1,25 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-LibraryBrorrowAndBookTrackingApplication<library_brorrow_and_book_tracking>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.library.library_brorrow_and_book_tracking.LibraryBrorrowAndBookTrackingApplication",
+            "projectName": "library_brorrow_and_book_tracking",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=61371 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=library_brorrow_and_book_tracking"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-LibraryBorrowAndBookTrackingApplication<library_brorrow_and_book_tracking>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.library.library_borrow_and_book_tracking.LibraryBorrowAndBookTrackingApplication",
+            "projectName": "library_brorrow_and_book_tracking",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
