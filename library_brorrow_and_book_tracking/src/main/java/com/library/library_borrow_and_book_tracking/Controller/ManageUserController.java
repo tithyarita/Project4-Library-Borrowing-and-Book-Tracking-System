@@ -1,4 +1,4 @@
-package com.library.library_brorrow_and_book_tracking;
+package com.library.library_borrow_and_book_tracking.Controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

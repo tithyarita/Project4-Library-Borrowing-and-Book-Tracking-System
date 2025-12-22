@@ -1,4 +1,5 @@
-package com.library.library_brorrow_and_book_tracking;
+// File: src/main/java/com/library/library_borrow_and_book_tracking/UserController.java
+package com.library.library_borrow_and_book_tracking.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,7 +17,8 @@ public class UserController {
     private LibraryService libraryService;
 
     @GetMapping("/user/home")
-    public String home() {
+    public String home(Model model) {
+        model.addAttribute("featuredBooks", libraryService.getFeaturedBooks());
         return "user/home";
     }
 
@@ -33,15 +35,15 @@ public class UserController {
         model.addAttribute("recentBorrows", libraryService.getRecentBorrows());
         model.addAttribute("borrowedCount", libraryService.getBorrowedCount());
         model.addAttribute("overdueCount", libraryService.getOverdueCount());
-        model.addAttribute("dueSoonCount", 0); // optional: implement later
+        model.addAttribute("dueSoonCount", 0);
         model.addAttribute("availableHoldsCount", 0);
         return "user/dashboard";
     }
 
-    @GetMapping("/user/borrowRecord")
-    public String borrowRecord(Model model) {
-        model.addAttribute("borrowRecord", libraryService.getRecentBorrows());
-        return "user/borrowRecord";
+    @GetMapping("/user/borrowRecords")
+    public String borrowRecords(Model model) {
+        model.addAttribute("borrowRecords", libraryService.getRecentBorrows());
+        return "user/borrowRecords";
     }
 
     @GetMapping("/user/borrow/{bookId}")
@@ -50,7 +52,6 @@ public class UserController {
         return "redirect:/user/dashboard";
     }
 
-    // Optional: show latest receipt
     @GetMapping("/user/receipt")
     public String receipt(Model model) {
         var record = libraryService.getLatestBorrow();

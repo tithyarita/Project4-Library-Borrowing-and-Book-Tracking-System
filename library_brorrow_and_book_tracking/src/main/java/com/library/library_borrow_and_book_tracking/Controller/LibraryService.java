@@ -1,7 +1,11 @@
-package com.library.library_brorrow_and_book_tracking;
+// File: src/main/java/com/library/library_borrow_and_book_tracking/LibraryService.java
+package com.library.library_borrow_and_book_tracking.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.library.library_borrow_and_book_tracking.Repository.UserRepository;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -12,7 +16,6 @@ public class LibraryService {
     @Autowired private BookRepository bookRepository;
     @Autowired private BorrowRecordRepository borrowRecordRepository;
 
-    // 🔑 Hardcoded user ID (no login system)
     private static final Long CURRENT_USER_ID = 1L;
 
     public User getCurrentUser() {
@@ -32,8 +35,6 @@ public class LibraryService {
         User user = getCurrentUser();
         Book book = bookRepository.findById(bookId)
             .orElseThrow(() -> new RuntimeException("Book not found"));
-        
-        // Simple check: only borrow if available
         if (!book.isAvailable()) {
             throw new RuntimeException("Book is not available");
         }
@@ -46,7 +47,6 @@ public class LibraryService {
         record.setStatus("BORROWED");
         borrowRecordRepository.save(record);
 
-        // Mark book as unavailable
         book.setAvailable(false);
         bookRepository.save(book);
     }
@@ -64,9 +64,26 @@ public class LibraryService {
             CURRENT_USER_ID, LocalDate.now());
     }
 
-    // For receipt: get latest borrow
     public BorrowRecord getLatestBorrow() {
         List<BorrowRecord> records = getRecentBorrows();
         return records.isEmpty() ? null : records.get(0);
+    }
+
+    // ✅ NEW: Get all books for Home page
+    public List<Book> getFeaturedBooks() {
+        return bookRepository.findAll();
+    }
+
+    // ✅ NEW: Add book (used by librarian)
+    public void addBook(String title, String author, String category,
+                        String isbn, String coverUrl) {
+        Book book = new Book();
+        book.setTitle(title);
+        book.setAuthor(author);
+        book.setCategory(category);
+        book.setIsbn(isbn);
+        book.setCoverUrl(coverUrl != null ? coverUrl : "");
+        book.setAvailable(true);
+        bookRepository.save(book);
     }
 }

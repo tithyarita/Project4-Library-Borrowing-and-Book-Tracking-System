@@ -1,4 +1,4 @@
-package com.library.library_brorrow_and_book_tracking;
+package com.library.library_borrow_and_book_tracking.Repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
