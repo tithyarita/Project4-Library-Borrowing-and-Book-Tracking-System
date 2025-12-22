@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borrow Records</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center py-10">
+
+    <div class="w-full max-w-6xl bg-white shadow-lg rounded-lg p-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Borrow Records</h2>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-500 uppercase">ID</th>
+                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-500 uppercase">Book</th>
+                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-500 uppercase">Borrow Date</th>
+                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-500 uppercase">Due Date</th>
+                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-500 uppercase">Return Date</th>
+                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-500 uppercase">Status</th>
+                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-500 uppercase">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <tr th:each="record : ${borrowRecords}" class="hover:bg-gray-50 transition-colors">
+                        <td class="px-4 py-2" th:text="${record.id}"></td>
+                        <td class="px-4 py-2" th:text="${record.book.title}"></td>
+                        <td class="px-4 py-2" th:text="${record.borrowDate}"></td>
+                        <td class="px-4 py-2" th:text="${record.dueDate}"></td>
+                        <td class="px-4 py-2" th:text="${record.returnDate} ?: 'Not returned'"></td>
+                        <td class="px-4 py-2">
+                            <span th:text="${record.status}" 
+                                  th:classappend="${record.status == 'BORROWED'} ? 'text-yellow-500 font-semibold' : 'text-green-500 font-semibold'"></span>
+                        </td>
+                        <td class="px-4 py-2">
+                            <a th:if="${record.status == 'BORROWED'}"
+                               th:href="@{/borrow/return/{id}(id=${record.id})}"
+                               class="text-white bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded transition-colors">Return</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-6 text-center">
+            <a href="/books" class="text-blue-500 hover:text-blue-700 font-medium transition-colors">&larr; Back to Books</a>
+        </div>
+    </div>
+
+</body>
+</html>
