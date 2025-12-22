@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>My Dashboard - Library System</title>
+
+  <script src="https://cdn.tailwindcss.com  "></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css  ">
+
+</head>
+
+<body class="bg-gray-50">
+
+<!-- ================= HEADER ================= -->
+<header class="site-header">
+  <div class="header-container">
+    <a href="/user/home" class="logo">Library System</a>
+    <div class="icon-bar">
+      <a href="/user/search"><i class="ti ti-search"></i></a>
+      <div class="icon-divider"></div>
+      <a href="/user/account"><i class="ti ti-user"></i></a>
+      <div class="icon-divider"></div>
+      <a href="/user/dashboard"><i class="ti ti-books text-blue-500 hover:text-blue-700"></i></a>
+      <form th:action="@{/logout}" method="post" class="logout-form">
+        <button type="submit" class="logout-btn">
+            <i class="ti ti-logout logout-icon"></i>
+            Logout
+        </button>
+      </form>
+    </div>
+  </div>
+</header>
+
+<!-- ================= MAIN ================= -->
+<main class="max-w-6xl mx-auto px-4 py-6 md:px-6 mt-6">
+
+  <!-- Welcome -->
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-800">
+      Welcome back, <span th:text="${user.name} ?: 'Member'">Member</span>!
+    </h1>
+    <p class="text-gray-600">Here's what's happening with your account.</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="stat-card">
+      <div class="stat-icon blue"><i class="ti ti-book"></i></div>
+      <div>
+        <p class="stat-label">Borrowed Books</p>
+        <p class="stat-value" th:text="${borrowedCount} ?: 0">0</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon yellow"><i class="ti ti-alarm"></i></div>
+      <div>
+        <p class="stat-label">Due Soon</p>
+        <p class="stat-value" th:text="${dueSoonCount} ?: 0">0</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon green"><i class="ti ti-check"></i></div>
+      <div>
+        <p class="stat-label">Available Holds</p>
+        <p class="stat-value" th:text="${availableHoldsCount} ?: 0">0</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon red"><i class="ti ti-clock-exclamation"></i></div>
+      <div>
+        <p class="stat-label">Overdue Books</p>
+        <p class="stat-value" th:text="${overdueCount} ?: 0">0</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="mb-8">
+    <h2 class="section-title">Quick Actions</h2>
+    <div class="flex gap-3 flex-wrap">
+      <a href="/user/search" class="btn-primary">Search Books</a>
+      <a href="/user/receipt" class="btn-primary">Borrow Receipt</a>
+    </div>
+  </div>
+
+  <!-- Recently Borrowed Section -->
+  <div class="recent-box">
+    <div class="recent-header">Recently Borrowed</div>
+
+    
+
+    <!-- Show each borrow record -->
+    <div th:each="borrow : ${recentBorrows}" class="recent-item">
+      <div class="book-placeholder"></div>
+      <div>
+        <h3 th:text="${borrow.book.title}">Book Title</h3>
+        <p class="text-sm text-gray-600"
+           th:text="'Borrowed on: ' + ${#dates.format(borrow.borrowDate, 'dd MMM yyyy')}">
+        </p>
+        <p class="text-sm">
+          <span class="font-medium">Due:</span>
+          <span th:text="${#dates.format(borrow.dueDate, 'dd MMM yyyy')}"></span>
+        </p>
+      </div>
+    </div>
+    
+    <!-- Show message if no records -->
+    <div th:if="${#lists.isEmpty(recentBorrows)}" class="recent-empty">
+      No recent borrowings.
+    </div>
+  </div>
+
+</main>
+
+<style>
+  /* ===== GLOBAL ===== */
+  * {
+    box-sizing: border-box;
+  }
+
+  :root {
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+  }
+
+  body {
+    font-family: Inter, system-ui, sans-serif;
+  }
+
+  /* ===== HEADER ===== */
+  .site-header {
+    position: sticky;
+    top: 0;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    z-index: 50;
+  }
+
+  .header-container {
+    max-width: 1400px;
+    margin: auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    color: var(--primary);
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .icon-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.5rem;
+  }
+
+  .icon-divider {
+    width: 1px;
+    height: 1.5rem;
+    background: #ddd;
+  }
+
+    /* ===== LOGOUT BUTTON ===== */
+.logout-form {
+  display: inline-block;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #dc2626; /* primary blue */
+  color: white;
+  font-weight: 600;
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.logout-btn:hover {
+  background-color: #1d4ed8; /* darker blue on hover */
+  transform: translateY(-1px);
+}
+
+.logout-icon {
+  font-size: 1.2rem;
+}
+
+  /* ===== BUTTON ===== */
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-block;
+    transition: background 0.2s ease;
+    cursor: pointer;
+  }
+
+  .btn-primary:hover {
+    background: var(--primary-hover);
+  }
+
+  /* ===== STATS ===== */
+  .stat-card {
+    background: white;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    border: 1px solid #f1f5f9;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  }
+
+  .stat-icon {
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    margin-right: 1rem;
+    font-size: 1.25rem;
+  }
+
+  .stat-icon.blue { background: #eff6ff; color: #2563eb; }
+  .stat-icon.yellow { background: #fefce8; color: #ca8a04; }
+  .stat-icon.green { background: #ecfdf5; color: #16a34a; }
+  .stat-icon.red { background: #fef2f2; color: #dc2626; }
+
+  .stat-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+
+  .stat-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  /* ===== RECENT SECTION ===== */
+  .section-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #1e293b;
+  }
+
+  .recent-box {
+    background: white;
+    border-radius: 0.75rem;
+    border: 1px solid #f1f5f9;
+    overflow: hidden;
+  }
+
+  .recent-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+    font-weight: 600;
+    color: #1e293b;
+  }
+
+  .recent-item {
+    padding: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .recent-item:last-child {
+    border-bottom: none;
+  }
+
+  .recent-empty {
+    padding: 1.5rem;
+    text-align: center;
+    color: #9ca3af;
+    font-style: italic;
+  }
+
+  .book-placeholder {
+    width: 64px;
+    height: 80px;
+    background: #e5e7eb;
+    border-radius: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  /* Responsive: stack items on small screens */
+  @media (max-width: 639px) {
+    .recent-item {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .book-placeholder {
+      width: 100%;
+      max-width: 120px;
+    }
+  }
+</style>
+</body>
+</html>

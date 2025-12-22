@@ -1,0 +1,153 @@
+<!-- File: src/main/resources/templates/librarian/manage_book.html -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Librarian - Manage Books</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+
+<header class="site-header">
+  <div class="header-container">
+    <h1 class="title"><i class="fas fa-book-open"></i> Library System - Librarian</h1>
+    <form th:action="@{/logout}" method="post">
+      <button class="logout-btn">Logout</button>
+    </form>
+  </div>
+</header>
+
+<main class="container mx-auto p-6">
+  <nav class="tabs">
+    <a th:href="@{/librarian/manage-book}" class="tab active">Manage Books</a>
+    <a th:href="@{/librarian/manage-user}" class="tab">Manage Users</a>
+    <a th:href="@{/librarian/process-return}" class="tab">Borrow / Return Logs</a>
+  </nav>
+
+  <!-- Add Book Form -->
+  <section class="card">
+    <div class="card-header">
+      <h2>Add New Book</h2>
+    </div>
+    <form th:action="@{/librarian/manage-book/add}" method="post">
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-2 mb-4">
+        <input type="text" name="title" placeholder="Title *" required class="search-input">
+        <input type="text" name="author" placeholder="Author *" required class="search-input">
+        <input type="text" name="category" placeholder="Category" class="search-input">
+        <input type="text" name="isbn" placeholder="ISBN" class="search-input">
+        <input type="text" name="coverUrl" placeholder="Cover URL" class="search-input">
+      </div>
+      <button type="submit" class="add-btn"><i class="fas fa-plus"></i> Add Book</button>
+    </form>
+  </section>
+
+  <!-- Book Table -->
+  <section class="card">
+    <div class="card-header">
+      <h2>Book Inventory</h2>
+    </div>
+    <form th:action="@{/librarian/manage-book}" method="get" class="mb-4">
+      <input class="search-input" type="text" name="q" th:value="${param.q != null ? param.q[0] : ''}"
+             placeholder="Search books by title, author, or ISBN...">
+    </form>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>ISBN</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="book : ${books}">
+            <td th:text="${book.title}">Title</td>
+            <td th:text="${book.author}">Author</td>
+            <td th:text="${book.isbn}">ISBN</td>
+            <td>
+              <span th:class="${book.available ? 'status available' : 'status borrowed'}"
+                    th:text="${book.available ? 'Available' : 'Borrowed'}">
+              </span>
+            </td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  
+    </main>
+</body>
+</html>
+
+
+<style>
+  :root {
+    --primary: #1d4ed8;
+    --danger: #dc2626;
+    --success: #16a34a;
+  }
+  .site-header {
+    background: var(--primary); color: white;
+    padding: 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .header-container {
+    max-width: 1400px; margin: auto;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .title { font-size: 1.5rem; font-weight: 700; }
+  .logout-btn {
+    background: var(--danger); color: white;
+    padding: 0.5rem 1rem; border-radius: 0.375rem;
+    font-weight: 600; border: none; cursor: pointer;
+  }
+  .tabs {
+    display: flex; gap: 1.5rem;
+    border-bottom: 1px solid #d1d5db; margin-bottom: 1.5rem;
+  }
+  .tab {
+    padding-bottom: 0.5rem; color: #6b7280;
+    text-decoration: none; font-weight: 500;
+  }
+  .tab.active {
+    border-bottom: 2px solid var(--primary);
+    color: var(--primary); font-weight: 600;
+  }
+  .card {
+    background: white; padding: 1.5rem;
+    border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+  }
+  .card-header {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 1rem;
+  }
+  .add-btn {
+    background: var(--success); color: white;
+    padding: 0.5rem 1rem; border-radius: 0.375rem;
+    font-weight: 600; border: none; cursor: pointer;
+  }
+  .search-input {
+    width: 100%; padding: 0.5rem;
+    border: 1px solid #d1d5db; border-radius: 0.375rem;
+  }
+  .table-wrapper { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td {
+    padding: 0.75rem; border: 1px solid #e5e7eb;
+    text-align: left;
+  }
+  thead { background: #f3f4f6; }
+  .status {
+    padding: 0.25rem 0.5rem; border-radius: 999px;
+    font-size: 0.75rem; font-weight: 600;
+  }
+  .status.available {
+    background: #dcfce7; color: #166534;
+  }
+  .status.borrowed {
+    background: #fef3c7; color: #92400e;
+  }
+</style>
