@@ -1,8 +1,5 @@
 {
-<<<<<<< HEAD
     "java.compile.nullAnalysis.mode": "automatic",
     "java.configuration.updateBuildConfiguration": "interactive"
-=======
-    "java.compile.nullAnalysis.mode": "automatic"
->>>>>>> origin/GUOV-Houysang
+>>>>>>>>> Temporary merge branch 2
 }

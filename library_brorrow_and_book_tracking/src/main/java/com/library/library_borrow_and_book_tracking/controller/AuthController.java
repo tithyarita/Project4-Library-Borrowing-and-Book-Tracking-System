@@ -13,7 +13,7 @@ import com.library.library_borrow_and_book_tracking.repository.RoleRepository;
 import com.library.library_borrow_and_book_tracking.repository.UserRepository;
 
 @Controller
-@RequestMapping("/api/auth")
+@RequestMapping("")
 public class AuthController {
 
     private final UserRepository userRepository;
