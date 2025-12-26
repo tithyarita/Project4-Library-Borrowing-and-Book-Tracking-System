@@ -6,7 +6,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.library.library_borrow_and_book_tracking.entity.User;
 import com.library.library_borrow_and_book_tracking.repository.RoleRepository;
@@ -20,7 +23,7 @@ public class AuthController {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // ✅ NO AuthenticationManager here
+    // ✅ Constructor injection (correct)
     public AuthController(UserRepository userRepository,
                           RoleRepository roleRepository,
                           PasswordEncoder passwordEncoder) {
@@ -44,7 +47,12 @@ public class AuthController {
 
     @GetMapping("/dashboard")
     public String showDashboard(Model model, Authentication authentication) {
-        model.addAttribute("userName", authentication.getName());
+
+        // ✅ Safety check (prevents NPE)
+        if (authentication != null) {
+            model.addAttribute("userName", authentication.getName());
+        }
+
         return "dashboard";
     }
 
@@ -53,18 +61,26 @@ public class AuthController {
     @PostMapping("/register")
     public String register(@ModelAttribute("user") User user, Model model) {
 
+        // ✅ Check email uniqueness
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             model.addAttribute("error", "Email already exists!");
             return "register";
         }
 
+        // ✅ Encode password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setActive(true);
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
 
+        // ✅ Assign USER role (must exist in DB)
         roleRepository.findByRoleName("USER")
-                .ifPresent(user::setRole);
+                .ifPresentOrElse(
+                        user::setRole,
+                        () -> {
+                            throw new RuntimeException("ROLE 'USER' NOT FOUND IN DATABASE");
+                        }
+                );
 
         userRepository.save(user);
 
