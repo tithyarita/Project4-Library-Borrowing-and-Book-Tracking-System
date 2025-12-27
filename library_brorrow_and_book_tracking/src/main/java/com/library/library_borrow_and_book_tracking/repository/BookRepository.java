@@ -1,16 +1,9 @@
-package com.library.library_borrow_and_book_tracking.repository;
-
-import java.util.List;
+package com.library.library_borrow_and_book_tracking;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.library.library_borrow_and_book_tracking.entity.Book;
+import java.util.List;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
-
     List<Book> findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCaseOrCategoryContainingIgnoreCase(
-            String title,
-            String author,
-            String category
-    );
+        String title, String author, String category);
 }

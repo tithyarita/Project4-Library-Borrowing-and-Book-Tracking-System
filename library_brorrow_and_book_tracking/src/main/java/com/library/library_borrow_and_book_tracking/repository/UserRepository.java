@@ -1,13 +1,5 @@
-package com.library.library_borrow_and_book_tracking.repository;
-
-import java.util.Optional;
+package com.library.library_borrow_and_book_tracking.Repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-import com.library.library_borrow_and_book_tracking.entity.User;
-
-@Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByEmail(String email);
-}
+public interface UserRepository extends JpaRepository<User, Long> {}
