@@ -1,7 +1,7 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.5.8'
-	id 'io.spring.dependency-management' version '1.1.7'
+    id 'java'
+    id 'org.springframework.boot' version '3.5.8'
+    id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'com.library'
@@ -13,19 +13,29 @@ java {
     }
 }
 
+springBoot {
+    mainClass = 'com.library.library_borrow_and_book_tracking.controller.LibraryBorrowAndBookTrackingApplication'
+}
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    // Web + Thymeleaf
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+    // JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    // THIS LINE REMOVES THE RED IMPORTS
+
+    // Security (ONLY ONCE)
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    
+
+    // Database
     runtimeOnly 'com.mysql:mysql-connector-j'
     runtimeOnly 'com.h2database:h2'
+
+    // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
