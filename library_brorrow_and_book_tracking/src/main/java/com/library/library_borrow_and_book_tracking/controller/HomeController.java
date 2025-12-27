@@ -1,13 +1,13 @@
 package com.library.library_borrow_and_book_tracking.controller;
-// package com.library.library_borrow_and_book_tracking.Controller;
-// import org.springframework.stereotype.Controller;
-// import org.springframework.web.bind.annotation.GetMapping;
 
-// @Controller
-// public class HomeController {
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
-//     @GetMapping("/user/home")
-//     public String home() {
-//         return "user/home"; 
-//     }
-// }
+@Controller
+public class HomeController {
+
+    @GetMapping("/user/home")
+    public String home() {
+        return "user/home"; 
+    }
+}

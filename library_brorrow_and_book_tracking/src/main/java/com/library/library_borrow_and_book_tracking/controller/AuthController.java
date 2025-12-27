@@ -1,16 +1,14 @@
 package com.library.library_borrow_and_book_tracking.controller;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import com.library.library_borrow_and_book_tracking.entity.Role;
 import com.library.library_borrow_and_book_tracking.entity.User;
 import com.library.library_borrow_and_book_tracking.repository.RoleRepository;
 import com.library.library_borrow_and_book_tracking.repository.UserRepository;
@@ -23,7 +21,6 @@ public class AuthController {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // ✅ Constructor injection (correct)
     public AuthController(UserRepository userRepository,
                           RoleRepository roleRepository,
                           PasswordEncoder passwordEncoder) {
@@ -32,56 +29,43 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // ---------- PAGES ----------
-
     @GetMapping("/register")
     public String showRegisterPage(Model model) {
         model.addAttribute("user", new User());
         return "register";
     }
 
-    @GetMapping("/login")
-    public String showLoginPage() {
-        return "login";
-    }
-
-    @GetMapping("/dashboard")
-    public String showDashboard(Model model, Authentication authentication) {
-
-        // ✅ Safety check (prevents NPE)
-        if (authentication != null) {
-            model.addAttribute("userName", authentication.getName());
-        }
-
-        return "dashboard";
-    }
-
-    // ---------- REGISTER ----------
-
     @PostMapping("/register")
     public String register(@ModelAttribute("user") User user, Model model) {
-
-        // ✅ Check email uniqueness
+        // Check email uniqueness
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             model.addAttribute("error", "Email already exists!");
             return "register";
         }
 
-        // ✅ Encode password
+        // Encode password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        // Set default values
         user.setActive(true);
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
+        LocalDateTime now = LocalDateTime.now();
+        user.setCreatedAt(now);
+        user.setUpdatedAt(now);
 
-        // ✅ Assign USER role (must exist in DB)
-        roleRepository.findByRoleName("USER")
-                .ifPresentOrElse(
-                        user::setRole,
-                        () -> {
-                            throw new RuntimeException("ROLE 'USER' NOT FOUND IN DATABASE");
-                        }
-                );
+        // Assign default USER role
+        Optional<Role> roleOptional = roleRepository.findByRoleName("USER");
+        Role role;
+        if (roleOptional.isPresent()) {
+            role = roleOptional.get();
+        } else {
+            // Create USER role if it doesn't exist
+            role = new Role();
+            role.setRoleName("USER");
+            role = roleRepository.save(role);
+        }
+        user.setRole(role);
 
+        // Save user to database
         userRepository.save(user);
 
         return "redirect:/api/auth/login?success";
