@@ -1,11 +1,15 @@
 package com.library.library_borrow_and_book_tracking.controller;
 
+import com.library.library_borrow_and_book_tracking.controller.BookController;
 import com.library.library_borrow_and_book_tracking.entity.Book;
 import com.library.library_borrow_and_book_tracking.service.BookService;
-import com.library.library_borrow_and_book_tracking.controller.BookController;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @Controller
 @RequestMapping("/books")
@@ -55,4 +59,9 @@ public class BookController {
     public String test() {
         return "BookController working!";
     }
+    @GetMapping("/dashboard")
+    public String getMethodName(@RequestParam String param) {
+        return "books";
+    }
+    
 }

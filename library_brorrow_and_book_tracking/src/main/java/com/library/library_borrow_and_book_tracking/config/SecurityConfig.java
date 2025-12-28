@@ -3,13 +3,11 @@ package com.library.library_borrow_and_book_tracking.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@EnableWebSecurity
 public class SecurityConfig {
 
     // ✅ Password Encoder
@@ -26,6 +24,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
+                    "/login",
                     "/api/auth/register",
                     "/api/auth/login",
                     "/css/**",
@@ -34,17 +33,17 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
-                .loginPage("/api/auth/login")
-                .loginProcessingUrl("/api/auth/login")
+                .loginPage("/login")                     // ✅ HTML page
+                .loginProcessingUrl("/api/auth/login")   // ✅ POST submit
                 .usernameParameter("email")
                 .passwordParameter("password")
-                .defaultSuccessUrl("/api/auth/dashboard", true)
-                .failureUrl("/api/auth/login?error")
+                .defaultSuccessUrl("/dashboard", true)
+                .failureUrl("/login?error")
                 .permitAll()
             )
             .logout(logout -> logout
-                .logoutUrl("/api/auth/logout")
-                .logoutSuccessUrl("/api/auth/login?logout")
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout")
                 .permitAll()
             );
 

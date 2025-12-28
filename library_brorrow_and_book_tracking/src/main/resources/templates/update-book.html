@@ -1,29 +1,97 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Edit Book</title>
+    <meta charset="UTF-8">
+    <title th:text="${book.id != null} ? 'Edit Book' : 'Add Book'">Edit Book</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-<body>
-<h2 th:text="${book.id != null} ? 'Edit Book' : 'Add Book'"></h2>
+<body class="bg-gray-100">
 
-<form th:action="@{${book.id != null} ? '/books/edit/' + ${book.id} : '/books/add'}" 
-      th:object="${book}" method="post">
+<!-- Header -->
+<header class="bg-blue-700 text-white shadow p-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold"><i class="fas fa-book-open"></i> Library System - Librarian</h1>
+    <form th:action="@{/logout}" method="post">
+        <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-semibold">Logout</button>
+    </form>
+</header>
 
-    <input type="hidden" th:field="*{id}" />
+<main class="container mx-auto p-6">
+    <nav class="flex gap-6 mb-6 border-b border-gray-300 pb-2">
+        <a th:href="@{/books}" class="text-blue-700 font-semibold border-b-2 border-blue-700">Manage Books</a>
+    </nav>
 
-    Title: <input type="text" th:field="*{title}" required/><br><br>
-    Author: <input type="text" th:field="*{author}" required/><br><br>
-    ISBN: <input type="text" th:field="*{isbn}" /><br><br>
-    Publisher: <input type="text" th:field="*{publisher}" /><br><br>
-    Publish Year: <input type="number" th:field="*{publishYear}" /><br><br>
-    Category: <input type="text" th:field="*{category}" /><br><br>
-    Available: <input type="checkbox" th:field="*{available}" /><br><br>
-    Created At: <input type="datetime-local" th:field="*{createdAt}" readonly/><br><br>
-    Updated At: <input type="datetime-local" th:field="*{updatedAt}" readonly/><br><br>
+    <section class="bg-white shadow rounded p-6 max-w-2xl mx-auto">
+        <h2 class="text-2xl font-bold mb-4" th:text="${book.id != null} ? 'Edit Book' : 'Add Book'">Edit Book</h2>
 
-    <button type="submit">Save</button>
-</form>
+        <form th:action="@{/books/save}" th:object="${book}" method="post" class="grid grid-cols-1 gap-4">
+            
+            <input type="hidden" th:field="*{id}" />
 
-<a th:href="@{/books}">Back to list</a>
+            <div>
+                <label class="block font-medium mb-1">Title *</label>
+                <input type="text" th:field="*{title}" placeholder="Title" required
+                       class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div>
+                <label class="block font-medium mb-1">Author *</label>
+                <input type="text" th:field="*{author}" placeholder="Author" required
+                       class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div>
+                <label class="block font-medium mb-1">ISBN</label>
+                <input type="text" th:field="*{isbn}" placeholder="ISBN"
+                       class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div>
+                <label class="block font-medium mb-1">Publisher</label>
+                <input type="text" th:field="*{publisher}" placeholder="Publisher"
+                       class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div>
+                <label class="block font-medium mb-1">Publish Year</label>
+                <input type="number" th:field="*{publishYear}" placeholder="Publish Year"
+                       class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div>
+                <label class="block font-medium mb-1">Category</label>
+                <input type="text" th:field="*{category}" placeholder="Category"
+                       class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <!-- Available checkbox -->
+            <div class="flex items-center mt-2">
+                <input type="hidden" th:field="*{available}" value="false"/>
+                <input type="checkbox" th:field="*{available}" id="available" class="mr-2 h-5 w-5 text-blue-600">
+                <label for="available" class="font-medium">Available</label>
+            </div>
+
+            <div class="flex gap-4 mt-4">
+                <button type="submit" 
+                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold flex items-center">
+                    <i class="fas fa-save mr-2"></i> Save
+                </button>
+
+                <a th:href="@{/books}" 
+                   class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded font-semibold flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i> Back
+                </a>
+
+                <!-- Delete button only for existing books -->
+                <a th:if="${book.id != null}" th:href="@{'/books/delete/' + ${book.id}}"
+                   class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-semibold flex items-center"
+                   onclick="return confirm('Are you sure you want to delete this book?');">
+                    <i class="fas fa-trash mr-2"></i> Delete
+                </a>
+            </div>
+        </form>
+    </section>
+</main>
+
 </body>
 </html>
