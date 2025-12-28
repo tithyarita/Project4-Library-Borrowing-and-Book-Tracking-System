@@ -13,8 +13,12 @@ java {
     }
 }
 
+tasks.withType(JavaCompile) {
+    options.compilerArgs.add('-parameters')
+}
+
 springBoot {
-    mainClass = 'com.library.library_borrow_and_book_tracking.controller.LibraryBorrowAndBookTrackingApplication'
+    mainClass = 'com.library.library_borrow_and_book_tracking.LibraryBorrowAndBookTrackingApplication'
 }
 
 repositories {

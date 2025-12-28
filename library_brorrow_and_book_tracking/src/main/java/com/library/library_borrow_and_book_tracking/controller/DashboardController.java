@@ -10,7 +10,7 @@ public class DashboardController {
     @Autowired
     private LibraryService libraryService;
 
-    // @GetMapping("/user/dashboard")
+    // @GetMapping("/dashboard")
     public String dashboard(Model model) {
         model.addAttribute("user", libraryService.getCurrentUser());
         model.addAttribute("recentBorrows", libraryService.getRecentBorrows());
