@@ -10,7 +10,10 @@
 
   <header class="site-header">
     <div class="header-container">
-      <a href="/user/home" class="logo">Library System</a>
+      <a href="/user/home" class="logo">
+        <i class="ti ti-book-2"></i>
+        <span>Library System</span>
+      </a>
 
       <nav class="main-nav">
         <a href="#home" class="active">Home</a>
@@ -315,6 +318,13 @@
       font-size: 1.5rem;
       font-weight: 700;
       text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo i {
+      font-size: 1.8rem; /* Slightly larger icon */
     }
 
     .main-nav {

@@ -13,7 +13,10 @@
 <!-- ================= HEADER ================= -->
 <header class="site-header">
   <div class="header-container">
-    <a href="/user/home" class="logo">Library System</a>
+      <a href="/user/home" class="logo">
+        <i class="ti ti-book-2"></i>
+        <span>Library System</span>
+      </a>
     <div class="icon-bar">
       <a href="/user/search"><i class="ti ti-search text-blue-500 hover:text-blue-700"></i></a>
       <div class="icon-divider"></div>
@@ -135,12 +138,19 @@ body {
   align-items: center;
 }
 
-.logo {
-  color: var(--primary);
-  font-size: 1.5rem;
-  font-weight: 700;
-  text-decoration: none;
-}
+    .logo {
+      color: var(--primary);
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo i {
+      font-size: 1.8rem; /* Slightly larger icon */
+    }
 
 .icon-bar {
   display: flex;

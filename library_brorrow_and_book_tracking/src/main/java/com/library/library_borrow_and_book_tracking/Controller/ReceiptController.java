@@ -1,9 +1,11 @@
-package com.library.library_borrow_and_book_tracking.Controller;
+package com.library.library_borrow_and_book_tracking.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import com.library.library_borrow_and_book_tracking.service.LibraryService;
 
 @Controller
 public class ReceiptController {
@@ -11,6 +13,11 @@ public class ReceiptController {
     @Autowired
     private LibraryService libraryService;
 
+    // ✅ Constructor injection (recommended)
+    public ReceiptController(LibraryService libraryService) {
+        this.libraryService = libraryService;
+    }
+    
     @GetMapping("/user/receipt")
     public String receipt(Model model) {
         var records = libraryService.getRecentBorrows();

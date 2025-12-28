@@ -1,4 +1,4 @@
-package com.library.library_borrow_and_book_tracking.Controller;
+package com.library.library_borrow_and_book_tracking.controller;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

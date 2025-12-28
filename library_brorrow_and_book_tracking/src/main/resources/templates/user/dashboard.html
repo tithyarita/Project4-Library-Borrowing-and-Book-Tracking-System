@@ -2,18 +2,20 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>My Dashboard - Library System</title>
-
-  <script src="https://cdn.tailwindcss.com  "></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css  ">
-
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body class="bg-gray-50">
 
-<!-- ================= HEADER ================= -->
+<!-- ================= HEADER (From first code) ================= -->
 <header class="site-header">
   <div class="header-container">
-    <a href="/user/home" class="logo">Library System</a>
+      <a href="/user/home" class="logo">
+        <i class="ti ti-book-2"></i>
+        <span>Library System</span>
+      </a>
     <div class="icon-bar">
       <a href="/user/search"><i class="ti ti-search"></i></a>
       <div class="icon-divider"></div>
@@ -30,85 +32,135 @@
   </div>
 </header>
 
-<!-- ================= MAIN ================= -->
-<main class="max-w-6xl mx-auto px-4 py-6 md:px-6 mt-6">
+<!-- ================= MAIN CONTENT ================= -->
+<main class="max-w-7xl mx-auto px-4 py-6 md:px-6 mt-6">
 
-  <!-- Welcome -->
+  <!-- Welcome Message (Enhanced from both) -->
   <div class="mb-8">
     <h1 class="text-2xl font-bold text-gray-800">
-      Welcome back, <span th:text="${user.name} ?: 'Member'">Member</span>!
+      Welcome back, <span th:text="${user.fullName ?: user.name ?: 'Member'}">Member</span>!
     </h1>
-    <p class="text-gray-600">Here's what's happening with your account.</p>
+    <p class="text-gray-600">Here's your library activity summary</p>
   </div>
 
-  <!-- Stats -->
+  <!-- Statistics Cards (Combined styles) -->
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-    <div class="stat-card">
-      <div class="stat-icon blue"><i class="ti ti-book"></i></div>
+    <!-- Borrowed Books -->
+    <div class="stat-card bg-primary-gradient">
+      <div class="stat-icon-container">
+        <i class="ti ti-book stat-icon"></i>
+      </div>
       <div>
         <p class="stat-label">Borrowed Books</p>
         <p class="stat-value" th:text="${borrowedCount} ?: 0">0</p>
       </div>
     </div>
 
-    <div class="stat-card">
-      <div class="stat-icon yellow"><i class="ti ti-alarm"></i></div>
+    <!-- Due Soon -->
+    <div class="stat-card bg-success-gradient">
+      <div class="stat-icon-container">
+        <i class="ti ti-alarm stat-icon"></i>
+      </div>
       <div>
         <p class="stat-label">Due Soon</p>
         <p class="stat-value" th:text="${dueSoonCount} ?: 0">0</p>
       </div>
     </div>
 
-    <div class="stat-card">
-      <div class="stat-icon green"><i class="ti ti-check"></i></div>
-      <div>
-        <p class="stat-label">Available Holds</p>
-        <p class="stat-value" th:text="${availableHoldsCount} ?: 0">0</p>
+    <!-- Overdue -->
+    <div class="stat-card bg-danger-gradient">
+      <div class="stat-icon-container">
+        <i class="ti ti-clock-exclamation stat-icon"></i>
       </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-icon red"><i class="ti ti-clock-exclamation"></i></div>
       <div>
         <p class="stat-label">Overdue Books</p>
         <p class="stat-value" th:text="${overdueCount} ?: 0">0</p>
       </div>
     </div>
+
+    <!-- Total Reading -->
+    <div class="stat-card bg-warning-gradient">
+      <div class="stat-icon-container">
+        <i class="ti ti-history stat-icon"></i>
+      </div>
+      <div>
+        <p class="stat-label">Total Reading</p>
+        <p class="stat-value" th:text="${#lists.size(recentBorrows) ?: 0}">0</p>
+      </div>
+    </div>
   </div>
 
-  <!-- Quick Actions -->
+  <!-- Quick Actions (Enhanced) -->
   <div class="mb-8">
     <h2 class="section-title">Quick Actions</h2>
     <div class="flex gap-3 flex-wrap">
-      <a href="/user/search" class="btn-primary">Search Books</a>
-      <a href="/user/receipt" class="btn-primary">Borrow Receipt</a>
+      <a href="/user/search" class="btn-action">
+        <i class="ti ti-search me-2"></i>Search Books
+      </a>
+      <a href="/user/borrowRecord" class="btn-action">
+        <i class="ti ti-history me-2"></i>View All Records
+      </a>
+      <a href="/user/receipt" class="btn-action">
+        <i class="ti ti-receipt me-2"></i>Latest Receipt
+      </a>
+      <a href="/books" class="btn-action">
+        <i class="ti ti-books me-2"></i>Browse Books
+      </a>
     </div>
   </div>
 
-  <!-- Recently Borrowed Section -->
+  <!-- Recent Borrows (Table version from second code) -->
   <div class="recent-box">
-    <div class="recent-header">Recently Borrowed</div>
-
-    
-
-    <!-- Show each borrow record -->
-    <div th:each="borrow : ${recentBorrows}" class="recent-item">
-      <div class="book-placeholder"></div>
-      <div>
-        <h3 th:text="${borrow.book.title}">Book Title</h3>
-        <p class="text-sm text-gray-600"
-           th:text="'Borrowed on: ' + ${#dates.format(borrow.borrowDate, 'dd MMM yyyy')}">
-        </p>
-        <p class="text-sm">
-          <span class="font-medium">Due:</span>
-          <span th:text="${#dates.format(borrow.dueDate, 'dd MMM yyyy')}"></span>
-        </p>
-      </div>
+    <div class="recent-header">
+      <h3 class="mb-0">Recent Borrows</h3>
     </div>
     
-    <!-- Show message if no records -->
-    <div th:if="${#lists.isEmpty(recentBorrows)}" class="recent-empty">
-      No recent borrowings.
+    <div class="p-4">
+      <div th:if="${recentBorrows != null and not recentBorrows.empty}">
+        <div class="table-responsive">
+          <table class="recent-table">
+            <thead>
+              <tr>
+                <th>Book Title</th>
+                <th>Author</th>
+                <th>Borrow Date</th>
+                <th>Due Date</th>
+                <th>Return Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="borrow : ${recentBorrows}">
+                <td th:text="${borrow.book.title}">Book Title</td>
+                <td th:text="${borrow.book.author}">Author</td>
+                <td th:text="${#dates.format(borrow.borrowDate, 'dd MMM yyyy')}">Borrow Date</td>
+                <td th:text="${#dates.format(borrow.dueDate, 'dd MMM yyyy')}">Due Date</td>
+                <td th:text="${#dates.format(borrow.returnDate, 'dd MMM yyyy')}">Return Date</td>
+                <td>
+                  <!-- Status logic -->
+                  <span th:if="${borrow.returnDate == null}" class="status-badge status-borrowed">
+                    <i class="ti ti-book"></i>Borrowed</span>
+                  <span th:if="${borrow.returnDate != null and borrow.returnDate.isAfter(borrow.dueDate)}" class="status-badge status-late">
+                    <i class="ti ti-alert-triangle"></i>Late Return</span>
+                  <span th:if="${borrow.returnDate != null and !borrow.returnDate.isAfter(borrow.dueDate)}"  class="status-badge status-returned">
+                    <i class="ti ti-check"></i>Returned</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Empty state (from second code) -->
+      <div th:if="${recentBorrows == null or recentBorrows.empty}" class="recent-empty">
+        <div class="text-center py-4">
+          <i class="ti ti-book-off text-5xl text-gray-300 mb-3"></i>
+          <p class="text-gray-500 mb-4">No recent borrows found.</p>
+          <a href="/user/search" class="btn-primary">
+            <i class="ti ti-search me-2"></i>Browse Books
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -129,7 +181,7 @@
     font-family: Inter, system-ui, sans-serif;
   }
 
-  /* ===== HEADER ===== */
+  /* ===== HEADER (From first code) ===== */
   .site-header {
     position: sticky;
     top: 0;
@@ -147,12 +199,19 @@
     align-items: center;
   }
 
-  .logo {
-    color: var(--primary);
-    font-size: 1.5rem;
-    font-weight: 700;
-    text-decoration: none;
-  }
+    .logo {
+      color: var(--primary);
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo i {
+      font-size: 1.8rem; /* Slightly larger icon */
+    }
 
   .icon-bar {
     display: flex;
@@ -167,36 +226,36 @@
     background: #ddd;
   }
 
-    /* ===== LOGOUT BUTTON ===== */
-.logout-form {
-  display: inline-block;
-}
+  /* ===== LOGOUT BUTTON ===== */
+  .logout-form {
+    display: inline-block;
+  }
 
-.logout-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: #dc2626; /* primary blue */
-  color: white;
-  font-weight: 600;
-  padding: 0.4rem 0.75rem;
-  border-radius: 0.5rem;
-  border: none;
-  cursor: pointer;
-  font-size: 0.875rem;
-  transition: background-color 0.2s, transform 0.1s;
-}
+  .logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #dc2626;
+    color: white;
+    font-weight: 600;
+    padding: 0.4rem 0.75rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0.2s, transform 0.1s;
+  }
 
-.logout-btn:hover {
-  background-color: #1d4ed8; /* darker blue on hover */
-  transform: translateY(-1px);
-}
+  .logout-btn:hover {
+    background-color: #b91c1c;
+    transform: translateY(-1px);
+  }
 
-.logout-icon {
-  font-size: 1.2rem;
-}
+  .logout-icon {
+    font-size: 1.2rem;
+  }
 
-  /* ===== BUTTON ===== */
+  /* ===== BUTTONS ===== */
   .btn-primary {
     background: var(--primary);
     color: white;
@@ -211,39 +270,84 @@
 
   .btn-primary:hover {
     background: var(--primary-hover);
+    color: white;
+    text-decoration: none;
   }
 
-  /* ===== STATS ===== */
+  .btn-action {
+    background: white;
+    color: #374151;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.2s ease;
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+  }
+
+  .btn-action:hover {
+    background: #f9fafb;
+    border-color: var(--primary);
+    color: var(--primary);
+    text-decoration: none;
+  }
+
+  /* ===== STATS CARDS (Combined) ===== */
   .stat-card {
     background: white;
-    padding: 1.25rem;
+    padding: 1.5rem;
     border-radius: 0.75rem;
-    border: 1px solid #f1f5f9;
+    border: none;
     display: flex;
     align-items: center;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    color: white;
+    min-height: 120px;
   }
 
-  .stat-icon {
+  .stat-icon-container {
     padding: 0.75rem;
     border-radius: 0.5rem;
     margin-right: 1rem;
-    font-size: 1.25rem;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .stat-icon.blue { background: #eff6ff; color: #2563eb; }
-  .stat-icon.yellow { background: #fefce8; color: #ca8a04; }
-  .stat-icon.green { background: #ecfdf5; color: #16a34a; }
-  .stat-icon.red { background: #fef2f2; color: #dc2626; }
+  .stat-icon {
+    font-size: 1.5rem;
+  }
+
+  .bg-primary-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  .bg-success-gradient {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  }
+
+  .bg-warning-gradient {
+    background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+  }
+
+  .bg-danger-gradient {
+    background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+  }
 
   .stat-label {
     font-size: 0.875rem;
-    color: #6b7280;
+    opacity: 0.9;
+    margin-bottom: 0.25rem;
   }
 
   .stat-value {
-    font-size: 1.25rem;
+    font-size: 1.75rem;
     font-weight: 700;
+    margin: 0;
   }
 
   /* ===== RECENT SECTION ===== */
@@ -259,6 +363,7 @@
     border-radius: 0.75rem;
     border: 1px solid #f1f5f9;
     overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   }
 
   .recent-header {
@@ -266,45 +371,125 @@
     border-bottom: 1px solid #f1f5f9;
     font-weight: 600;
     color: #1e293b;
+    background: #f8fafc;
   }
 
-  .recent-item {
-    padding: 1.5rem;
-    display: flex;
-    gap: 1rem;
+  /* Recent Table */
+  .recent-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .recent-table th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid #e5e7eb;
+    color: #374151;
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+
+  .recent-table td {
+    padding: 1rem;
     border-bottom: 1px solid #f1f5f9;
+    color: #4b5563;
   }
 
-  .recent-item:last-child {
-    border-bottom: none;
+  .recent-table tr:hover {
+    background-color: #f9fafb;
+  }
+
+  /* Status Badges */
+  .status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+  }
+
+  .status-borrowed {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+
+  .status-returned {
+    background-color: #d1fae5;
+    color: #065f46;
+  }
+
+  .status-late {
+    background-color: #fee2e2;
+    color: #991b1b;
   }
 
   .recent-empty {
-    padding: 1.5rem;
+    padding: 3rem 1.5rem;
     text-align: center;
     color: #9ca3af;
-    font-style: italic;
+    
   }
 
-  .book-placeholder {
-    width: 64px;
-    height: 80px;
-    background: #e5e7eb;
-    border-radius: 0.5rem;
-    flex-shrink: 0;
-  }
-
-  /* Responsive: stack items on small screens */
-  @media (max-width: 639px) {
-    .recent-item {
-      flex-direction: column;
-      align-items: flex-start;
+  /* Responsive */
+  @media (max-width: 768px) {
+    .header-container {
+      padding: 0.75rem 1rem;
     }
-    .book-placeholder {
-      width: 100%;
-      max-width: 120px;
+    
+    .icon-bar {
+      gap: 0.5rem;
+    }
+    
+    .stat-card {
+      flex-direction: column;
+      text-align: center;
+      padding: 1rem;
+    }
+    
+    .stat-icon-container {
+      margin-right: 0;
+      margin-bottom: 0.75rem;
+    }
+    
+    .recent-table {
+      display: block;
+      overflow-x: auto;
+    }
+    
+    .btn-action {
+      flex: 1;
+      min-width: calc(50% - 0.5rem);
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .grid {
+      gap: 1rem;
+    }
+    
+    .btn-action {
+      min-width: 100%;
     }
   }
 </style>
+
+<script>
+  // Optional: Add some interactivity
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add hover effect to stat cards
+    const statCards = document.querySelectorAll('.stat-card');
+    statCards.forEach(card => {
+      card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-4px)';
+        this.style.transition = 'transform 0.2s ease';
+      });
+      
+      card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0)';
+      });
+    });
+  });
+</script>
 </body>
 </html>
