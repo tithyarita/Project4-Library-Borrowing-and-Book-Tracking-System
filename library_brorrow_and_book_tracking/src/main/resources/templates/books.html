@@ -3,6 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <title>Available Books</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        p {
+            text-align: center;
+            font-size: 18px;
+            color: #555;
+        }
+
+        table {
+            width: 90%;
+            margin: 0 auto 20px auto;
+            border-collapse: collapse;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+        }
+
+        thead {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:hover {
+            background-color: #e0f0ff;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: #0056b3;
+        }
+
+        .not-available {
+            color: #999;
+            font-style: italic;
+        }
+    </style>
 </head>
 <body>
 
@@ -10,7 +74,7 @@
 
 <p th:text="'Number of books: ' + (${books} != null ? ${books.size()} : 0)"></p>
 
-<table border="1" cellpadding="5" cellspacing="0">
+<table>
     <thead>
         <tr>
             <th>Title</th>
@@ -23,7 +87,7 @@
 
     <tbody>
         <tr th:if="${books == null || books.isEmpty()}">
-            <td colspan="5" style="text-align:center;">No books available</td>
+            <td colspan="5" class="not-available">No books available</td>
         </tr>
 
         <tr th:each="book : ${books}">
@@ -35,7 +99,7 @@
                 <span th:if="${book.available}">
                     <a th:href="@{/user/borrow/{id}(id=${book.id})}">Borrow</a>
                 </span>
-                <span th:if="${!book.available}">
+                <span th:if="${!book.available}" class="not-available">
                     Not Available
                 </span>
             </td>
