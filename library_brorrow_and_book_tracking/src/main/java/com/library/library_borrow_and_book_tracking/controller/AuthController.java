@@ -3,6 +3,7 @@ package com.library.library_borrow_and_book_tracking.controller;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +15,7 @@ import com.library.library_borrow_and_book_tracking.repository.RoleRepository;
 import com.library.library_borrow_and_book_tracking.repository.UserRepository;
 
 @Controller
-@RequestMapping("")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private final UserRepository userRepository;
@@ -68,6 +69,6 @@ public class AuthController {
         // Save user to database
         userRepository.save(user);
 
-        return "redirect:/login?success";
+        return "redirect:/api/auth/login?success";
     }
 }

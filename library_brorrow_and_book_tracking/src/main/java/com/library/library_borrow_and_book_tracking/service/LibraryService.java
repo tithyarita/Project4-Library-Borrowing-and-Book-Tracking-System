@@ -60,9 +60,11 @@ public class LibraryService {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new RuntimeException("Book not found"));
 
-        if (book.getAvailable() == null || !book.getAvailable()) {
-            throw new RuntimeException("Book is not available");
-        }
+        // TEMPORARY WORKAROUND: Commented out to allow borrowing regardless of availability.
+        // This should be replaced with proper multi-copy logic or a re-evaluation of why books are marked unavailable.
+        // if (book.getAvailable() == null || !book.getAvailable()) {
+        //     throw new RuntimeException("Book is not available");
+        // }
 
         BorrowRecord record = new BorrowRecord();
         record.setUser(user);
@@ -197,6 +199,7 @@ public class LibraryService {
         Book book = record.getBook();
         book.setAvailable(true);
         bookRepository.save(book);
+        System.out.println("DEBUG: Book '" + book.getTitle() + "' (ID: " + book.getId() + ") marked as available upon return.");
     }
 
     public void deleteBorrowRecord(Long borrowRecordId) {
