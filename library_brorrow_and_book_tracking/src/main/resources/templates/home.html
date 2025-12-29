@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+<!-- ===== HEADER ===== -->
+<header class="sticky top-0 bg-white shadow z-50">
+    <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+        <a href="/home" class="text-2xl font-bold text-blue-600">Library System</a>
+
+        <nav class="hidden md:flex gap-6">
+            <a href="#home" class="text-gray-700 hover:text-blue-600 font-medium">Home</a>
+            <a href="#featured" class="text-gray-700 hover:text-blue-600 font-medium">Featured</a>
+            <a href="#categories" class="text-gray-700 hover:text-blue-600 font-medium">Categories</a>
+        </nav>
+
+        <div class="flex items-center gap-4">
+            <a href="/user/search" class="text-gray-700 hover:text-blue-600"><i class="ti ti-search text-xl"></i></a>
+            <a href="/user/account" class="text-gray-700 hover:text-blue-600"><i class="ti ti-user text-xl"></i></a>
+            <a href="/user/dashboard" class="text-gray-700 hover:text-blue-600"><i class="ti ti-books text-xl"></i></a>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="flex items-center gap-1 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded">
+                    <i class="ti ti-logout"></i> Logout
+                </button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<!-- ===== HERO SECTION ===== -->
+<section id="home" class="bg-blue-50 py-20">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12 px-6">
+        <div class="flex-1">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+                Explore & Borrow Books from Our Library
+            </h1>
+            <p class="text-lg text-gray-600 mb-6">
+                Access thousands of books — free to borrow for all members.
+            </p>
+            <a href="/user/search" class="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded">
+                Search Books →
+            </a>
+        </div>
+        <div class="flex-1">
+            <img src="https://img.freepik.com/premium-photo/school-library-with-shelves-overflowing-with-books_741910-47067.jpg"
+                 alt="Library Books" class="rounded-lg shadow-lg w-full"/>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FEATURED BOOKS ===== -->
+<section id="featured" class="py-16">
+    <div class="max-w-7xl mx-auto px-6">
+        <h2 class="text-3xl font-bold text-gray-800 mb-4">Featured Books</h2>
+        <p class="text-gray-600 mb-8">Popular titles available for borrowing</p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <article class="bg-white rounded-lg shadow p-4 flex flex-col items-center text-center">
+                <img src="https://th.bing.com/th/id/OIP.S0qQ8zdSHnFSzr-14H0KnAHaLR?w=202&h=308&c=7&r=0&o=7&pid=1.7"
+                     alt="The Hunger Games" class="w-36 h-48 object-cover rounded mb-2">
+                <h3 class="font-semibold text-lg">The Hunger Games</h3>
+                <p class="text-gray-500 text-sm mb-2">Suzanne Collins</p>
+                <button class="borrow-btn bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded font-semibold"
+                        data-book-id="hunger-games">
+                    Borrow
+                </button>
+            </article>
+
+            <article class="bg-white rounded-lg shadow p-4 flex flex-col items-center text-center">
+                <img src="https://prodimage.images-bn.com/pimages/9780593655030_p0_v6_s192x300.jpg"
+                     alt="The Anxious Generation" class="w-36 h-48 object-cover rounded mb-2">
+                <h3 class="font-semibold text-lg">The Anxious Generation</h3>
+                <p class="text-gray-500 text-sm mb-2">Jonathan Haidt</p>
+                <button class="borrow-btn bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded font-semibold"
+                        data-book-id="anxious-generation">
+                    Borrow
+                </button>
+            </article>
+
+            <!-- Add more featured books in the same pattern -->
+        </div>
+    </div>
+</section>
+
+<!-- ===== CATEGORIES ===== -->
+<section id="categories" class="py-16 bg-blue-50">
+    <div class="max-w-7xl mx-auto px-6">
+        <h2 class="text-3xl font-bold text-gray-800 mb-4">Browse by Category</h2>
+        <p class="text-gray-600 mb-8">Find books by your favorite genres</p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Category Cards -->
+            <article class="bg-white rounded-lg shadow p-4 text-center">
+                <h3 class="font-semibold text-lg mb-2">Fiction</h3>
+                <p class="text-gray-500 text-sm">Explore novels, stories, and more</p>
+            </article>
+            <article class="bg-white rounded-lg shadow p-4 text-center">
+                <h3 class="font-semibold text-lg mb-2">Non-Fiction</h3>
+                <p class="text-gray-500 text-sm">Biographies, history, and facts</p>
+            </article>
+            <article class="bg-white rounded-lg shadow p-4 text-center">
+                <h3 class="font-semibold text-lg mb-2">Science</h3>
+                <p class="text-gray-500 text-sm">Learn about the world around us</p>
+            </article>
+            <article class="bg-white rounded-lg shadow p-4 text-center">
+                <h3 class="font-semibold text-lg mb-2">Mystery</h3>
+                <p class="text-gray-500 text-sm">Thrilling stories and suspense</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Borrow buttons
+        document.querySelectorAll(".borrow-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const id = btn.dataset.bookId;
+                if (confirm("Borrow this book?")) {
+                    window.location.href = "/user/borrow/" + id;
+                }
+            });
+        });
+
+        // Active navigation scroll
+        const navLinks = document.querySelectorAll('.main-nav a[href^="#"]');
+        const sections = document.querySelectorAll('section[id]');
+
+        const activateSection = () => {
+            let current = '';
+            sections.forEach(section => {
+                const top = section.offsetTop;
+                const height = section.clientHeight;
+                if (window.scrollY >= top - 100 && window.scrollY < top + height - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+            navLinks.forEach(link => link.classList.remove('active'));
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === `#${current}`) link.classList.add('active');
+            });
+        };
+
+        window.addEventListener('scroll', activateSection);
+        activateSection();
+    });
+</script>
+</body>
+</html>
