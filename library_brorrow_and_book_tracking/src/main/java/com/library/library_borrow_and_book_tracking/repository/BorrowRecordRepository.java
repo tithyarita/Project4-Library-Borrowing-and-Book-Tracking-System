@@ -14,4 +14,6 @@ public interface BorrowRecordRepository extends JpaRepository<BorrowRecord, Long
     List<BorrowRecord> findByUserIdAndReturnDateIsNull(Long userId);
 
     long countByUserIdAndDueDateBeforeAndReturnDateIsNull(Long userId, LocalDate dueDate);
+
+    long countByUserIdAndCreatedAtBetween(Long userId, java.time.LocalDateTime start, java.time.LocalDateTime end);
 }
