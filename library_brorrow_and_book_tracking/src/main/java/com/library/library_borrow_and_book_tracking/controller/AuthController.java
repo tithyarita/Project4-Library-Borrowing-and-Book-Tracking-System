@@ -72,6 +72,6 @@ public class AuthController {
         // Save user to database
         userRepository.save(user);
 
-        return "redirect:/api/auth/login?success";
+        return "redirect:/login";
     }
 }
