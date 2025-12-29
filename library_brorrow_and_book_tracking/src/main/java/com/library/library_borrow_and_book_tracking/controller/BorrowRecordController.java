@@ -11,7 +11,6 @@ public class BorrowRecordController {
 
     private final LibraryService libraryService;
 
-    // ✅ Constructor injection (recommended)
     public BorrowRecordController(LibraryService libraryService) {
         this.libraryService = libraryService;
     }
@@ -19,6 +18,6 @@ public class BorrowRecordController {
     @GetMapping("/user/borrowRecord")
     public String borrowRecord(Model model) {
         model.addAttribute("borrowRecord", libraryService.getRecentBorrows());
-        return "user/borrowRecord";
+        return "user/borrowRecord"; // matches user/borrowRecord.html
     }
 }

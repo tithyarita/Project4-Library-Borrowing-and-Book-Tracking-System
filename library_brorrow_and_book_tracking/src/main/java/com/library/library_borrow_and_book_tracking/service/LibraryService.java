@@ -121,4 +121,11 @@ public class LibraryService {
     public void deleteBook(Long bookId) {
         bookRepository.deleteById(bookId);
     }
+    public boolean isBookBorrowedByCurrentUser(Long bookId) {
+    User user = getCurrentUser();
+    return borrowRecordRepository.findByUserIdAndReturnDateIsNull(user.getId())
+            .stream()
+            .anyMatch(record -> record.getBook().getId().equals(bookId));
+}
+
 }
