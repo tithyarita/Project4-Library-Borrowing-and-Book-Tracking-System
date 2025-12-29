@@ -190,10 +190,6 @@ public class LibraryService {
             .anyMatch(record -> record.getBook().getId().equals(bookId));
 }
 
-}
-
-
-
     @Transactional
     public void returnBook(Long borrowRecordId) {
         BorrowRecord record = borrowRecordRepository.findById(borrowRecordId)
