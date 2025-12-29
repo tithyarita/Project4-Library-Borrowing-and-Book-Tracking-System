@@ -12,11 +12,13 @@ public class LoginController {
     public String login() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        // ✅ Already logged in → go home
-        if (auth != null && auth.isAuthenticated() && !auth.getAuthorities().isEmpty()) {
-            return "redirect:/";
+        // ✅ If user is already logged in, redirect to /home
+        if (auth != null && auth.isAuthenticated() && !auth.getAuthorities().isEmpty()
+                && !auth.getPrincipal().equals("anonymousUser")) {
+            return "redirect:/home";
         }
 
+        // Show login page for unauthenticated users
         return "login";
     }
 }
