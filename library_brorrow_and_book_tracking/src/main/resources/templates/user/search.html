@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <title>Search Books – Library System</title>
+
+  <script src="https://cdn.tailwindcss.com  "></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css  ">
+
+</head>
+
+<body class="bg-gray-50">
+
+<!-- ================= HEADER ================= -->
+<header class="site-header">
+  <div class="header-container">
+    <a href="/user/home" class="logo">Library System</a>
+    <div class="icon-bar">
+      <a href="/user/search"><i class="ti ti-search text-blue-500 hover:text-blue-700"></i></a>
+      <div class="icon-divider"></div>
+      <a href="/user/account"><i class="ti ti-user"></i></a>
+      <div class="icon-divider"></div>
+      <a href="/user/dashboard"><i class="ti ti-books"></i></a>
+      <form th:action="@{/logout}" method="post" class="logout-form">
+        <button type="submit" class="logout-btn">
+            <i class="ti ti-logout logout-icon"></i>
+            Logout
+        </button>
+      </form>      
+    </div>
+  </div>
+</header>
+
+<!-- ================= MAIN ================= -->
+<main class="max-w-4xl mx-auto px-4 py-8">
+
+  <div class="text-center mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">Search Books</h1>
+    <p class="text-gray-600 mt-2">Find books by title, author, or category</p>
+  </div>
+
+  <!-- Search Form -->
+  <form th:action="@{/user/search}" method="get"
+        class="mb-8 flex flex-col sm:flex-row gap-2 justify-center">
+
+    <div class="relative w-full sm:w-[400px]">
+      <i class="ti ti-search search-icon"></i>
+      <input type="text"
+             name="q"
+             th:value="${param.q != null ? param.q[0] : ''}"
+             placeholder="Enter book title, author, or ISBN..."
+             class="search-input">
+    </div>
+
+    <button type="submit" class="search-button">
+      <i class="ti ti-search"></i> Search
+    </button>
+  </form>
+
+  <!-- Search Results -->
+  <div th:if="${books != null && !books.empty}" class="space-y-6">
+    <h2 class="text-xl font-semibold text-gray-700 text-center">
+      Found <span th:text="${books.size()}"></span> book(s)
+    </h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div th:each="book : ${books}" class="book-card">
+        <img th:src="${book.coverUrl ?: '/images/default-book.png'}"
+             onerror="this.src='/images/default-book.png'">
+
+        <h3 th:text="${book.title}">Book Title</h3>
+        <p class="author" th:text="${'by ' + book.author}">Author</p>
+        <p class="category" th:text="${book.category}">Category</p>
+
+        <a href="javascript:void(0)"
+           class="borrow-btn"
+           th:data-book-id="${book.id}">
+          Borrow
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Results -->
+  <div th:if="${books != null && books.empty}" class="no-results">
+    <i class="ti ti-book"></i>
+    <h3>No books found</h3>
+    <p>Try another keyword.</p>
+  </div>
+
+</main>
+
+<!-- Borrow Script -->
+<script>
+  document.querySelectorAll(".borrow-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.bookId;
+      if (confirm("Borrow this book?")) {
+        window.location.href = "/user/borrow/" + id;
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
+
+<style>
+  /* ===== GLOBAL ===== */
+:root {
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --border: #e2e8f0;
+  --text-dark: #1e293b;
+}
+
+body {
+  font-family: Inter, system-ui, sans-serif;
+}
+
+/* ===== HEADER ===== */
+.site-header {
+  position: sticky;
+  top: 0;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  z-index: 50;
+}
+
+.header-container {
+  max-width: 1400px;
+  margin: auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  color: var(--primary);
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.icon-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.5rem;
+}
+
+.icon-divider {
+  width: 1px;
+  height: 1.5rem;
+  background: var(--border);
+}
+
+  /* ===== LOGOUT BUTTON ===== */
+.logout-form {
+  display: inline-block;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #dc2626; /* primary blue */
+  color: white;
+  font-weight: 600;
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.logout-btn:hover {
+  background-color: #1d4ed8; /* darker blue on hover */
+  transform: translateY(-1px);
+}
+
+.logout-icon {
+  font-size: 1.2rem;
+}
+
+/* ===== SEARCH ===== */
+.search-input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--primary);
+}
+
+/* ===== BUTTON ===== */
+.search-button {
+  background: var(--primary);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background: var(--primary-hover);
+}
+
+/* ===== BOOK CARD ===== */
+.book-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.book-card:hover {
+  transform: translateY(-2px);
+}
+
+.book-card img {
+  width: 100%;
+  height: 12rem;
+  object-fit: cover;
+  border-radius: 0.375rem;
+  margin-bottom: 0.75rem;
+}
+
+.book-card h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.author,
+.category {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+/* ===== BORROW BUTTON ===== */
+.borrow-btn {
+  display: block;
+  margin-top: 0.75rem;
+  padding: 0.5rem;
+  background: var(--primary);
+  color: white;
+  border-radius: 0.375rem;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.borrow-btn:hover {
+  background: var(--primary-hover);
+}
+
+/* ===== NO RESULTS ===== */
+.no-results {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #6b7280;
+}
+
+.no-results i {
+  font-size: 3rem;
+  color: #cbd5e1;
+  margin-bottom: 1rem;
+}
+
+</style>
