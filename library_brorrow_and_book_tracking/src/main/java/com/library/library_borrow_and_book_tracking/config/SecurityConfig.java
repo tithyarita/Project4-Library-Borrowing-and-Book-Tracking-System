@@ -64,6 +64,6 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
-        return new SimpleUrlAuthenticationSuccessHandler("/user/home");
+        return new SimpleUrlAuthenticationSuccessHandler("/home");
     }
 }
