@@ -6,6 +6,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 @Configuration
 public class SecurityConfig {
@@ -44,10 +46,7 @@ public class SecurityConfig {
                 .loginProcessingUrl("/api/auth/login")
                 .usernameParameter("email")
                 .passwordParameter("password")
-                // ALWAYS redirect to /home after login
-                .successHandler((request, response, authentication) -> {
-                    response.sendRedirect("/home");
-                })
+                .successHandler(authenticationSuccessHandler()) // redirect after login
                 .failureUrl("/login?error")
                 .permitAll()
             )
@@ -63,5 +62,11 @@ public class SecurityConfig {
             );
 
         return http.build();
+    }
+
+    // Redirect authenticated users after login
+    @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler() {
+        return new SimpleUrlAuthenticationSuccessHandler("/home");
     }
 }
