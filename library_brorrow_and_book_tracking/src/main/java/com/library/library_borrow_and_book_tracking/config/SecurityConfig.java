@@ -6,53 +6,50 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 @Configuration
 public class SecurityConfig {
 
-    // Password encoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Security filter chain
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            // Disable CSRF for simplicity
             .csrf(csrf -> csrf.disable())
 
-            // Public pages
             .authorizeHttpRequests(auth -> auth
+                // Public only for NOT logged-in users
+                .requestMatchers("/login").not().authenticated()
+
+                // Public APIs
                 .requestMatchers(
-                    "/login",
                     "/api/auth/register",
                     "/api/auth/login",
                     "/css/**",
                     "/js/**",
                     "/images/**"
                 ).permitAll()
-                // Any other request requires authentication
+
+                // Everything else requires login
                 .anyRequest().authenticated()
             )
 
-            // Form login
             .formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/api/auth/login")
                 .usernameParameter("email")
                 .passwordParameter("password")
-                // ALWAYS redirect to /home after login
-                .successHandler((request, response, authentication) -> {
-                    response.sendRedirect("/home");
-                })
+                .successHandler(authenticationSuccessHandler())
                 .failureUrl("/login?error")
                 .permitAll()
             )
 
-            // Logout config
             .logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?logout")
@@ -63,5 +60,10 @@ public class SecurityConfig {
             );
 
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler() {
+        return new SimpleUrlAuthenticationSuccessHandler("/home");
     }
 }

@@ -183,6 +183,12 @@ public class LibraryService {
         bookRepository.deleteById(bookId);
     }
 
+    public boolean isBookBorrowedByCurrentUser(Long bookId) {
+    User user = getCurrentUser();
+    return borrowRecordRepository.findByUserIdAndReturnDateIsNull(user.getId())
+            .stream()
+            .anyMatch(record -> record.getBook().getId().equals(bookId));
+}
 
     @Transactional
     public void returnBook(Long borrowRecordId) {
@@ -207,3 +213,4 @@ public class LibraryService {
     }
     
 } 
+

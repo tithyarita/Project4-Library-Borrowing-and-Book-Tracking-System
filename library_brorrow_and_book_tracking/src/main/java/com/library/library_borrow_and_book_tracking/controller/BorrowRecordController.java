@@ -21,7 +21,7 @@ public class BorrowRecordController {
     @GetMapping("/user/borrowRecord")
     public String borrowRecord(Model model) {
         model.addAttribute("borrowRecord", libraryService.getRecentBorrows());
-        return "user/borrowRecord";
+        return "user/borrowRecord"; // matches user/borrowRecord.html
     }
 
     @GetMapping("/user/add-borrow")
@@ -82,4 +82,5 @@ public class BorrowRecordController {
         }
         return "redirect:/user/borrowRecord";
     }
+    
 }
