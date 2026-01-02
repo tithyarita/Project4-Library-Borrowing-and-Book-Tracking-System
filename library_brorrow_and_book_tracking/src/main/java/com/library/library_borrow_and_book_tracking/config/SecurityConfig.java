@@ -53,7 +53,7 @@ public class SecurityConfig {
             for (var authority : authorities) {
                 String auth = authority.getAuthority();
                 if ("ROLE_LIBRARIAN".equals(auth) || "LIBRARIAN".equals(auth)) {
-                    redirectUrl = "/user/dashboard";
+                    redirectUrl = "/librarian/dashboard";
                     break;
                 }
             }
