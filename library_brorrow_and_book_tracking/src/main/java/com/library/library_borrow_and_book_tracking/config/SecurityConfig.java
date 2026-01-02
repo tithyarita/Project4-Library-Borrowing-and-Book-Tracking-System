@@ -23,22 +23,15 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
 
-            .authorizeHttpRequests(auth -> auth
-                // Public only for NOT logged-in users
-                .requestMatchers("/login").not().authenticated()
+          .authorizeHttpRequests(auth -> auth
+    // Public pages
+    .requestMatchers("/login", "/api/auth/register", "/api/auth/login",
+                     "/css/**", "/js/**", "/images/**").permitAll()
 
-                // Public APIs
-                .requestMatchers(
-                    "/api/auth/register",
-                    "/api/auth/login",
-                    "/css/**",
-                    "/js/**",
-                    "/images/**"
-                ).permitAll()
+    // Everything else requires login
+    .anyRequest().authenticated()
+)
 
-                // Everything else requires login
-                .anyRequest().authenticated()
-            )
 
             .formLogin(form -> form
                 .loginPage("/login")
@@ -64,6 +57,6 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
-        return new SimpleUrlAuthenticationSuccessHandler("/home");
+        return new SimpleUrlAuthenticationSuccessHandler("/user/home");
     }
 }

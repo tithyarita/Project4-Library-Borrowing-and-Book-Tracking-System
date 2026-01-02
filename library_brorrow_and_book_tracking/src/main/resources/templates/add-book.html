@@ -17,7 +17,9 @@
 <main class="container mx-auto p-6">
   <section class="bg-white shadow rounded p-6 mb-6">
     <h2 class="text-2xl font-bold mb-4">Add New Book</h2>
-    <form th:action="@{/books/save}" th:object="${book}" method="post" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <form th:action="@{/books/save}" th:object="${book}" method="post"
+      class="grid grid-cols-1 md:grid-cols-2 gap-4" enctype="multipart/form-data">
+
       <div>
         <label class="font-semibold">Title *</label>
         <input type="text" th:field="*{title}" placeholder="Book Title" required class="border rounded px-2 py-1 w-full">
@@ -46,6 +48,11 @@
         <input type="checkbox" th:field="*{available}" class="mr-2">
         <label class="font-semibold">Available</label>
       </div>
+      <div class="md:col-span-2">
+  <label class="font-semibold">Cover Image (Upload)</label>
+  <input type="file" name="coverFile" class="border rounded px-2 py-1 w-full">
+</div>
+
       <div class="md:col-span-2 mt-4">
         <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded w-full">Save Book</button>
       </div>

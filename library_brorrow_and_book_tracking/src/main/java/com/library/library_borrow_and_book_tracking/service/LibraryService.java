@@ -1,6 +1,7 @@
 package com.library.library_borrow_and_book_tracking.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,188 +30,160 @@ public class LibraryService {
         this.borrowRecordRepository = borrowRecordRepository;
     }
 
+    // =====================
+    // TEMP USER (NO AUTH YET)
+    // =====================
+    private Long getTemporaryUserId() {
+        return 1L; // Replace with real authentication later
+    }
 
     public User getCurrentUser() {
-        Long currentUserId = getTemporaryUserId();
-        return userRepository.findById(currentUserId)
+        return userRepository.findById(getTemporaryUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    private Long getTemporaryUserId() {
-        return 1L;
-    }
-
+    // =====================
+    // BOOK SEARCH
+    // =====================
     public List<Book> searchBooks(String query) {
         if (query == null || query.trim().isEmpty()) {
             return List.of();
         }
-        return bookRepository.findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCaseOrCategoryContainingIgnoreCase(
-                query, query, query);
+        return bookRepository
+                .findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCaseOrCategoryContainingIgnoreCase(
+                        query, query, query);
     }
 
-    @Transactional
-    public BorrowRecord borrowBook(Long bookId) {
-        User user = getCurrentUser();
-        java.time.LocalDateTime now = java.time.LocalDateTime.now();
-        java.time.LocalDateTime weekAgo = now.minusDays(7);
-        long recentCount = borrowRecordRepository.countByUserIdAndCreatedAtBetween(user.getId(), weekAgo, now);
-        if (recentCount >= 3) {
-            throw new RuntimeException("Borrowing limit reached: maximum 3 bookings/borrows per week");
-        }
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+    // =====================
+    // FEATURED BOOKS
+    // =====================
+  // =====================
+// FEATURED BOOKS
+// =====================
+public List<Book> getFeaturedBooks() {
+    // Fetch latest 8 books for homepage
+    return bookRepository.findTop8ByOrderByCreatedAtDesc();
+}
 
-        // TEMPORARY WORKAROUND: Commented out to allow borrowing regardless of availability.
-        // This should be replaced with proper multi-copy logic or a re-evaluation of why books are marked unavailable.
-        // if (book.getAvailable() == null || !book.getAvailable()) {
-        //     throw new RuntimeException("Book is not available");
-        // }
 
-        BorrowRecord record = new BorrowRecord();
-        record.setUser(user);
-        record.setBook(book);
-        record.setBorrowDate(LocalDate.now());
-        record.setDueDate(LocalDate.now().plusWeeks(2));
-        record.setStatus("BORROWED");
-
-        borrowRecordRepository.save(record);
-
-        book.setAvailable(false);
-        bookRepository.save(book);
-
-        return record;
-    }
-
+    // =====================
+    // BORROW & BOOKING
+    // =====================
     @Transactional
     public BorrowRecord bookReservation(Long bookId) {
         User user = getCurrentUser();
-        java.time.LocalDateTime now = java.time.LocalDateTime.now();
-        java.time.LocalDateTime weekAgo = now.minusDays(7);
-        long recentCount = borrowRecordRepository.countByUserIdAndCreatedAtBetween(user.getId(), weekAgo, now);
-        if (recentCount >= 3) {
-            throw new RuntimeException("Booking limit reached: maximum 3 bookings/borrows per week");
+
+        // Count bookings/borrows in the last 7 days
+        long weeklyCount = borrowRecordRepository.countByUserIdAndStatusInAndCreatedAtBetween(
+                user.getId(),
+                List.of("BOOKING", "BORROWED"),   // Only active bookings and current borrows
+                LocalDateTime.now().minusDays(7),
+                LocalDateTime.now()
+        );
+
+        if (weeklyCount >= 3) {
+            throw new RuntimeException("Maximum 3 bookings per week allowed");
         }
+
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new RuntimeException("Book not found"));
 
+        if (!Boolean.TRUE.equals(book.getAvailable())) {
+            throw new RuntimeException("Book is not available");
+        }
+
+        // Create the booking record
         BorrowRecord record = new BorrowRecord();
         record.setUser(user);
         record.setBook(book);
         record.setStatus("BOOKING");
+        record.setCreatedAt(LocalDateTime.now());
+
         return borrowRecordRepository.save(record);
     }
 
     @Transactional
-    public BorrowRecord confirmBorrow(Long borrowRecordId) {
-        BorrowRecord record = borrowRecordRepository.findById(borrowRecordId)
+    public BorrowRecord confirmBorrow(Long recordId) {
+        BorrowRecord record = borrowRecordRepository.findById(recordId)
                 .orElseThrow(() -> new RuntimeException("Borrow record not found"));
 
         if (!"BOOKING".equals(record.getStatus())) {
-            throw new RuntimeException("Only booking records can be confirmed");
+            throw new RuntimeException("This record is not a booking");
         }
 
         record.setBorrowDate(LocalDate.now());
         record.setDueDate(LocalDate.now().plusWeeks(2));
         record.setStatus("BORROWED");
-        borrowRecordRepository.save(record);
 
         Book book = record.getBook();
         book.setAvailable(false);
         bookRepository.save(book);
 
-        return record;
+        return borrowRecordRepository.save(record);
     }
-
-    public List<BorrowRecord> getRecentBorrows() {
-        return borrowRecordRepository.findByUserIdOrderByBorrowDateDesc(getTemporaryUserId());
-    }
-
-    public long getBorrowedCount() {
-        return borrowRecordRepository.findByUserIdAndReturnDateIsNull(getTemporaryUserId()).size();
-    }
-
-    public long getOverdueCount() {
-        return borrowRecordRepository.countByUserIdAndDueDateBeforeAndReturnDateIsNull(
-                getTemporaryUserId(), LocalDate.now());
-    }
-
-    public Optional<BorrowRecord> getLatestBorrow() {
-        List<BorrowRecord> records = getRecentBorrows();
-        return records.isEmpty() ? Optional.empty() : Optional.of(records.get(0));
-    }
-
-    public Optional<BorrowRecord> getBorrowRecordById(Long id) {
-        return borrowRecordRepository.findById(id);
-    }
-
-
-    public List<Book> getFeaturedBooks() {
-        try {
-            List<Book> featured = bookRepository.findTop8ByOrderByCreatedAtDesc();
-            if (featured != null && !featured.isEmpty()) {
-                return featured;
-            }
-        } catch (Exception e) {
-            
-        }
-        return bookRepository.findAll();
-    }
-
-    public List<Book> getAllBooks() {
-        return bookRepository.findAll();
-    }
-
-
-    public Optional<Book> getBookById(Long id) {
-        return bookRepository.findById(id);
-    }
-
-    public Book addBook(String title, String author, String category,
-                        String isbn, String publisher, Integer publishYear, String coverUrl) {
-        Book book = new Book();
-        book.setTitle(title);
-        book.setAuthor(author);
-        book.setCategory(category);
-        book.setIsbn(isbn);
-        book.setPublisher(publisher);
-        book.setPublishYear(publishYear);
-        book.setAvailable(true);
-
-        return bookRepository.save(book);
-    }
-
-    public void deleteBook(Long bookId) {
-        bookRepository.deleteById(bookId);
-    }
-
-    public boolean isBookBorrowedByCurrentUser(Long bookId) {
-    User user = getCurrentUser();
-    return borrowRecordRepository.findByUserIdAndReturnDateIsNull(user.getId())
-            .stream()
-            .anyMatch(record -> record.getBook().getId().equals(bookId));
-}
 
     @Transactional
-    public void returnBook(Long borrowRecordId) {
-        BorrowRecord record = borrowRecordRepository.findById(borrowRecordId)
+    public void returnBook(Long recordId) {
+        BorrowRecord record = borrowRecordRepository.findById(recordId)
                 .orElseThrow(() -> new RuntimeException("Borrow record not found"));
 
-        if (record.getReturnDate() != null) {
-            throw new RuntimeException("Book has already been returned");
+        LocalDate today = LocalDate.now();
+        record.setReturnDate(today);
+
+        if (today.isAfter(record.getDueDate())) {
+            record.setStatus("RETURNED_LATE");
+        } else {
+            record.setStatus("RETURNED_ON_TIME");
         }
 
-        record.setReturnDate(LocalDate.now());
-        record.setStatus("RETURNED");
-        borrowRecordRepository.save(record);
         Book book = record.getBook();
         book.setAvailable(true);
         bookRepository.save(book);
-        System.out.println("DEBUG: Book '" + book.getTitle() + "' (ID: " + book.getId() + ") marked as available upon return.");
+
+        borrowRecordRepository.save(record);
     }
 
-    public void deleteBorrowRecord(Long borrowRecordId) {
-        borrowRecordRepository.deleteById(borrowRecordId);
-    }
-    
-} 
+    @Transactional
+    public void deleteBorrowRecord(Long recordId) {
+        BorrowRecord record = borrowRecordRepository.findById(recordId)
+                .orElseThrow(() -> new RuntimeException("Borrow record not found"));
 
+        if ("BORROWED".equals(record.getStatus())) {
+            Book book = record.getBook();
+            book.setAvailable(true);
+            bookRepository.save(book);
+        }
+
+        borrowRecordRepository.delete(record);
+    }
+
+    // =====================
+    // DASHBOARD METRICS
+    // =====================
+    public List<BorrowRecord> getRecentBorrows() {
+        User user = getCurrentUser();
+        return borrowRecordRepository.findByUserIdAndStatusInOrderByBorrowDateDesc(
+                user.getId(),
+                List.of("BOOKING", "BORROWED")
+        );
+    }
+
+    public long getBorrowedCount() {
+        return borrowRecordRepository.countByUserIdAndStatus(
+                getTemporaryUserId(), "BORROWED"
+        );
+    }
+
+    public long getOverdueCount() {
+        return borrowRecordRepository.countByUserIdAndStatusAndDueDateBefore(
+                getTemporaryUserId(), "BORROWED", LocalDate.now()
+        );
+    }
+
+    public Optional<BorrowRecord> getLatestBorrow() {
+    return borrowRecordRepository.findTopByUserIdOrderByBorrowDateDesc(
+            getTemporaryUserId()
+    );
+}
+
+}

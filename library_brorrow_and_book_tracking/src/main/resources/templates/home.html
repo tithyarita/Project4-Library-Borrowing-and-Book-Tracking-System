@@ -1,28 +1,30 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Library Home</title>
-    <script src="https://cdn.tailwindcss.com"></script> 
+    <title>Library System | Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50 text-gray-800">
 
-<!-- ===== HEADER ===== -->
-<header class="sticky top-0 bg-white shadow z-50">
-    <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
-        <a href="/user/home" class="text-2xl font-bold text-blue-600">Library System</a>
+<body class="bg-slate-50 text-slate-800 antialiased">
 
-        <nav class="hidden md:flex gap-6">
-            <a href="#featured" class="text-gray-700 hover:text-blue-600 font-medium">Featured</a>
-            <a href="#categories" class="text-gray-700 hover:text-blue-600 font-medium">Categories</a>
+<!-- ================= HEADER ================= -->
+<header class="sticky top-0 z-50 bg-white border-b shadow-sm">
+    <div class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+        <a href="/user/home" class="text-xl font-bold text-blue-600 tracking-wide">Library System</a>
+
+        <nav class="hidden md:flex items-center gap-8">
+            <a href="#featured" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition">Featured</a>
+            <a href="#categories" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition">Categories</a>
         </nav>
 
         <div class="flex items-center gap-4">
-            <a href="/user/search" class="text-gray-700 hover:text-blue-600">Search</a>
-            <a href="/user/dashboard" class="text-gray-700 hover:text-blue-600">Dashboard</a>
+            <a href="/user/search" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition">Search</a>
+            <a href="/user/dashboard" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition">Dashboard</a>
+
             <form th:action="@{/logout}" method="post">
-                <button type="submit" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded font-semibold">
+                <button type="submit" class="px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded hover:bg-red-700 transition">
                     Logout
                 </button>
             </form>
@@ -30,94 +32,122 @@
     </div>
 </header>
 
-<!-- ===== HERO SECTION ===== -->
-<section id="home" class="bg-blue-50 py-20">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12 px-6">
-        <div class="flex-1">
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
-                Explore & Borrow Books from Our Library
-            </h1>
-            <p class="text-lg text-gray-600 mb-6">
-                Access thousands of books — free to borrow for all members.
+<!-- ================= HERO ================= -->
+<section class="bg-gradient-to-r from-blue-50 to-white py-16">
+    <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-center px-6">
+        <div>
+            <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-4">Discover, Borrow, and Learn</h1>
+            <p class="text-lg text-slate-600 mb-6 max-w-md">
+                Explore thousands of books and manage your reading digitally.
             </p>
-            <a href="/user/search" class="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded">
+            <a href="/user/search"
+               class="inline-flex items-center px-5 py-2.5 text-sm font-semibold text-white bg-blue-600 rounded-full hover:bg-blue-700 transition">
                 Search Books →
             </a>
         </div>
-        <div class="flex-1">
+        <div class="hidden md:block">
             <img src="https://img.freepik.com/premium-photo/school-library-with-shelves-overflowing-with-books_741910-47067.jpg"
-                 alt="Library Books" class="rounded-lg shadow-lg w-full"/>
+                 alt="Library"
+                 class="rounded-2xl shadow-md w-full h-56 object-cover">
         </div>
     </div>
 </section>
 
-<!-- ===== MESSAGES ===== -->
-<div class="max-w-7xl mx-auto px-6 mt-6">
-    <div th:if="${message}" class="p-4 mb-4 rounded bg-green-100 text-green-700 font-medium">
+<!-- ================= SYSTEM MESSAGES ================= -->
+<section class="max-w-7xl mx-auto px-6 mt-6">
+    <div th:if="${message}"
+         class="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-green-700 text-sm font-medium">
         <p th:text="${message}"></p>
     </div>
-    <div th:if="${error}" class="p-4 mb-4 rounded bg-red-100 text-red-700 font-medium">
+
+    <div th:if="${error}"
+         class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-700 text-sm font-medium">
         <p th:text="${error}"></p>
     </div>
-</div>
+</section>
 
-<!-- ===== FEATURED BOOKS ===== -->
-<section id="featured" class="py-16">
+<!-- ================= FEATURED BOOKS ================= -->
+<section id="featured" class="py-14">
     <div class="max-w-7xl mx-auto px-6">
-        <h2 class="text-3xl font-bold text-gray-800 mb-4">Featured Books</h2>
-        <p class="text-gray-600 mb-8">Popular titles available for borrowing</p>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <article th:each="book : ${books}" class="bg-white rounded-lg shadow p-4 flex flex-col items-center text-center">
-                <img th:src="${book.coverUrl}" alt="Book Cover" class="w-36 h-48 object-cover rounded mb-2"/>
-                <h3 class="font-semibold text-lg" th:text="${book.title}"></h3>
-                <p class="text-gray-500 text-sm mb-2" th:text="${book.author}"></p>
+        <header class="mb-8">
+            <h2 class="text-2xl font-bold mb-1">Featured Books</h2>
+            <p class="text-slate-600 text-sm">Popular books available for borrowing</p>
+        </header>
 
-                <!-- Borrow button -->
-                <form th:action="@{/user/borrow}" method="post" th:if="${bookStatus[book.id] == 'available'}">
-                    <input type="hidden" name="bookId" th:value="${book.id}"/>
-                    <button type="submit"
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded font-semibold">
-                        Borrow
-                    </button>
-                </form>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
 
-                <button th:if="${bookStatus[book.id] == 'borrowedByYou'}"
-                        class="bg-green-600 text-white px-3 py-1.5 rounded font-semibold cursor-not-allowed" disabled>
-                    Borrowed by You
-                </button>
+            <article th:each="book : ${books}" 
+                     class="bg-white rounded-3xl shadow-lg hover:shadow-xl transition flex flex-col p-4 relative overflow-hidden">
 
-                <button th:if="${bookStatus[book.id] == 'unavailable'}"
-                        class="bg-gray-400 text-white px-3 py-1.5 rounded font-semibold cursor-not-allowed" disabled>
-                    Unavailable
-                </button>
+                <!-- Book Cover Floating -->
+                <div class="w-full h-56 mb-4 relative">
+                    <img th:if="${book.coverUrl != null}" th:src="@{${book.coverUrl}}" alt="Book Cover"
+                         class="w-full h-full object-cover shadow-lg transform hover:scale-105 transition">
+                    <img th:unless="${book.coverUrl != null}" th:src="@{/images/default-book.png}" alt="Default Cover"
+                         class="w-full h-full object-contain opacity-60 shadow-lg transform hover:scale-105 transition">
+                </div>
+
+                <!-- Book Info -->
+                <div class="flex flex-col flex-1">
+                    <h3 class="text-sm font-bold text-slate-900 mb-1 truncate" th:text="${book.title}"></h3>
+                    <p class="text-xs text-slate-600 mb-2 truncate" th:text="${book.author}"></p>
+
+                    <div class="flex flex-wrap items-center gap-1 mb-2">
+                        <span class="inline-block text-xs font-medium bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full"
+                              th:text="${book.category}"></span>
+                        <span class="text-xs text-slate-500" th:text="${book.publishYear}"></span>
+                    </div>
+
+                    <p class="text-xs text-slate-500 mb-4 truncate" th:text="${book.publisher}"></p>
+
+                    <!-- Borrow Button -->
+                    <a th:if="${book.available}"
+   th:href="@{/user/booking/{id}(id=${book.id})}"
+   class="mt-auto w-full text-center text-xs font-semibold text-white bg-blue-600 py-2.5 rounded-full hover:bg-blue-700">
+   Borrow
+</a>
+
+
+                    <span th:if="${!book.available}"
+                          class="mt-auto w-full text-center text-xs font-semibold text-white bg-slate-400 py-2.5 rounded-full cursor-not-allowed">
+                        Unavailable
+                    </span>
+                </div>
             </article>
+
         </div>
     </div>
 </section>
 
-<!-- ===== CATEGORIES ===== -->
-<section id="categories" class="py-16 bg-blue-50">
+<!-- ================= CATEGORIES ================= -->
+<section id="categories" class="py-14 bg-blue-50">
     <div class="max-w-7xl mx-auto px-6">
-        <h2 class="text-3xl font-bold text-gray-800 mb-4">Browse by Category</h2>
-        <p class="text-gray-600 mb-8">Find books by your favorite genres</p>
+
+        <header class="mb-8">
+            <h2 class="text-2xl font-bold mb-1">Browse by Category</h2>
+            <p class="text-slate-600 text-sm">Choose books based on your interests</p>
+        </header>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <article class="bg-white rounded-lg shadow p-4 text-center">
+            <article class="bg-white rounded-2xl border p-6 text-center hover:shadow transition">
                 <h3 class="font-semibold text-lg mb-2">Fiction</h3>
-                <p class="text-gray-500 text-sm">Explore novels, stories, and more</p>
+                <p class="text-sm text-slate-500">Novels and storytelling</p>
             </article>
-            <article class="bg-white rounded-lg shadow p-4 text-center">
+
+            <article class="bg-white rounded-2xl border p-6 text-center hover:shadow transition">
                 <h3 class="font-semibold text-lg mb-2">Non-Fiction</h3>
-                <p class="text-gray-500 text-sm">Biographies, history, and facts</p>
+                <p class="text-sm text-slate-500">History, biography, facts</p>
             </article>
-            <article class="bg-white rounded-lg shadow p-4 text-center">
+
+            <article class="bg-white rounded-2xl border p-6 text-center hover:shadow transition">
                 <h3 class="font-semibold text-lg mb-2">Science</h3>
-                <p class="text-gray-500 text-sm">Learn about the world around us</p>
+                <p class="text-sm text-slate-500">Knowledge and discoveries</p>
             </article>
-            <article class="bg-white rounded-lg shadow p-4 text-center">
+
+            <article class="bg-white rounded-2xl border p-6 text-center hover:shadow transition">
                 <h3 class="font-semibold text-lg mb-2">Mystery</h3>
-                <p class="text-gray-500 text-sm">Thrilling stories and suspense</p>
+                <p class="text-sm text-slate-500">Suspense and thrill</p>
             </article>
         </div>
     </div>
