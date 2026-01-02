@@ -15,14 +15,23 @@ public class Book {
     private String author;
     private String isbn;
     private String publisher;
+
+    @Column(name = "publish_year")
     private Integer publishYear;
+
     private String category;
 
     @Column(columnDefinition = "bit(1) default 1")
-    private Boolean available = true; // default true
+    private Boolean available = true;
 
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    // ✅ NEW field for cover image
+    private String coverUrl;
 
     @PrePersist
     protected void onCreate() {
@@ -53,12 +62,14 @@ public class Book {
     public void setPublishYear(Integer publishYear) { this.publishYear = publishYear; }
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
-
     public Boolean getAvailable() { return available != null && available; }
     public void setAvailable(Boolean available) { this.available = available; }
-
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    // ✅ Getter & Setter for coverUrl
+    public String getCoverUrl() { return coverUrl; }
+    public void setCoverUrl(String coverUrl) { this.coverUrl = coverUrl; }
 }
