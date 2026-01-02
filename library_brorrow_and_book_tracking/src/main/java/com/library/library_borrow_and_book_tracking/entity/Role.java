@@ -15,14 +15,21 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "role_name", nullable = false)
+    @Column(name = "role_name", nullable = false, unique = true)
     private String roleName;
 
-    // Getters & Setters
+    // Default constructor
+    public Role() { }
+
+    // Constructor for creating roles
+    public Role(String roleName) {
+        this.roleName = roleName;
+    }
+
+    // Getters and setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
     public String getRoleName() { return roleName; }
     public void setRoleName(String roleName) { this.roleName = roleName; }
 }
-    
