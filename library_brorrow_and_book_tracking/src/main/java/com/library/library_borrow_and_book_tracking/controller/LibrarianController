@@ -1,0 +1,31 @@
+package com.library.library_borrow_and_book_tracking.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import com.library.library_borrow_and_book_tracking.entity.User;
+import com.library.library_borrow_and_book_tracking.service.LibraryService;
+
+@Controller
+public class LibrarianController {
+
+    private final LibraryService libraryService;
+
+    public LibrarianController(LibraryService libraryService) {
+        this.libraryService = libraryService;
+    }
+
+    @GetMapping("/librarian/dashboard")
+    public String dashboard(Model model) {
+        User librarian = libraryService.getCurrentUser(); // Should have LIBRARIAN role
+        model.addAttribute("user", librarian);
+
+        // Librarian dashboard stats
+        model.addAttribute("totalBooks", libraryService.getTotalBooks());
+        model.addAttribute("pendingBorrowRequests", libraryService.getPendingBorrowRequests());
+        model.addAttribute("overdueBooks", libraryService.getOverdueBooks());
+
+        return "librarian/dashboard";
+    }
+}

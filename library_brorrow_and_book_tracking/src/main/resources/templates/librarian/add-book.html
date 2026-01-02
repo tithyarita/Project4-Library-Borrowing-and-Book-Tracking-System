@@ -17,39 +17,68 @@
 <main class="container mx-auto p-6">
   <section class="bg-white shadow rounded p-6 mb-6">
     <h2 class="text-2xl font-bold mb-4">Add New Book</h2>
-    <form th:action="@{/books/save}" th:object="${book}" method="post" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+    <!-- ✅ enctype is required for file upload -->
+    <form th:action="@{/books/save}" th:object="${book}" method="post" enctype="multipart/form-data"
+          class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
       <div>
         <label class="font-semibold">Title *</label>
-        <input type="text" th:field="*{title}" placeholder="Book Title" required class="border rounded px-2 py-1 w-full">
+        <input type="text" th:field="*{title}" placeholder="Book Title" required
+               class="border rounded px-2 py-1 w-full">
       </div>
+
       <div>
         <label class="font-semibold">Author *</label>
-        <input type="text" th:field="*{author}" placeholder="Author Name" required class="border rounded px-2 py-1 w-full">
+        <input type="text" th:field="*{author}" placeholder="Author Name" required
+               class="border rounded px-2 py-1 w-full">
       </div>
+
       <div>
         <label class="font-semibold">ISBN</label>
-        <input type="text" th:field="*{isbn}" placeholder="ISBN" class="border rounded px-2 py-1 w-full">
+        <input type="text" th:field="*{isbn}" placeholder="ISBN"
+               class="border rounded px-2 py-1 w-full">
       </div>
+
       <div>
         <label class="font-semibold">Publisher</label>
-        <input type="text" th:field="*{publisher}" placeholder="Publisher Name" class="border rounded px-2 py-1 w-full">
+        <input type="text" th:field="*{publisher}" placeholder="Publisher Name"
+               class="border rounded px-2 py-1 w-full">
       </div>
+
       <div>
         <label class="font-semibold">Publish Year</label>
-        <input type="number" th:field="*{publishYear}" placeholder="Year" class="border rounded px-2 py-1 w-full">
+        <input type="number" th:field="*{publishYear}" placeholder="Year"
+               class="border rounded px-2 py-1 w-full">
       </div>
+
       <div>
         <label class="font-semibold">Category</label>
-        <input type="text" th:field="*{category}" placeholder="Category" class="border rounded px-2 py-1 w-full">
+        <input type="text" th:field="*{category}" placeholder="Category"
+               class="border rounded px-2 py-1 w-full">
       </div>
+
+      <!-- ✅ Available Checkbox -->
       <div class="flex items-center mt-2">
         <input type="checkbox" th:field="*{available}" class="mr-2">
         <label class="font-semibold">Available</label>
       </div>
+
+      <!-- ✅ Book Cover Upload -->
+      <div class="md:col-span-2 mt-2">
+        <label class="font-semibold">Book Cover (Image)</label>
+        <input type="file" name="coverFile" accept="image/*"
+               class="border rounded px-2 py-1 w-full">
+      </div>
+
       <div class="md:col-span-2 mt-4">
-        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded w-full">Save Book</button>
+        <button type="submit"
+                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded w-full">
+          Save Book
+        </button>
       </div>
     </form>
+
     <div class="mt-4">
       <a th:href="@{/books}" class="text-blue-600 hover:underline">Back to list</a>
     </div>

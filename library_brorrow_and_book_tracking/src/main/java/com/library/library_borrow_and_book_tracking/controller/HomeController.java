@@ -8,6 +8,7 @@ public class HomeController {
 
     @GetMapping("/home")
     public String home() {
-        return "home"; // make sure home.html exists in src/main/resources/templates/
+        // Redirect to /user/home which already loads books
+        return "redirect:/user/home";
     }
 }

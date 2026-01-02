@@ -7,10 +7,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.library.library_borrow_and_book_tracking.entity.Book;
 import com.library.library_borrow_and_book_tracking.service.LibraryService;
-
 
 @Controller
 public class UserController {
@@ -22,12 +22,14 @@ public class UserController {
         this.libraryService = libraryService;
     }
 
+    // ===== HOME PAGE =====
     @GetMapping("/user/home")
     public String home(Model model) {
-        model.addAttribute("featuredBooks", libraryService.getFeaturedBooks());
-        return "user/home";
+        model.addAttribute("books", libraryService.getFeaturedBooks());
+        return "home";
     }
 
+    // ===== SEARCH BOOKS =====
     @GetMapping("/user/search")
     public String search(@RequestParam(required = false) String q, Model model) {
         List<Book> books = libraryService.searchBooks(q);
@@ -35,6 +37,7 @@ public class UserController {
         return "user/search";
     }
 
+    // ===== DASHBOARD =====
     @GetMapping("/user/dashboard")
     public String dashboard(Model model) {
         model.addAttribute("user", libraryService.getCurrentUser());
@@ -47,24 +50,26 @@ public class UserController {
         return "user/dashboard";
     }
 
+    // ===== BORROW RECORDS =====
     @GetMapping("/user/borrowRecords")
     public String borrowRecords(Model model) {
         model.addAttribute("borrowRecords", libraryService.getRecentBorrows());
         return "user/borrowRecords";
     }
 
-    @GetMapping("/user/borrow/{bookId}")
-    public String borrowBook(@PathVariable Long bookId) {
-        libraryService.borrowBook(bookId);
-        return "redirect:/user/dashboard";
+    // ===== BOOK (RESERVATION) =====
+  @GetMapping("/user/booking/{bookId}")
+public String book(@PathVariable("bookId") Long bookId, RedirectAttributes redirect) {
+    try {
+        libraryService.bookReservation(bookId);
+        redirect.addFlashAttribute("message", "Booking created. Please confirm at the library.");
+        return "redirect:/user/receipt"; // handled by ReceiptController
+    } catch (RuntimeException e) {
+        redirect.addFlashAttribute("error", e.getMessage());
+        return "redirect:/user/home";
     }
+}
 
-    @GetMapping("/user/receipt")
-    public String receipt(Model model) {
-        libraryService.getLatestBorrow().ifPresentOrElse(
-                record -> model.addAttribute("receipt", record),
-                () -> model.addAttribute("message", "No recent borrowings.")
-        );
-        return "user/receipt";
-    }
+
+    // NOTE: Removed `/user/receipt` from here to avoid conflict with ReceiptController
 }

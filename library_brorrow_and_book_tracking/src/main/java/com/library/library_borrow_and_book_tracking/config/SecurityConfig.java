@@ -7,51 +7,32 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 @Configuration
 public class SecurityConfig {
 
-    // Password encoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Security filter chain
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         http
-            // Disable CSRF for simplicity
             .csrf(csrf -> csrf.disable())
-
-            // Public pages
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/login",
-                    "/api/auth/register",
-                    "/api/auth/login",
-                    "/css/**",
-                    "/js/**",
-                    "/images/**"
-                ).permitAll()
-                // Any other request requires authentication
+                .requestMatchers("/login", "/api/auth/**", "/css/**", "/js/**", "/images/**").permitAll()
                 .anyRequest().authenticated()
             )
-
-            // Form login
             .formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/api/auth/login")
                 .usernameParameter("email")
                 .passwordParameter("password")
-                .successHandler(authenticationSuccessHandler()) // redirect after login
+                .successHandler(authenticationSuccessHandler())
                 .failureUrl("/login?error")
                 .permitAll()
             )
-
-            // Logout config
             .logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?logout")
@@ -64,9 +45,19 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // Redirect authenticated users after login
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
-        return new SimpleUrlAuthenticationSuccessHandler("/home");
+        return (request, response, authentication) -> {
+            String redirectUrl = "/user/home"; // default for regular users
+            var authorities = authentication.getAuthorities();
+            for (var authority : authorities) {
+                String auth = authority.getAuthority();
+                if ("ROLE_LIBRARIAN".equals(auth) || "LIBRARIAN".equals(auth)) {
+                    redirectUrl = "/user/dashboard";
+                    break;
+                }
+            }
+            response.sendRedirect(redirectUrl);
+        };
     }
 }
