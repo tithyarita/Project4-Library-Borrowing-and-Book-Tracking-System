@@ -1,20 +1,21 @@
-// package com.library.library_borrow_and_book_tracking.controller;
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.stereotype.Controller;
-// import org.springframework.ui.Model;
-// import com.library.library_borrow_and_book_tracking.service.LibraryService;
+package com.library.library_borrow_and_book_tracking.controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 
-// @Controller
-// public class DashboardController {
+import com.library.library_borrow_and_book_tracking.service.LibraryService;
 
-//     @Autowired
-//     private LibraryService libraryService;
+@Controller
+public class DashboardController {
 
-//     // @GetMapping("/dashboard")
-//     public String dashboard(Model model) {
-//         model.addAttribute("user", libraryService.getCurrentUser());
-//         model.addAttribute("recentBorrows", libraryService.getRecentBorrows());
-//         model.addAttribute("borrowedCount", libraryService.getBorrowedCount());
-//         return "user/dashboard";
-//     }
-// }
+    @Autowired
+    private LibraryService libraryService;
+
+    // @GetMapping("/dashboard")
+    public String dashboard(Model model) {
+        model.addAttribute("user", libraryService.getCurrentUser());
+        model.addAttribute("recentBorrows", libraryService.getRecentBorrows());
+        model.addAttribute("borrowedCount", libraryService.getBorrowedCount());
+        return "user/dashboard";
+    }
+}

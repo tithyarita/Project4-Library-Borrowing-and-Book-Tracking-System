@@ -2,8 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-
-    <title>Available Books</title>
+    <title>Librarian - Manage Books</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -11,75 +12,14 @@
             margin: 0;
             padding: 20px;
         }
-
-        h2 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        p {
-            text-align: center;
-            font-size: 18px;
-            color: #555;
-        }
-
-        table {
-            width: 90%;
-            margin: 0 auto 20px auto;
-            border-collapse: collapse;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            background-color: #fff;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        th, td {
-            padding: 12px 15px;
-            text-align: center;
-        }
-
-        thead {
-            background-color: #007bff;
-            color: #fff;
-        }
-
-        tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        tbody tr:hover {
-            background-color: #e0f0ff;
-        }
-
-        a {
-            text-decoration: none;
-            color: #007bff;
-            font-weight: bold;
-            transition: color 0.3s;
-        }
-
-        a:hover {
-            color: #0056b3;
-        }
-
         .not-available {
             color: #999;
             font-style: italic;
         }
     </style>
-
-    <title>Librarian - Manage Books</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 </head>
 <body class="bg-gray-100">
 
-
-<h2>Available Books</h2>
-
-<!-- Header -->
 <header class="bg-blue-700 text-white shadow p-4 flex justify-between items-center">
     <h1 class="text-xl font-bold"><i class="fas fa-book-open"></i> Library System - Librarian</h1>
     <form th:action="@{/logout}" method="post">
@@ -88,6 +28,7 @@
 </header>
 
 <main class="container mx-auto p-6">
+
     <!-- Tabs -->
     <nav class="flex gap-6 mb-6 border-b border-gray-300 pb-2">
         <a th:href="@{/librarian/manage-book}" class="text-blue-700 font-semibold border-b-2 border-blue-700">Manage Books</a>
@@ -95,8 +36,6 @@
         <a th:href="@{/librarian/process-return}" class="text-gray-600 hover:text-blue-700">Borrow / Return Logs</a>
     </nav>
 
-
-    <!-- Header & Add Button -->
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-2xl font-bold">Book List</h2>
         <a th:href="@{/books/add}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold">
@@ -104,52 +43,17 @@
         </a>
     </div>
 
-<table>
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Author</th>
-            <th>ISBN</th>
-            <th>Available</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        <tr th:if="${books == null || books.isEmpty()}">
-            <td colspan="5" class="not-available">No books available</td>
-        </tr>
-
-        <tr th:each="book : ${books}">
-            <td th:text="${book.title}">Title</td>
-            <td th:text="${book.author}">Author</td>
-            <td th:text="${book.isbn}">ISBN</td>
-            <td th:text="${book.available} ? 'Yes' : 'No'">Available</td>
-            <td>
-                <span th:if="${book.available}">
-                    <a th:href="@{/user/borrow/{id}(id=${book.id})}">Borrow</a>
-                </span>
-                <span th:if="${!book.available}" class="not-available">
-                    Not Available
-                </span>
-            </td>
-        </tr>
-    </tbody>
-</table>
-
-    <!-- Book Count -->
-    <p class="mb-4 font-semibold" th:text="'Number of books: ' + (${books} != null ? ${books.size()} : 0)"></p>
-
-    <!-- Book Table -->
+    <!-- Books Table -->
     <div class="overflow-x-auto">
         <table class="min-w-full bg-white shadow rounded-lg overflow-hidden">
             <thead class="bg-blue-600 text-white">
                 <tr>
+                    <th class="py-2 px-4 text-left">Cover</th>
                     <th class="py-2 px-4 text-left">Title</th>
                     <th class="py-2 px-4 text-left">Author</th>
                     <th class="py-2 px-4 text-left">ISBN</th>
                     <th class="py-2 px-4 text-left">Publisher</th>
-                    <th class="py-2 px-4 text-left">Publish Year</th>
+                    <th class="py-2 px-4 text-left">Year</th>
                     <th class="py-2 px-4 text-left">Category</th>
                     <th class="py-2 px-4 text-left">Available</th>
                     <th class="py-2 px-4 text-left">Created At</th>
@@ -159,10 +63,15 @@
             </thead>
             <tbody>
                 <tr th:if="${books == null || books.isEmpty()}">
-                    <td colspan="10" class="text-center py-4">No books found</td>
+                    <td colspan="11" class="text-center py-4">No books found</td>
                 </tr>
 
                 <tr th:each="book : ${books}" class="border-b hover:bg-gray-50">
+                    <!-- Cover Image -->
+                    <td class="py-2 px-4">
+                        <img th:src="${book.coverUrl != null} ? @{${book.coverUrl}} : @{/images/default-book.png}" 
+                             alt="Book Cover" class="w-16 h-20 object-cover rounded shadow">
+                    </td>
                     <td class="py-2 px-4" th:text="${book.title}">Title</td>
                     <td class="py-2 px-4" th:text="${book.author}">Author</td>
                     <td class="py-2 px-4" th:text="${book.isbn}">ISBN</td>
@@ -186,6 +95,7 @@
             </tbody>
         </table>
     </div>
+
 </main>
 
 </body>
