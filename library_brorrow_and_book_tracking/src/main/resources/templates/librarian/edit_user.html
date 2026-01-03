@@ -8,32 +8,65 @@
 <body class="bg-gray-100 text-gray-800">
 
 <main class="container mx-auto p-6">
-    <h2 class="text-2xl mb-4">Edit User</h2>
 
-    <form th:action="@{/librarian/edit-user/{id}(id=${user.id})}" th:object="${user}" method="post" class="space-y-4">
+    <!-- Page Title -->
+    <h2 class="text-3xl font-bold mb-6 text-gray-700 flex items-center gap-2">
+        <i class="fas fa-user-edit text-blue-600"></i> Edit User
+    </h2>
+
+    <!-- Flash Messages -->
+    <div th:if="${message}" class="mb-4 p-3 bg-green-100 text-green-800 rounded shadow">
+        <span th:text="${message}"></span>
+    </div>
+    <div th:if="${error}" class="mb-4 p-3 bg-red-100 text-red-800 rounded shadow">
+        <span th:text="${error}"></span>
+    </div>
+
+    <!-- Edit Form -->
+    <form th:action="@{/librarian/edit-user/{id}(id=${user.id})}"
+          th:object="${user}"
+          method="post"
+          class="bg-white p-6 rounded-lg shadow-md space-y-5">
+
+        <!-- Hidden ID -->
+        <input type="hidden" th:field="*{id}" />
+
+        <!-- Full Name -->
         <div>
-            <label class="block mb-1">Full Name</label>
-            <input type="text" th:field="*{fullName}" class="border rounded p-2 w-full"/>
+            <label class="block mb-1 font-semibold text-gray-600">Full Name</label>
+            <input type="text" th:field="*{fullName}" placeholder="Enter full name"
+                   class="border border-gray-300 rounded p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"/>
         </div>
 
+        <!-- Email -->
         <div>
-            <label class="block mb-1">Email</label>
-            <input type="email" th:field="*{email}" class="border rounded p-2 w-full"/>
+            <label class="block mb-1 font-semibold text-gray-600">Email</label>
+            <input type="email" th:field="*{email}" placeholder="Enter email address"
+                   class="border border-gray-300 rounded p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"/>
         </div>
 
+        <!-- Active Status -->
         <div>
-            <label class="block mb-1">Active</label>
-            <select th:field="*{active}" class="border rounded p-2 w-full">
+            <label class="block mb-1 font-semibold text-gray-600">Status</label>
+            <select th:field="*{active}" class="border border-gray-300 rounded p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-400">
                 <option th:value="true" th:text="'Active'"></option>
                 <option th:value="false" th:text="'Inactive'"></option>
             </select>
         </div>
 
-        <div>
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Save Changes</button>
-            <a th:href="@{/librarian/manage-user}" class="bg-gray-400 text-white px-4 py-2 rounded">Cancel</a>
+        <!-- Buttons -->
+        <div class="flex gap-3">
+            <button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 transition">
+                Save Changes
+            </button>
+            <a th:href="@{/librarian/manage_user}" 
+               class="bg-gray-400 text-white px-5 py-2 rounded-lg font-semibold hover:bg-gray-500 transition">
+               Cancel
+            </a>
         </div>
+
     </form>
+
 </main>
 
 </body>

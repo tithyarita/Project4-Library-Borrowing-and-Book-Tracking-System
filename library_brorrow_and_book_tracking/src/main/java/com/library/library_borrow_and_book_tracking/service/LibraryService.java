@@ -246,9 +246,27 @@ public class LibraryService {
         userRepository.deleteById(id);
     }
     @Transactional
-    public User saveUser(User user) {
+public User saveUser(User user) {
     return userRepository.save(user);
+}   
+// Deactivate a user (soft delete)
+@Transactional
+public void deactivateUser(Long id) {
+    userRepository.findById(id).ifPresent(user -> {
+        user.setActive(false);
+        userRepository.save(user);
+    });
 }
 
-    
+// Reactivate a user
+@Transactional
+public void reactivateUser(Long id) {
+    userRepository.findById(id).ifPresent(user -> {
+        user.setActive(true);
+        userRepository.save(user);
+    });
+}
+
+
+
 }
