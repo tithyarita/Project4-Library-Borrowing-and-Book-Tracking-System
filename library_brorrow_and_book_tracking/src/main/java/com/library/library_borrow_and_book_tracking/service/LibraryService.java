@@ -1,18 +1,19 @@
 package com.library.library_borrow_and_book_tracking.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.library.library_borrow_and_book_tracking.entity.Book;
 import com.library.library_borrow_and_book_tracking.entity.BorrowRecord;
 import com.library.library_borrow_and_book_tracking.entity.User;
 import com.library.library_borrow_and_book_tracking.repository.BookRepository;
 import com.library.library_borrow_and_book_tracking.repository.BorrowRecordRepository;
 import com.library.library_borrow_and_book_tracking.repository.UserRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class LibraryService {
@@ -195,4 +196,33 @@ public class LibraryService {
     public long getOverdueBooks() {
         return borrowRecordRepository.countByStatusAndDueDateBefore("BORROWED", LocalDate.now());
     }
+
+    // =====================
+    // USER MANAGEMENT
+    // =====================
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public List<User> searchUsers(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return getAllUsers();
+        }
+        return userRepository.findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(query, query);
+    }
+
+    public Optional<User> findUserById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    @Transactional
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
+    @Transactional
+    public User saveUser(User user) {
+    return userRepository.save(user);
+}
+
+    
 }
