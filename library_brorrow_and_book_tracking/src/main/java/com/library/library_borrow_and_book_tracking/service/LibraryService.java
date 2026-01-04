@@ -1,18 +1,25 @@
 package com.library.library_borrow_and_book_tracking.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.library.library_borrow_and_book_tracking.entity.Book;
 import com.library.library_borrow_and_book_tracking.entity.BorrowRecord;
 import com.library.library_borrow_and_book_tracking.entity.User;
 import com.library.library_borrow_and_book_tracking.repository.BookRepository;
 import com.library.library_borrow_and_book_tracking.repository.BorrowRecordRepository;
 import com.library.library_borrow_and_book_tracking.repository.UserRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import jakarta.transaction.Transactional;
+
 
 @Service
 public class LibraryService {
@@ -20,13 +27,18 @@ public class LibraryService {
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
     private final BorrowRecordRepository borrowRecordRepository;
+    private final PasswordEncoder passwordEncoder; // ✅ ADD
+
 
     public LibraryService(UserRepository userRepository,
                           BookRepository bookRepository,
-                          BorrowRecordRepository borrowRecordRepository) {
+                          BorrowRecordRepository borrowRecordRepository,
+                        PasswordEncoder passwordEncoder // ✅ ADD
+                          ) {
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
         this.borrowRecordRepository = borrowRecordRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // =====================
@@ -37,7 +49,9 @@ public class LibraryService {
     }
 
     public User getCurrentUser() {
-        return userRepository.findById(getTemporaryUserId())
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
@@ -56,6 +70,19 @@ public class LibraryService {
                 .findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCaseOrCategoryContainingIgnoreCase(
                         query, query, query);
     }
+
+    
+
+    public boolean checkPassword(User user, String rawPassword) {
+        return passwordEncoder.matches(rawPassword, user.getPassword());
+    }
+
+    @Transactional
+    public void updatePassword(User user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
 
     // =====================
     // BORROW & BOOKING
@@ -195,4 +222,51 @@ public class LibraryService {
     public long getOverdueBooks() {
         return borrowRecordRepository.countByStatusAndDueDateBefore("BORROWED", LocalDate.now());
     }
+
+    // =====================
+    // USER MANAGEMENT
+    // =====================
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public List<User> searchUsers(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return getAllUsers();
+        }
+        return userRepository.findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(query, query);
+    }
+
+    public Optional<User> findUserById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    @Transactional
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
+    @Transactional
+public User saveUser(User user) {
+    return userRepository.save(user);
+}   
+// Deactivate a user (soft delete)
+@Transactional
+public void deactivateUser(Long id) {
+    userRepository.findById(id).ifPresent(user -> {
+        user.setActive(false);
+        userRepository.save(user);
+    });
+}
+
+// Reactivate a user
+@Transactional
+public void reactivateUser(Long id) {
+    userRepository.findById(id).ifPresent(user -> {
+        user.setActive(true);
+        userRepository.save(user);
+    });
+}
+
+
+
 }
