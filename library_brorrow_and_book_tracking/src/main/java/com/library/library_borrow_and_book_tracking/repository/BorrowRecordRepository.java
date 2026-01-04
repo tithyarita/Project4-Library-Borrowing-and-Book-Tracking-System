@@ -32,3 +32,4 @@ public interface BorrowRecordRepository extends JpaRepository<BorrowRecord, Long
     long countByStatus(String status);
     long countByStatusAndDueDateBefore(String status, LocalDate date);
 }
+
