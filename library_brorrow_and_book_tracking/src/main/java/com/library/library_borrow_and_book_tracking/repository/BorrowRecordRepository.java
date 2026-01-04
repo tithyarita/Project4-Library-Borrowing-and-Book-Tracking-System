@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import com.library.library_borrow_and_book_tracking.entity.BorrowRecord;
 
 public interface BorrowRecordRepository extends JpaRepository<BorrowRecord, Long> {
+    long countByUserIdAndBorrowDateAfter(Long userId, LocalDate date);
 
     List<BorrowRecord> findByUserIdAndStatusInOrderByBorrowDateDesc(Long userId, List<String> statuses);
 
@@ -34,6 +35,8 @@ public interface BorrowRecordRepository extends JpaRepository<BorrowRecord, Long
         List<String> statuses
 );
 List<BorrowRecord> findAllByOrderByCreatedAtDesc();
+
+
 
 
 
