@@ -1,32 +1,38 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>User Dashboard - Library System</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="bg-slate-50 text-slate-800 antialiased">
 
 <!-- ================= HEADER ================= -->
-<header class="bg-white shadow sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto flex justify-between items-center p-4">
-        <a href="/user/home" class="text-blue-600 font-bold text-xl">Library System</a>
-        <div class="flex items-center gap-4">
-            <a href="/user/search" class="text-gray-700 hover:text-blue-600">Search</a>
-            <a href="/user/borrowRecord" class="text-gray-700 hover:text-blue-600">My Borrows</a>
-            <form th:action="@{/logout}" method="post">
-                <button type="submit" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Logout</button>
-            </form>
-        </div>
+<header class="site-header">
+  <div class="header-container">
+    <a href="/user/home" class="logo">Library System</a>
+
+    <div class="icon-bar">
+      <a href="/user/search"><i class="ti ti-search"></i></a>
+      <div class="icon-divider"></div>
+      <a href="/user/account"><i class="ti ti-user"></i></a>
+      <div class="icon-divider"></div>
+      <a href="/user/dashboard"><i class="ti ti-books text-blue-500 hover:text-blue-700"></i></a>
+      <form th:action="@{/logout}" method="post" class="logout-form">
+        <button type="submit" class="logout-btn">
+          Logout
+        </button>
+      </form>
     </div>
+  </div>
 </header>
 
 <!-- ================= MAIN ================= -->
 <main class="max-w-6xl mx-auto p-6">
-
     <!-- Welcome -->
     <div class="mb-8">
-        <!-- Flash messages (success / error) -->
         <div th:if="${successMessage}" id="dashboard-success" style="display:none" th:text="${successMessage}"></div>
         <div th:if="${errorMessage}" id="dashboard-error" style="display:none" th:text="${errorMessage}"></div>
         <script>
@@ -35,6 +41,7 @@
             const de = document.getElementById('dashboard-error');
             if (de && de.textContent.trim()) alert(de.textContent.trim());
         </script>
+
         <h1 class="text-2xl font-bold text-gray-800">
             Welcome back, <span th:text="${user.email} ?: 'Member'">Member</span>!
         </h1>
@@ -81,50 +88,92 @@
         <h2 class="text-lg font-semibold mb-2">Quick Actions</h2>
         <div class="flex gap-3 flex-wrap">
             <a href="/user/search" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Search Books</a>
-            <a href="/user/receipt" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Borrow Receipt</a>
+            <a href="/user/borrowRecord" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Borrow Record</a>
         </div>
     </div>
 
-
-        <!-- Recently Borrowed -->
-        <div th:each="borrow : ${recentBorrows}" class="flex items-center gap-4 mb-4 border-b border-gray-200 pb-2 last:border-none last:pb-0">
-        <!-- Book cover: use actual coverUrl when available, otherwise fallback to default image -->
+    <!-- Recently Borrowed -->
+    <div th:each="borrow : ${recentBorrows}" class="flex items-center gap-4 mb-4 border-b border-gray-200 pb-2 last:border-none last:pb-0">
         <div class="w-16 h-20 overflow-hidden rounded">
-           <img th:if="${borrow.book != null and borrow.book.coverUrl != null}"
-               th:src="@{${borrow.book.coverUrl}}"
-               th:alt="${borrow.book != null ? borrow.book.title : 'Book cover'}"
-               class="w-full h-full object-cover" />
-
-           <img th:unless="${borrow.book != null and borrow.book.coverUrl != null}"
-               th:src="@{/images/default-book.png}"
-               th:alt="'Default cover'"
-               class="w-full h-full object-cover opacity-60" />
+            <img th:if="${borrow.book != null and borrow.book.coverUrl != null}"
+                 th:src="@{${borrow.book.coverUrl}}"
+                 th:alt="${borrow.book != null ? borrow.book.title : 'Book cover'}"
+                 class="w-full h-full object-cover" />
+            <img th:unless="${borrow.book != null and borrow.book.coverUrl != null}"
+                 th:src="@{/images/default-book.png}"
+                 th:alt="'Default cover'"
+                 class="w-full h-full object-cover opacity-60" />
         </div>
         <div>
-        <!-- Safe book title -->
-        <p class="font-bold text-gray-800" 
-           th:text="${borrow.book != null ? borrow.book.title : 'Unknown Book'}">Book Title</p>
-
-        <!-- Safe borrow date -->
-        <p class="text-sm text-gray-500" 
-           th:text="${borrow.borrowDate != null ? 'Borrowed: ' + #dates.format(borrow.borrowDate, 'dd MMM yyyy') : 'Borrowed: -'}">
-           Borrowed date
-        </p>
-
-        <!-- Safe due date -->
-        <p class="text-sm text-gray-500" 
-           th:text="${borrow.dueDate != null ? 'Due: ' + #dates.format(borrow.dueDate, 'dd MMM yyyy') : 'Due: -'}">
-           Due date
-        </p>
-
-        <!-- Status -->
-        <p class="text-sm text-gray-500" th:text="'Status: ' + ${borrow.status}">Status</p>
+            <p class="font-bold text-gray-800" th:text="${borrow.book != null ? borrow.book.title : 'Unknown Book'}">Book Title</p>
+            <p class="text-sm text-gray-500" th:text="${borrow.borrowDate != null ? 'Borrowed: ' + #dates.format(borrow.borrowDate, 'dd MMM yyyy') : 'Borrowed: -'}">Borrowed date</p>
+            <p class="text-sm text-gray-500" th:text="${borrow.dueDate != null ? 'Due: ' + #dates.format(borrow.dueDate, 'dd MMM yyyy') : 'Due: -'}">Due date</p>
+            <p class="text-sm text-gray-500" th:text="'Status: ' + ${borrow.status}">Status</p>
+        </div>
     </div>
-</div>
-
-</div>
 
 </main>
 
 </body>
 </html>
+
+<style>
+    /* ========== GLOBAL ========== */
+* { box-sizing: border-box; }
+body {
+    margin: 0; padding: 0;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    font-weight: 400;
+    width: 100vw;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-color: #f9fafb;
+    text-rendering: optimizeLegibility;
+}
+:root {
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --text-dark: #1e293b;
+}
+
+/* HEADER */
+.site-header {
+    position: sticky;
+    top: 0;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    z-index: 50;
+    width: 100%;
+}
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+.logo {
+    color: var(--primary);
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+.icon-bar { display: flex; align-items: center; gap: 1rem; font-size: 1.5rem; }
+.icon-divider { width: 1px; height: 1.5rem; background-color: #ddd; }
+.logout-form { display: inline-block; }
+.logout-btn {
+    display: flex; align-items: center; gap: 0.5rem;
+    background-color: #dc2626;
+    color: white; font-weight: 600;
+    padding: 0.4rem 0.75rem;
+    border-radius: 0.5rem; border: none;
+    cursor: pointer; font-size: 0.875rem;
+    transition: background-color 0.2s, transform 0.1s;
+}
+.logout-btn:hover {
+    background-color: #b91c1c; 
+    transform: translateY(-1px);
+}
+
+</style>

@@ -19,7 +19,6 @@
       <a href="/user/dashboard"><i class="ti ti-books text-blue-500 hover:text-blue-700"></i></a>
       <form th:action="@{/logout}" method="post" class="logout-form">
         <button type="submit" class="logout-btn">
-          <i class="ti ti-logout logout-icon"></i>
           Logout
         </button>
       </form>
@@ -166,8 +165,10 @@ body {
   transition: background-color 0.2s, transform 0.1s;
 }
 .logout-btn:hover {
-  background-color: #1d4ed8; transform: translateY(-1px);
+  background-color: #b91c1c; 
+  transform: translateY(-1px);
 }
+
 .logout-icon { font-size: 1.2rem; }
 
 /* MESSAGE BOX */

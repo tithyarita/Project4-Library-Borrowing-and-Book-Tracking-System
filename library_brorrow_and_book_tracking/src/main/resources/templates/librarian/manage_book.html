@@ -19,8 +19,10 @@
 
 <main class="container mx-auto p-6">
   <nav class="tabs">
-    <a th:href="@{/librarian/manage-book}" class="tab active">Manage Books</a>
-    <a th:href="@{/librarian/manage-user}" class="tab">Manage Users</a>
+    <a th:href="@{/librarian/dashboard}" class="tab">Dashboard</a>
+    <a th:href="@{/librarian/books}" class="tab active">Manage Books</a>
+    <a th:href="@{/librarian/manage_user}" class="tab">Manage Users</a>
+    <a th:href="@{/librarian/manage-borrows}" class="tab">Manage Borrows</a>
     <a th:href="@{/librarian/process_return}" class="tab">Borrow / Return Logs</a>
   </nav>
 
@@ -29,7 +31,7 @@
     <div class="card-header">
       <h2>Add New Book</h2>
     </div>
-    <form th:action="@{/librarian/manage-book/add}" method="post">
+    <form th:action="@{/librarian/books/add}" method="post">
       <div class="grid grid-cols-1 md:grid-cols-5 gap-2 mb-4">
         <input type="text" name="title" placeholder="Title *" required class="search-input">
         <input type="text" name="author" placeholder="Author *" required class="search-input">
@@ -46,7 +48,7 @@
     <div class="card-header">
       <h2>Book Inventory</h2>
     </div>
-    <form th:action="@{/librarian/manage-book}" method="get" class="mb-4">
+    <form th:action="@{/librarian/books}" method="get" class="mb-4">
       <input class="search-input" type="text" name="q" th:value="${param.q != null ? param.q[0] : ''}"
              placeholder="Search books by title, author, or ISBN...">
     </form>
