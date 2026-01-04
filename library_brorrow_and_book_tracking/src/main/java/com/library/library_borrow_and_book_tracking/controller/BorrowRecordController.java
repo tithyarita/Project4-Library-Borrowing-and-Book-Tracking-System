@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.library.library_borrow_and_book_tracking.entity.Book;
-import com.library.library_borrow_and_book_tracking.entity.BorrowRecord;
 import com.library.library_borrow_and_book_tracking.service.LibraryService;
 
 @Controller
@@ -132,4 +131,5 @@ public String deleteBorrowRecord(@PathVariable("id") Long recordId,
         }
         return "redirect:/librarian/records";
     }
+    
 }
