@@ -173,6 +173,21 @@ public String deleteBorrow(@PathVariable("id") Long id, RedirectAttributes redir
                 });
     }
 
+    // ================= MANAGE BOOKS =================
+    @GetMapping("/books")
+    public String manageBooks(Model model) {
+        // Redirect to the central books listing to keep views consistent
+        return "redirect:/books";
+    }
+
+    // ================= MANAGE BORROWS =================
+    @GetMapping("/manage-borrows")
+    public String manageBorrow(Model model) {
+        // Redirect to the records handler (avoid redirect loop)
+        return "redirect:/librarian/records";
+    }
+
+
 
 }
 

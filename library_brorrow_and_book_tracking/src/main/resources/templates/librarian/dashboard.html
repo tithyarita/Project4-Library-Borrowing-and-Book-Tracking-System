@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Librarian Dashboard | Library System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -12,27 +15,32 @@
 </head>
 <body class="bg-gray-100 text-gray-800">
 
-<!-- ================= HEADER ================= -->
+<!-- ================= HEADER (SAME AS BOOKS) ================= -->
 <header class="site-header">
-    <div class="header-container">
-        <h1 class="title">
-            <i class="fas fa-book-open"></i> Library System - Librarian
-        </h1>
-        <form th:action="@{/logout}" method="post">
-            <button type="submit" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
-                Logout
-            </button>
-        </form>
-    </div>
+  <div class="header-container">
+    <h1 class="title">
+      <i class="fas fa-book-open"></i> Library System - Librarian
+    </h1>
+
+    <form th:action="@{/logout}" method="post">
+      <button class="logout-btn">Logout</button>
+    </form>
+  </div>
 </header>
 
-<!-- ================= NAVIGATION TABS ================= -->
-<nav class="tabs container mx-auto p-4">
+<!-- ================= TABS (SAME AS BOOKS) ================= -->
+<main class="container mx-auto p-6">
+  <nav class="tabs">
     <a th:href="@{/librarian/dashboard}" class="tab active">Dashboard</a>
-    <a th:href="@{/books}" class="tab">Manage Books</a>
+    <a th:href="@{/librarian/books}" class="tab">Manage Books</a>
     <a th:href="@{/librarian/manage_user}" class="tab">Manage Users</a>
-    <a th:href="@{/librarian/records}" class="tab">Borrow / Return Logs</a>
-</nav>
+    <a th:href="@{/librarian/manage-borrows}" class="tab">Manage Borrows</a>
+    <a th:href="@{/librarian/process_return}" class="tab">Borrow / Return Logs</a>
+  </nav>
+</main>
+
+<!-- ================= MAIN CONTENT ================= -->
+<main class="max-w-7xl mx-auto p-6">
 
 <!-- ================= MAIN ================= -->
 <main class="container mx-auto p-6">
@@ -48,7 +56,6 @@
     <!-- Dashboard Stats -->
     <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
 
-        <!-- Total Books -->
         <div class="bg-white rounded shadow p-6 flex items-center gap-4">
             <span class="text-4xl">📚</span>
             <div>
@@ -57,7 +64,6 @@
             </div>
         </div>
 
-        <!-- Pending Borrow Requests -->
         <div class="bg-white rounded shadow p-6 flex items-center gap-4">
             <span class="text-4xl">⏳</span>
             <div>
@@ -66,7 +72,6 @@
             </div>
         </div>
 
-        <!-- Overdue Books -->
         <div class="bg-white rounded shadow p-6 flex items-center gap-4">
             <span class="text-4xl">⚠️</span>
             <div>
@@ -89,7 +94,9 @@
 
         <div th:each="b : ${overdueList}" class="flex justify-between items-center border-b py-3 last:border-none">
             <div>
-                <p class="font-medium text-gray-800" th:text="${b.book.title}">Book Title</p>
+                <p class="font-medium text-gray-800"
+                   th:text="${b.book.title}">Book Title</p>
+
                 <p class="text-sm text-gray-500">
                     Borrower: <span th:text="${b.user.fullName}">User</span>
                 </p>
@@ -97,11 +104,73 @@
                     Due: <span th:text="${#dates.format(b.dueDate, 'dd MMM yyyy')}">Date</span>
                 </p>
             </div>
-            <span class="text-xs bg-red-100 text-red-600 px-3 py-1 rounded-full">Overdue</span>
+
+            <span class="text-xs bg-red-100 text-red-600 px-3 py-1 rounded-full">
+                Overdue
+            </span>
         </div>
     </section>
 
 </main>
+
+<!-- ================= STYLE (SAME AS BOOKS) ================= -->
+<style>
+  :root {
+    --primary: #1d4ed8;
+    --danger: #dc2626;
+    --success: #16a34a;
+  }
+
+  .site-header {
+    background: var(--primary);
+    color: white;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .header-container {
+    max-width: 1400px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .title {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .logout-btn {
+    background: var(--danger);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 1.5rem;
+    border-bottom: 1px solid #d1d5db;
+    margin-bottom: 1.5rem;
+  }
+
+  .tab {
+    padding-bottom: 0.5rem;
+    color: #6b7280;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .tab.active {
+    border-bottom: 2px solid var(--primary);
+    color: var(--primary);
+    font-weight: 600;
+  }
+</style>
 
 </body>
 
