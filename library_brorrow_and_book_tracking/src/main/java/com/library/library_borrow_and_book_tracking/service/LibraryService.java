@@ -21,6 +21,8 @@ import com.library.library_borrow_and_book_tracking.repository.UserRepository;
 @Service
 public class LibraryService {
 
+    private static final int MAX_BORROW_LIMIT = 3;
+
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
     private final BorrowRecordRepository borrowRecordRepository;
@@ -78,7 +80,7 @@ public class LibraryService {
 
     // ===================== BOOK MANAGEMENT =====================
     public List<Book> getFeaturedBooks() {
-        return bookRepository.findTop8ByOrderByCreatedAtDesc();
+        return bookRepository.findAllByOrderByCreatedAtDesc();
     }
 
     public List<Book> searchBooks(String query) {
@@ -94,10 +96,20 @@ public class LibraryService {
     // ===================== BORROW MANAGEMENT =====================
     @Transactional
     public BorrowRecord bookReservation(Long bookId, String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
-        Book book = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (!book.getAvailable()) throw new RuntimeException("Book is not available");
+        // ✅ ENFORCE MAX 3 BOOKS
+        if (getActiveBorrowCount(user.getId()) >= MAX_BORROW_LIMIT) {
+            throw new RuntimeException("You can only borrow up to 3 books at one time");
+        }
+
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
+
+        if (!book.getAvailable()) {
+            throw new RuntimeException("Book is not available");
+        }
 
         BorrowRecord record = new BorrowRecord();
         record.setUser(user);
@@ -111,7 +123,7 @@ public class LibraryService {
         return borrowRecordRepository.save(record);
     }
 
-    @Transactional
+       @Transactional
     public void confirmBorrow(Long recordId) {
         BorrowRecord record = borrowRecordRepository.findById(recordId)
                 .orElseThrow(() -> new RuntimeException("Borrow record not found"));
@@ -235,13 +247,14 @@ public void confirmReturn(Long recordId) {
     BorrowRecord record = borrowRecordRepository.findById(recordId)
             .orElseThrow(() -> new RuntimeException("Borrow record not found"));
 
-    if (!"RETURN_REQUESTED".equals(record.getStatus())) {
-        throw new RuntimeException("Return not requested yet");
+    if (!"BORROWED".equals(record.getStatus())) {
+        throw new RuntimeException("Only borrowed books can be returned");
     }
 
     LocalDate today = LocalDate.now();
     record.setReturnDate(today);
 
+    // Status: on time or late
     if (today.isAfter(record.getDueDate())) {
         record.setStatus("RETURNED_LATE");
     } else {
@@ -249,13 +262,19 @@ public void confirmReturn(Long recordId) {
     }
 
     Book book = record.getBook();
-    book.setAvailable(true);
+    if (book != null) {
+        book.setAvailable(true);
+        bookRepository.save(book);
+    }
 
-    bookRepository.save(book);
     borrowRecordRepository.save(record);
 }
 
-
+private int getActiveBorrowCount(Long userId) {
+    long booked = borrowRecordRepository.countByUserIdAndStatus(userId, "BOOKED");
+    long borrowed = borrowRecordRepository.countByUserIdAndStatus(userId, "BORROWED");
+    return (int) (booked + borrowed);
+}
 
   
 }
