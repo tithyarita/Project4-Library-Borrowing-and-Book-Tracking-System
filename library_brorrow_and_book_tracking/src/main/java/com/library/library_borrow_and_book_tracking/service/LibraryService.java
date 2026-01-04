@@ -1,11 +1,12 @@
 package com.library.library_borrow_and_book_tracking.service;
 
-import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,10 +37,12 @@ public class LibraryService {
     }
 
     // ===================== CURRENT USER =====================
-    public User getCurrentUser(Principal principal) {
-        if (principal == null) return null;
-        return userRepository.findByEmail(principal.getName())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public User getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth.getName() == null) return null;
+        String email = auth.getName();
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Current user not found"));
     }
 
     // ===================== USER MANAGEMENT =====================

@@ -17,48 +17,38 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.library.library_borrow_and_book_tracking.entity.BorrowRecord;
 import com.library.library_borrow_and_book_tracking.entity.User;
 import com.library.library_borrow_and_book_tracking.service.LibraryService;
-import com.library.library_borrow_and_book_tracking.service.UserService;
 
 @Controller
-@RequestMapping("/librarian")
+@RequestMapping("/librarian") // Base URL for all librarian actions
 public class LibrarianController {
 
     @Autowired
     private LibraryService libraryService;
 
-    @Autowired
-    private UserService userService;
-
     // ================= DASHBOARD =================
     @GetMapping("/dashboard")
     public String dashboard(Model model, Principal principal) {
-        User librarian = userService.findByEmail(principal.getName()); // Librarian only
-
+        User librarian = libraryService.getCurrentUser();
         model.addAttribute("user", librarian);
         model.addAttribute("totalBooks", libraryService.getTotalBooks());
         model.addAttribute("pendingBorrowRequests", libraryService.getPendingBorrowRequests());
         model.addAttribute("overdueBooks", libraryService.getOverdueBooks());
-
-        return "librarian/dashboard";
+        return "librarian/dashboard"; // Template: templates/librarian/dashboard.html
     }
 
-    // ================= USER MANAGEMENT =================
-    // ===================== MANAGE USERS =====================
-@GetMapping("/librarian/manage_user")
-public String manageUsers(@RequestParam(name = "q", required = false) String q, 
-                          Model model, 
-                          Principal principal) {
-    // Pass the principal to getCurrentUser
-    model.addAttribute("user", libraryService.getCurrentUser(principal));
-    model.addAttribute("users", libraryService.searchUsers(q));
-    model.addAttribute("q", q);
-    return "librarian/manage_user";
-}
+    // ================= MANAGE USERS =================
+    @GetMapping("/manage_user")
+    public String manageUsers(@RequestParam(name = "q", required = false) String q, Model model) {
+        model.addAttribute("user", libraryService.getCurrentUser()); // current logged-in librarian
+        model.addAttribute("users", libraryService.searchUsers(q)); // all or filtered users
+        model.addAttribute("q", q); // search query
+        return "librarian/manage_user"; // Template: templates/librarian/manage_user.html
+    }
 
     @GetMapping("/add-user")
     public String addUserForm(Model model) {
         model.addAttribute("user", new User());
-        return "librarian/add_user";
+        return "librarian/add_user"; // Template: templates/librarian/add_user.html
     }
 
     @PostMapping("/add-user")
@@ -70,7 +60,7 @@ public String manageUsers(@RequestParam(name = "q", required = false) String q,
         } catch (Exception e) {
             redirect.addFlashAttribute("error", "Error adding user: " + e.getMessage());
         }
-        return "redirect:/librarian/manage-user";
+        return "redirect:/librarian/manage_user";
     }
 
     @GetMapping("/edit-user/{id}")
@@ -78,11 +68,11 @@ public String manageUsers(@RequestParam(name = "q", required = false) String q,
         return libraryService.findUserById(id)
                 .map(user -> {
                     model.addAttribute("user", user);
-                    return "librarian/edit_user";
+                    return "librarian/edit_user"; // Template: templates/librarian/edit_user.html
                 })
                 .orElseGet(() -> {
                     redirect.addFlashAttribute("error", "User not found");
-                    return "redirect:/librarian/manage-user";
+                    return "redirect:/librarian/manage_user";
                 });
     }
 
@@ -96,36 +86,34 @@ public String manageUsers(@RequestParam(name = "q", required = false) String q,
                     user.setEmail(updatedUser.getEmail());
                     user.setActive(updatedUser.getActive());
                     libraryService.saveUser(user);
-
                     redirect.addFlashAttribute("message", "User updated successfully");
-                    return "redirect:/librarian/manage-user";
+                    return "redirect:/librarian/manage_user";
                 })
                 .orElseGet(() -> {
                     redirect.addFlashAttribute("error", "User not found");
-                    return "redirect:/librarian/manage-user";
+                    return "redirect:/librarian/manage_user";
                 });
     }
+@PostMapping("/manage-user/deactivate/{id}")
+public String deactivateUser(@PathVariable("id") Long id, RedirectAttributes redirect) {
+    libraryService.deactivateUser(id);
+    redirect.addFlashAttribute("message", "User deactivated successfully");
+    return "redirect:/librarian/manage_user";
+}
 
-    @PostMapping("/manage-user/deactivate/{id}")
-    public String deactivateUser(@PathVariable Long id, RedirectAttributes redirect) {
-        libraryService.deactivateUser(id);
-        redirect.addFlashAttribute("message", "User deactivated successfully");
-        return "redirect:/librarian/manage-user";
-    }
-
-    @PostMapping("/manage-user/reactivate/{id}")
-    public String reactivateUser(@PathVariable Long id, RedirectAttributes redirect) {
-        libraryService.reactivateUser(id);
-        redirect.addFlashAttribute("message", "User reactivated successfully");
-        return "redirect:/librarian/manage-user";
-    }
+@PostMapping("/manage-user/reactivate/{id}")
+public String reactivateUser(@PathVariable("id") Long id, RedirectAttributes redirect) {
+    libraryService.reactivateUser(id);
+    redirect.addFlashAttribute("message", "User reactivated successfully");
+    return "redirect:/librarian/manage_user";
+}
 
     // ================= BORROW MANAGEMENT =================
     @GetMapping("/records")
     public String manageBorrows(Model model) {
-        List<BorrowRecord> pendingBorrows = libraryService.getAllPendingBorrowRecords();
-        model.addAttribute("borrowedItems", pendingBorrows);
-        return "librarian/manage-borrows";
+        List<BorrowRecord> pendingRecords = libraryService.getAllPendingBorrowRecords();
+        model.addAttribute("borrowedItems", pendingRecords);
+        return "librarian/manage-borrows"; // Template: templates/librarian/manage-borrows.html
     }
 
     @PostMapping("/borrow/confirm/{id}")
@@ -144,14 +132,13 @@ public String manageUsers(@RequestParam(name = "q", required = false) String q,
     public String viewUserHistory(@PathVariable Long id, Model model, RedirectAttributes redirect) {
         return libraryService.findUserById(id)
                 .map(user -> {
-                    // List<BorrowRecord> history = libraryService.getBorrowHistoryByUser(user.getId());
                     model.addAttribute("user", user);
-                    // model.addAttribute("history", history);
-                    return "librarian/user_history";
+                    model.addAttribute("history", libraryService.getUserHistory(id));
+                    return "librarian/user_history"; // Template: templates/librarian/user_history.html
                 })
                 .orElseGet(() -> {
                     redirect.addFlashAttribute("error", "User not found");
-                    return "redirect:/librarian/manage-user";
+                    return "redirect:/librarian/manage_user";
                 });
     }
 }

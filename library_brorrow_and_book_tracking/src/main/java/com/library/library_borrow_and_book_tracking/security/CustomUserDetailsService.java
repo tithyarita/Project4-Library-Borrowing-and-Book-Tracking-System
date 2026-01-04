@@ -1,12 +1,12 @@
 package com.library.library_borrow_and_book_tracking.security;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import com.library.library_borrow_and_book_tracking.entity.User;
 import com.library.library_borrow_and_book_tracking.repository.UserRepository;
 
-import org.springframework.security.core.userdetails.*;
-import org.springframework.stereotype.Service;
-
-@Service
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
