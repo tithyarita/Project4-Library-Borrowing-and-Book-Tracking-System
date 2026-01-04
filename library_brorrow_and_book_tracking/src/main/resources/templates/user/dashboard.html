@@ -13,7 +13,7 @@
         <a href="/user/home" class="text-blue-600 font-bold text-xl">Library System</a>
         <div class="flex items-center gap-4">
             <a href="/user/search" class="text-gray-700 hover:text-blue-600">Search</a>
-            <a href="/user/borrowRecords" class="text-gray-700 hover:text-blue-600">My Borrows</a>
+            <a href="/user/borrowRecord" class="text-gray-700 hover:text-blue-600">My Borrows</a>
             <form th:action="@{/logout}" method="post">
                 <button type="submit" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Logout</button>
             </form>
@@ -26,6 +26,15 @@
 
     <!-- Welcome -->
     <div class="mb-8">
+        <!-- Flash messages (success / error) -->
+        <div th:if="${successMessage}" id="dashboard-success" style="display:none" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" id="dashboard-error" style="display:none" th:text="${errorMessage}"></div>
+        <script>
+            const ds = document.getElementById('dashboard-success');
+            if (ds && ds.textContent.trim()) alert(ds.textContent.trim());
+            const de = document.getElementById('dashboard-error');
+            if (de && de.textContent.trim()) alert(de.textContent.trim());
+        </script>
         <h1 class="text-2xl font-bold text-gray-800">
             Welcome back, <span th:text="${user.email} ?: 'Member'">Member</span>!
         </h1>
@@ -36,9 +45,8 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div class="bg-white shadow rounded p-4 flex items-center gap-4">
             <div class="text-blue-600 text-3xl">📚</div>
-            <div>
-                <p class="text-gray-500 text-sm">Borrowed Books</p>
                 <p class="font-bold text-xl" th:text="${borrowedCount} ?: 0">0</p>
+
             </div>
         </div>
 
