@@ -172,6 +172,21 @@ public String deleteBorrow(@PathVariable("id") Long id, RedirectAttributes redir
                     return "redirect:/librarian/manage_user";
                 });
     }
+    @GetMapping("/records/search")
+public String searchBorrowRecords(
+        @RequestParam("query") String query,
+        Model model) {
+
+    List<BorrowRecord> results =
+            libraryService.searchBorrowRecords(query);
+
+    model.addAttribute("borrowedItems", results);
+    model.addAttribute("activeTab", "process_return");
+    model.addAttribute("query", query);
+
+    return "librarian/process_return";
+}
+
 
 
 }

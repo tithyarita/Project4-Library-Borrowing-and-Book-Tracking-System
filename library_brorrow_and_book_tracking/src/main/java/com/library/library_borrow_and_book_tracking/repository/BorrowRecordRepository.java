@@ -35,10 +35,18 @@ public interface BorrowRecordRepository extends JpaRepository<BorrowRecord, Long
         List<String> statuses
 );
 List<BorrowRecord> findAllByOrderByCreatedAtDesc();
-
-
-
-
+   @Query("""
+    SELECT br FROM BorrowRecord br
+    JOIN br.book b
+    JOIN br.user u
+    WHERE
+        LOWER(b.title) LIKE LOWER(CONCAT('%', :query, '%'))
+        OR LOWER(b.isbn) LIKE LOWER(CONCAT('%', :query, '%'))
+        OR LOWER(b.author) LIKE LOWER(CONCAT('%', :query, '%'))
+        OR LOWER(u.email) LIKE LOWER(CONCAT('%', :query, '%'))
+        OR LOWER(u.fullName) LIKE LOWER(CONCAT('%', :query, '%'))
+""")
+List<BorrowRecord> searchBorrowRecords(@Param("query") String query);
 
 }
 
