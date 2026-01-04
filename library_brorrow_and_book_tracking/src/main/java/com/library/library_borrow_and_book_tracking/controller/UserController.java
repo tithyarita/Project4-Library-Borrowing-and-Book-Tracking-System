@@ -3,15 +3,18 @@ package com.library.library_borrow_and_book_tracking.controller;
 import java.security.Principal;
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import com.library.library_borrow_and_book_tracking.entity.User;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.library.library_borrow_and_book_tracking.entity.Book;
+import com.library.library_borrow_and_book_tracking.entity.User;
 import com.library.library_borrow_and_book_tracking.service.LibraryService;
 import com.library.library_borrow_and_book_tracking.service.UserService;
 

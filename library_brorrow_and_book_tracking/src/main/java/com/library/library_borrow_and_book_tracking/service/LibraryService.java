@@ -1,18 +1,26 @@
 package com.library.library_borrow_and_book_tracking.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.library.library_borrow_and_book_tracking.entity.Book;
 import com.library.library_borrow_and_book_tracking.entity.BorrowRecord;
 import com.library.library_borrow_and_book_tracking.entity.User;
 import com.library.library_borrow_and_book_tracking.repository.BookRepository;
 import com.library.library_borrow_and_book_tracking.repository.BorrowRecordRepository;
 import com.library.library_borrow_and_book_tracking.repository.UserRepository;
-import org.springframework.stereotype.Service;
+
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class LibraryService {
@@ -20,13 +28,18 @@ public class LibraryService {
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
     private final BorrowRecordRepository borrowRecordRepository;
+    private final PasswordEncoder passwordEncoder; // ✅ ADD
+
 
     public LibraryService(UserRepository userRepository,
                           BookRepository bookRepository,
-                          BorrowRecordRepository borrowRecordRepository) {
+                          BorrowRecordRepository borrowRecordRepository,
+                        PasswordEncoder passwordEncoder // ✅ ADD
+                          ) {
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
         this.borrowRecordRepository = borrowRecordRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // =====================
@@ -44,6 +57,19 @@ public class LibraryService {
                 .findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCaseOrCategoryContainingIgnoreCase(
                         query, query, query);
     }
+
+    
+
+    public boolean checkPassword(User user, String rawPassword) {
+        return passwordEncoder.matches(rawPassword, user.getPassword());
+    }
+
+    @Transactional
+    public void updatePassword(User user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
 
     // =====================
     // BORROW & BOOKING
