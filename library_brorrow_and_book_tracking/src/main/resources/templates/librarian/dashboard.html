@@ -1,63 +1,51 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Librarian Dashboard | Library System</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
 
-<body class="bg-gray-50 min-h-screen">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 text-gray-800">
 
 <!-- ================= HEADER ================= -->
-<header class="bg-white shadow sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
-
-        <a href="/librarian/dashboard"
-           class="text-xl font-bold text-blue-600 hover:text-blue-700">
-            📚 Library System
-        </a>
-
-        <nav class="flex items-center gap-4 text-sm font-medium">
-            <a href="/librarian/dashboard"
-               class="text-blue-600 border-b-2 border-blue-600 pb-1">
-                Dashboard
-            </a>
-
-            <a href="/books" class="text-gray-600 hover:text-blue-600">
-                Manage Books
-            </a>
-
-            <a href="/librarian/manage_user" class="text-gray-600 hover:text-blue-600">
-                Manage Users
-            </a>
-
-            <a href="/borrow-records" class="text-gray-600 hover:text-blue-600">
-                Borrow Records
-            </a>
-
-            <form th:action="@{/logout}" method="post">
-                <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
-                    Logout
-                </button>
-            </form>
-        </nav>
+<header class="site-header">
+    <div class="header-container">
+        <h1 class="title">
+            <i class="fas fa-book-open"></i> Library System - Librarian
+        </h1>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
+                Logout
+            </button>
+        </form>
     </div>
 </header>
 
-<!-- ================= MAIN ================= -->
-<main class="max-w-7xl mx-auto p-6">
+<!-- ================= NAVIGATION TABS ================= -->
+<nav class="tabs container mx-auto p-4">
+    <a th:href="@{/librarian/dashboard}" class="tab active">Dashboard</a>
+    <a th:href="@{/books}" class="tab">Manage Books</a>
+    <a th:href="@{/librarian/manage_user}" class="tab">Manage Users</a>
+    <a th:href="@{/librarian/records}" class="tab">Borrow / Return Logs</a>
+</nav>
 
-    <!-- Welcome -->
+<!-- ================= MAIN ================= -->
+<main class="container mx-auto p-6">
+
+    <!-- Welcome Section -->
     <section class="mb-8">
         <h1 class="text-2xl font-semibold text-gray-800">
             Welcome, <span th:text="${user.fullName}">Librarian</span>
         </h1>
-        <p class="text-gray-500 mt-1">
-            Overview of today’s library activity.
-        </p>
+        <p class="text-gray-500 mt-1">Overview of today’s library activity.</p>
     </section>
 
-    <!-- Stats -->
+    <!-- Dashboard Stats -->
     <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
 
         <!-- Total Books -->
@@ -69,79 +57,103 @@
             </div>
         </div>
 
-        <!-- Pending Requests -->
+        <!-- Pending Borrow Requests -->
         <div class="bg-white rounded shadow p-6 flex items-center gap-4">
             <span class="text-4xl">⏳</span>
             <div>
                 <p class="text-sm text-gray-500">Pending Borrow Requests</p>
-                <p class="text-2xl font-bold"
-                   th:text="${pendingBorrowRequests}">
-                    0
-                </p>
+                <p class="text-2xl font-bold" th:text="${pendingBorrowRequests}">0</p>
             </div>
         </div>
 
-        <!-- Overdue -->
+        <!-- Overdue Books -->
         <div class="bg-white rounded shadow p-6 flex items-center gap-4">
             <span class="text-4xl">⚠️</span>
             <div>
                 <p class="text-sm text-gray-500">Overdue Books</p>
-                <p class="text-2xl font-bold text-red-600"
-                   th:text="${overdueBooks}">
-                    0
-                </p>
+                <p class="text-2xl font-bold text-red-600" th:text="${overdueBooks}">0</p>
             </div>
         </div>
-
     </section>
 
-    <!-- Overdue List -->
+    <!-- Recent Overdue List -->
     <section class="bg-white rounded shadow p-6">
         <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold text-gray-700">
-                Recent Overdue Books
-            </h2>
-            <a href="/borrow-records"
-               class="text-blue-600 text-sm hover:underline">
-                View all →
-            </a>
+            <h2 class="text-lg font-semibold text-gray-700">Recent Overdue Books</h2>
+            <a th:href="@{/librarian/records}" class="text-blue-600 text-sm hover:underline">View all →</a>
         </div>
 
-        <div th:if="${#lists.isEmpty(overdueList)}"
-             class="text-gray-400 italic">
+        <div th:if="${#lists.isEmpty(overdueList)}" class="text-gray-400 italic">
             No overdue books found.
         </div>
 
-        <div th:each="b : ${overdueList}"
-             class="flex justify-between items-center border-b py-3 last:border-none">
-
+        <div th:each="b : ${overdueList}" class="flex justify-between items-center border-b py-3 last:border-none">
             <div>
-                <p class="font-medium text-gray-800"
-                   th:text="${b.book.title}">
-                    Book Title
-                </p>
-
+                <p class="font-medium text-gray-800" th:text="${b.book.title}">Book Title</p>
                 <p class="text-sm text-gray-500">
-                    Borrower:
-                    <span th:text="${b.user.fullName}">User</span>
+                    Borrower: <span th:text="${b.user.fullName}">User</span>
                 </p>
-
                 <p class="text-sm text-red-500">
-                    Due:
-                    <span th:text="${#dates.format(b.dueDate, 'dd MMM yyyy')}">
-                        Date
-                    </span>
+                    Due: <span th:text="${#dates.format(b.dueDate, 'dd MMM yyyy')}">Date</span>
                 </p>
             </div>
-
-            <span class="text-xs bg-red-100 text-red-600 px-3 py-1 rounded-full">
-                Overdue
-            </span>
-
+            <span class="text-xs bg-red-100 text-red-600 px-3 py-1 rounded-full">Overdue</span>
         </div>
     </section>
 
 </main>
 
 </body>
-</html>
+
+<style>
+:root {
+  --primary: #1d4ed8;
+  --danger: #dc2626;
+  --success: #16a34a;
+  --gray: #6b7280;
+}
+
+body {
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.site-header {
+  background: var(--primary);
+  color: white;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.header-container {
+  max-width: 1400px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.tabs {
+  display: flex;
+  gap: 1.5rem;
+  border-bottom: 1px solid #d1d5db;
+  margin-bottom: 1.5rem;
+}
+
+.tab {
+  padding-bottom: 0.5rem;
+  color: var(--gray);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.tab.active {
+  border-bottom: 2px solid var(--primary);
+  color: var(--primary);
+  font-weight: 600;
+}
+</style>

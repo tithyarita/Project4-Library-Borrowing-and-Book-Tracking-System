@@ -5,6 +5,7 @@ CREATE TABLE books (
     isbn VARCHAR(50),
     publisher VARCHAR(100),
     publish_year INT,
+    quantity INT DEFAULT 1,
     category VARCHAR(50),
     available BOOLEAN,
     created_at TIMESTAMP,

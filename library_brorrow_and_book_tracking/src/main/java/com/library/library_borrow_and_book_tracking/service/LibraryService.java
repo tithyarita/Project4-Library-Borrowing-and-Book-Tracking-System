@@ -97,15 +97,20 @@ public class LibraryService {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
 
-        if (!book.getAvailable()) throw new RuntimeException("Book is not available");
+        // Check available quantity
+        Integer qty = book.getQuantity();
+        if (qty == null || qty <= 0) throw new RuntimeException("Book is not available");
 
         BorrowRecord record = new BorrowRecord();
         record.setUser(user);
         record.setBook(book);
+        record.setIsbn(book.getIsbn());
         record.setStatus("BOOKED");
         record.setCreatedAt(LocalDateTime.now());
 
-        book.setAvailable(false);
+        // decrement quantity for reservation
+        book.setQuantity(qty - 1);
+        book.setAvailable(book.getQuantity() != null && book.getQuantity() > 0);
         bookRepository.save(book);
 
         return borrowRecordRepository.save(record);
@@ -120,10 +125,6 @@ public class LibraryService {
         record.setBorrowDate(LocalDate.now());
         record.setDueDate(LocalDate.now().plusDays(14));
 
-        Book book = record.getBook();
-        book.setAvailable(false);
-
-        bookRepository.save(book);
         borrowRecordRepository.save(record);
     }
 
@@ -137,9 +138,13 @@ public class LibraryService {
         record.setStatus(today.isAfter(record.getDueDate()) ? "RETURNED_LATE" : "RETURNED_ON_TIME");
 
         Book book = record.getBook();
-        book.setAvailable(true);
+        if (book != null) {
+            Integer q = book.getQuantity();
+            book.setQuantity((q == null ? 0 : q) + 1);
+            book.setAvailable(book.getQuantity() != null && book.getQuantity() > 0);
+            bookRepository.save(book);
+        }
 
-        bookRepository.save(book);
         borrowRecordRepository.save(record);
     }
 
@@ -150,7 +155,10 @@ public class LibraryService {
 
         Book book = record.getBook();
         if (book != null) {
-            book.setAvailable(true);
+            // Return quantity if record was not returned
+            Integer q = book.getQuantity();
+            book.setQuantity((q == null ? 0 : q) + 1);
+            book.setAvailable(book.getQuantity() != null && book.getQuantity() > 0);
             bookRepository.save(book);
         }
 
@@ -249,9 +257,13 @@ public void confirmReturn(Long recordId) {
     }
 
     Book book = record.getBook();
-    book.setAvailable(true);
+    if (book != null) {
+        Integer q = book.getQuantity();
+        book.setQuantity((q == null ? 0 : q) + 1);
+        book.setAvailable(book.getQuantity() != null && book.getQuantity() > 0);
+        bookRepository.save(book);
+    }
 
-    bookRepository.save(book);
     borrowRecordRepository.save(record);
 }
 

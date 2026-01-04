@@ -58,6 +58,7 @@
             <table class="w-full border-collapse">
                 <thead class="bg-gray-50 text-sm text-gray-600">
                     <tr>
+                        <th class="p-3 border ">ISBN</th>
                         <th class="p-3 border text-left">Book</th>
                         <th class="p-3 border">Borrow Date</th>
                         <th class="p-3 border">Due Date</th>
@@ -69,6 +70,8 @@
                 <tbody class="text-sm">
                     <tr th:each="r : ${history}"
                         class="hover:bg-gray-50 transition">
+
+                        <td class="p-3 border text-gray-600" th:text="${r.isbn}">ISBN</td>
 
                         <td class="p-3 border font-semibold text-gray-800"
                             th:text="${r.book.title}">
@@ -101,7 +104,7 @@
                     </tr>
 
                     <tr th:if="${#lists.isEmpty(history)}">
-                        <td colspan="5"
+                        <td colspan="6"
                             class="text-center text-gray-500 p-6 italic">
                             No borrowing history found for this user.
                         </td>

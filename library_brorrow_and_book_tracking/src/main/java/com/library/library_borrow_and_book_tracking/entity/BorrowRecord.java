@@ -3,6 +3,7 @@ package com.library.library_borrow_and_book_tracking.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -34,6 +35,9 @@ public class BorrowRecord {
     @JoinColumn(name = "book_id")
     private Book book;
 
+    @Column(name = "isbn")
+    private String isbn;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -57,6 +61,9 @@ public class BorrowRecord {
 
     public Book getBook() { return book; }
     public void setBook(Book book) { this.book = book; }
+
+    public String getIsbn() { return isbn; }
+    public void setIsbn(String isbn) { this.isbn = isbn; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

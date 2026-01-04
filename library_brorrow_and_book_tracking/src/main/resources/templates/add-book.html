@@ -33,6 +33,10 @@
         <input type="text" th:field="*{isbn}" placeholder="ISBN" class="border rounded px-2 py-1 w-full">
       </div>
       <div>
+        <label class="font-semibold">Quantity</label>
+        <input type="number" th:field="*{quantity}" min="0" value="1" class="border rounded px-2 py-1 w-full">
+      </div>
+      <div>
         <label class="font-semibold">Publisher</label>
         <input type="text" th:field="*{publisher}" placeholder="Publisher Name" class="border rounded px-2 py-1 w-full">
       </div>

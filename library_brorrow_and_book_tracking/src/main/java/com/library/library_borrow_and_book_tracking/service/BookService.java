@@ -55,6 +55,7 @@ public class BookService {
         existingBook.setPublisher(updatedBook.getPublisher());
         existingBook.setPublishYear(updatedBook.getPublishYear());
         existingBook.setCategory(updatedBook.getCategory());
+        existingBook.setQuantity(updatedBook.getQuantity());
         existingBook.setAvailable(updatedBook.getAvailable());
         existingBook.setCoverUrl(updatedBook.getCoverUrl());
         existingBook.setUpdatedAt(LocalDateTime.now());

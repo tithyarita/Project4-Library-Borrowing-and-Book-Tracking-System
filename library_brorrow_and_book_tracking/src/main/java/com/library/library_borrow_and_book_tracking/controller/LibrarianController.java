@@ -17,8 +17,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.library.library_borrow_and_book_tracking.entity.BorrowRecord;
 import com.library.library_borrow_and_book_tracking.entity.User;
 import com.library.library_borrow_and_book_tracking.service.LibraryService;
-import com.library.library_borrow_and_book_tracking.service.UserService;
-import java.util.List;
 
 
 @Controller
@@ -158,6 +156,22 @@ public String deleteBorrow(@PathVariable("id") Long id, RedirectAttributes redir
     }
     return "redirect:/librarian/process_return";
 }
+
+    // ================= USER HISTORY =================
+    @GetMapping("/user/{id}/history")
+    public String viewUserHistory(@PathVariable("id") Long id, Model model, RedirectAttributes redirect) {
+        return libraryService.findUserById(id)
+                .map(user -> {
+                    List<BorrowRecord> history = libraryService.getUserHistory(user.getId());
+                    model.addAttribute("user", user);
+                    model.addAttribute("history", history);
+                    return "librarian/user_history";
+                })
+                .orElseGet(() -> {
+                    redirect.addFlashAttribute("error", "User not found");
+                    return "redirect:/librarian/manage_user";
+                });
+    }
 
 
 }

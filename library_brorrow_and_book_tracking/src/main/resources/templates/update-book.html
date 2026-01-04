@@ -97,6 +97,11 @@
             </div>
 
             <div>
+                <label class="block font-medium mb-1">Quantity</label>
+                <input type="number" th:field="*{quantity}" min="0" class="w-full border rounded px-3 py-2">
+            </div>
+
+            <div>
                 <label class="block font-medium mb-1">Cover Image</label>
                 <input type="file" name="coverFile"
                        class="w-full border rounded px-3 py-2">
