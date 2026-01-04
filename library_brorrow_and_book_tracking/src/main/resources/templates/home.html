@@ -64,6 +64,21 @@
          class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-700 text-sm font-medium">
         <p th:text="${error}"></p>
     </div>
+
+    <!-- Also handle controller flash keys `errorMessage` and `successMessage` -->
+    <div th:if="${errorMessage}" id="server-error-message" style="display:none" th:text="${errorMessage}"></div>
+    <div th:if="${successMessage}" id="server-success-message" style="display:none" th:text="${successMessage}"></div>
+
+    <script>
+        const errEl = document.getElementById('server-error-message');
+        if (errEl && errEl.textContent.trim()) {
+            alert(errEl.textContent.trim());
+        }
+        const okEl = document.getElementById('server-success-message');
+        if (okEl && okEl.textContent.trim()) {
+            alert(okEl.textContent.trim());
+        }
+    </script>
 </section>
 
 <!-- ================= FEATURED BOOKS ================= -->

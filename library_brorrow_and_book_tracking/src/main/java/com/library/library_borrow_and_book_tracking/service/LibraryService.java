@@ -178,6 +178,7 @@ public BorrowRecord bookReservation(Long bookId, String email) {
     }
 
     // ===================== USER BORROW HISTORY =====================
+    @Transactional(readOnly = true)
     public List<BorrowRecord> getRecentBorrows(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
         return borrowRecordRepository.findByUserIdAndStatusInOrderByCreatedAtDesc(user.getId(), List.of("BOOKED", "BORROWED"));
