@@ -40,6 +40,7 @@
             <table class="min-w-full border border-gray-200">
                 <thead class="bg-gray-100">
                 <tr>
+                    <th class="px-4 py-2 border">ISBN</th>
                     <th class="px-4 py-2 border">Book Title</th>
                     <th class="px-4 py-2 border">User</th>
                     <th class="px-4 py-2 border">Status</th>
@@ -48,6 +49,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="item : ${borrowedItems}" class="hover:bg-gray-50">
+                    <td class="px-4 py-2 border" th:text="${item.book != null ? item.book.isbn : 'Unknown ISBN'}">ISBN</td>
                     <td class="px-4 py-2 border" th:text="${item.book != null ? item.book.title : 'Unknown Book'}">Book Title</td>
 
                     <td class="px-4 py-2 border" th:text="${item.user.username}">User</td>

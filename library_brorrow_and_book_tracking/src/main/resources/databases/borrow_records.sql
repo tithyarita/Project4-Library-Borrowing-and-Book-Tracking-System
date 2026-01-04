@@ -4,6 +4,7 @@ CREATE TABLE borrow_records (
     due_date DATE,
     return_date DATE,
     status VARCHAR(50),
+    isbn VARCHAR(255),
     user_id INT NOT NULL,
     book_id INT NOT NULL,
     created_at TIMESTAMP,

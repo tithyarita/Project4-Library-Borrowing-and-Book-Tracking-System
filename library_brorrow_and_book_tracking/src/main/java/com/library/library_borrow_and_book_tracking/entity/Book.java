@@ -1,7 +1,15 @@
 package com.library.library_borrow_and_book_tracking.entity;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "books")
@@ -21,6 +29,8 @@ public class Book {
 
     private String category;
 
+    private Integer quantity = 1;
+
     @Column(columnDefinition = "bit(1) default 1")
     private Boolean available = true;
 
@@ -38,6 +48,7 @@ public class Book {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
         if (available == null) available = true;
+        if (quantity == null) quantity = 1;
     }
 
     @PreUpdate
@@ -64,6 +75,8 @@ public class Book {
     public void setCategory(String category) { this.category = category; }
     public Boolean getAvailable() { return available != null && available; }
     public void setAvailable(Boolean available) { this.available = available; }
+    public Integer getQuantity() { return quantity == null ? 0 : quantity; }
+    public void setQuantity(Integer quantity) { this.quantity = quantity; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
