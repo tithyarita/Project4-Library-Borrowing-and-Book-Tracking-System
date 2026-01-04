@@ -30,18 +30,6 @@ public class LibraryService {
     }
 
     // =====================
-    // TEMP USER (Replace with real auth later)
-    // =====================
-    private Long getTemporaryUserId() {
-        return 1L;
-    }
-
-    public User getCurrentUser() {
-        return userRepository.findById(getTemporaryUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-    }
-
-    // =====================
     // BOOKS
     // =====================
     public List<Book> getFeaturedBooks() {
@@ -60,56 +48,66 @@ public class LibraryService {
     // =====================
     // BORROW & BOOKING
     // =====================
-    @Transactional
-    public BorrowRecord bookReservation(Long bookId) {
-        User user = getCurrentUser();
+@Transactional
+public BorrowRecord bookReservation(Long bookId, String email) {
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
-        long weeklyCount = borrowRecordRepository.countByUserIdAndStatusInAndCreatedAtBetween(
-                user.getId(),
-                List.of("BOOKING", "BORROWED"),
-                LocalDateTime.now().minusDays(7),
-                LocalDateTime.now()
-        );
+    long weeklyCount = borrowRecordRepository
+            .countByUserIdAndStatusInAndCreatedAtBetween(
+                    user.getId(),
+                    List.of("BOOKED", "BORROWED"),
+                    LocalDateTime.now().minusDays(7),
+                    LocalDateTime.now()
+            );
 
-        if (weeklyCount >= 3) {
-            throw new RuntimeException("Maximum 3 bookings per week allowed");
-        }
-
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
-
-        if (!Boolean.TRUE.equals(book.getAvailable())) {
-            throw new RuntimeException("Book is not available");
-        }
-
-        BorrowRecord record = new BorrowRecord();
-        record.setUser(user);
-        record.setBook(book);
-        record.setStatus("BOOKING");
-        record.setCreatedAt(LocalDateTime.now());
-
-        return borrowRecordRepository.save(record);
+    if (weeklyCount >= 3) {
+        throw new RuntimeException("Maximum 3 bookings per week allowed");
     }
 
-    @Transactional
-    public BorrowRecord confirmBorrow(Long recordId) {
-        BorrowRecord record = borrowRecordRepository.findById(recordId)
-                .orElseThrow(() -> new RuntimeException("Borrow record not found"));
+    Book book = bookRepository.findById(bookId)
+            .orElseThrow(() -> new RuntimeException("Book not found"));
 
-        if (!"BOOKING".equals(record.getStatus())) {
-            throw new RuntimeException("This record is not a booking");
-        }
-
-        record.setBorrowDate(LocalDate.now());
-        record.setDueDate(LocalDate.now().plusWeeks(2));
-        record.setStatus("BORROWED");
-
-        Book book = record.getBook();
-        book.setAvailable(false);
-        bookRepository.save(book);
-
-        return borrowRecordRepository.save(record);
+    if (!book.getAvailable()) {
+        throw new RuntimeException("Book is not available");
     }
+
+    // ✅ Lock book immediately
+    book.setAvailable(false);
+    bookRepository.save(book);
+
+    BorrowRecord record = new BorrowRecord();
+    record.setUser(user);
+    record.setBook(book);
+    record.setStatus("BOOKED");
+    record.setCreatedAt(LocalDateTime.now());
+
+    return borrowRecordRepository.save(record);
+}
+
+
+
+@Transactional
+public void confirmBorrow(Long recordId) {
+
+    BorrowRecord record = borrowRecordRepository.findById(recordId)
+            .orElseThrow(() -> new RuntimeException("Borrow record not found"));
+
+    if (!"BOOKED".equals(record.getStatus())) {
+        throw new RuntimeException("This record is not a booking");
+    }
+
+    record.setStatus("BORROWED");
+    record.setBorrowDate(LocalDate.now());
+    record.setDueDate(LocalDate.now().plusDays(14)); // or 7, choose ONE
+
+    Book book = record.getBook();
+    book.setAvailable(false);
+
+    bookRepository.save(book);
+    borrowRecordRepository.save(record);
+}
+
 
     @Transactional
     public void returnBook(Long recordId) {
@@ -132,54 +130,88 @@ public class LibraryService {
         borrowRecordRepository.save(record);
     }
 
-    @Transactional
-    public void deleteBorrowRecord(Long recordId) {
-        BorrowRecord record = borrowRecordRepository.findById(recordId)
-                .orElseThrow(() -> new RuntimeException("Borrow record not found"));
+   @Transactional
+public void deleteBorrowRecord(Long recordId) {
+    BorrowRecord record = borrowRecordRepository.findById(recordId)
+            .orElseThrow(() -> new RuntimeException("Borrow record not found"));
 
-        if ("BORROWED".equals(record.getStatus())) {
-            Book book = record.getBook();
-            book.setAvailable(true);
-            bookRepository.save(book);
-        }
-
-        borrowRecordRepository.delete(record);
+    Book book = record.getBook();
+    if (book != null) {
+        book.setAvailable(true); // make book available in all cases
+        bookRepository.save(book);
     }
+
+    borrowRecordRepository.delete(record);
+}
+
 
     // =====================
     // DASHBOARD METRICS (USER)
     // =====================
-    public List<BorrowRecord> getRecentBorrows() {
-        User user = getCurrentUser();
-        return borrowRecordRepository.findByUserIdAndStatusInOrderByBorrowDateDesc(
-                user.getId(),
-                List.of("BOOKING", "BORROWED")
-        );
+@Transactional(readOnly = true)
+public List<BorrowRecord> getRecentBorrows(String email) {
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    return borrowRecordRepository
+            .findByUserIdAndStatusInOrderByCreatedAtDesc(
+                    user.getId(),
+                    List.of("BOOKED", "BORROWED")
+            );
+}
+
+
+
+@Transactional(readOnly = true)
+public long getBorrowedCount(String email) {
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    return borrowRecordRepository.countByUserIdAndStatus(
+            user.getId(),
+            "BORROWED"
+    );
+}
+
+
+    public long getOverdueCount(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return borrowRecordRepository.countByUserIdAndStatusAndDueDateBefore(user.getId(), "BORROWED", LocalDate.now());
     }
 
-    public long getBorrowedCount() {
-        return borrowRecordRepository.countByUserIdAndStatus(getCurrentUser().getId(), "BORROWED");
-    }
-
-    public long getOverdueCount() {
-        return borrowRecordRepository.countByUserIdAndStatusAndDueDateBefore(getCurrentUser().getId(), "BORROWED", LocalDate.now());
-    }
-
-    public long getDueSoonCount() {
+    public long getDueSoonCount(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
         LocalDate today = LocalDate.now();
         LocalDate soon = today.plusDays(3);
-        return borrowRecordRepository.countByUserIdAndStatusAndDueDateBetween(getCurrentUser().getId(), "BORROWED", today, soon);
+        return borrowRecordRepository.countByUserIdAndStatusAndDueDateBetween(user.getId(), "BORROWED", today, soon);
     }
 
-    public long getAvailableHoldsCount() {
-        return borrowRecordRepository.countByUserIdAndStatus(getCurrentUser().getId(), "HOLD_AVAILABLE");
+    public long getAvailableHoldsCount(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return borrowRecordRepository.countByUserIdAndStatus(user.getId(), "HOLD_AVAILABLE");
     }
 
-    public Optional<BorrowRecord> getLatestBorrow() {
+    public Optional<BorrowRecord> getLatestBorrow(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
         return Optional.ofNullable(
-                borrowRecordRepository.findTopByUserIdOrderByBorrowDateDesc(getCurrentUser().getId())
+                borrowRecordRepository.findTopByUserIdOrderByBorrowDateDesc(user.getId())
         );
     }
+    @Transactional(readOnly = true)
+public long getBookedCount(String email) {
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    return borrowRecordRepository.countByUserIdAndStatus(
+            user.getId(),
+            "BOOKED"
+    );
+}
+
 
     // =====================
     // DASHBOARD METRICS (LIBRARIAN)
@@ -189,10 +221,23 @@ public class LibraryService {
     }
 
     public long getPendingBorrowRequests() {
-        return borrowRecordRepository.countByStatus("BOOKING");
+        return borrowRecordRepository.countByStatus("BOOKED");
     }
 
     public long getOverdueBooks() {
         return borrowRecordRepository.countByStatusAndDueDateBefore("BORROWED", LocalDate.now());
     }
+    
+public List<BorrowRecord> getAllPendingBorrowRecords() {
+    return borrowRecordRepository.findByStatus("BOOKED");
+}
+
+
+    
+    public List<BorrowRecord> getAllBorrowRecords(String email) {
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+    return borrowRecordRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
+}
+
 }

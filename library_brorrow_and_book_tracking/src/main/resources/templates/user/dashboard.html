@@ -27,7 +27,7 @@
     <!-- Welcome -->
     <div class="mb-8">
         <h1 class="text-2xl font-bold text-gray-800">
-            Welcome back, <span th:text="${user.fullName} ?: 'Member'">Member</span>!
+            Welcome back, <span th:text="${user.email} ?: 'Member'">Member</span>!
         </h1>
         <p class="text-gray-600">Here's an overview of your account.</p>
     </div>
@@ -77,22 +77,31 @@
     </div>
 
     <!-- Recently Borrowed -->
-    <div class="bg-white shadow rounded p-4">
-        <h3 class="font-semibold text-gray-700 mb-4">Recently Borrowed</h3>
+    <div th:each="borrow : ${recentBorrows}" class="flex items-center gap-4 mb-4 border-b border-gray-200 pb-2 last:border-none last:pb-0">
+    <div class="w-16 h-20 bg-gray-200 rounded"></div>
+    <div>
+        <!-- Safe book title -->
+        <p class="font-bold text-gray-800" 
+           th:text="${borrow.book != null ? borrow.book.title : 'Unknown Book'}">Book Title</p>
 
-        <div th:if="${#lists.isEmpty(recentBorrows)}" class="text-gray-400 italic">
-            No recent borrowings.
-        </div>
+        <!-- Safe borrow date -->
+        <p class="text-sm text-gray-500" 
+           th:text="${borrow.borrowDate != null ? 'Borrowed: ' + #dates.format(borrow.borrowDate, 'dd MMM yyyy') : 'Borrowed: -'}">
+           Borrowed date
+        </p>
 
-        <div th:each="borrow : ${recentBorrows}" class="flex items-center gap-4 mb-4 border-b border-gray-200 pb-2 last:border-none last:pb-0">
-            <div class="w-16 h-20 bg-gray-200 rounded"></div>
-            <div>
-                <p class="font-bold text-gray-800" th:text="${borrow.book.title}">Book Title</p>
-                <p class="text-sm text-gray-500" th:text="'Borrowed: ' + ${#dates.format(borrow.borrowDate, 'dd MMM yyyy')}">Borrowed date</p>
-                <p class="text-sm text-gray-500" th:text="'Due: ' + ${#dates.format(borrow.dueDate, 'dd MMM yyyy')}">Due date</p>
-            </div>
-        </div>
+        <!-- Safe due date -->
+        <p class="text-sm text-gray-500" 
+           th:text="${borrow.dueDate != null ? 'Due: ' + #dates.format(borrow.dueDate, 'dd MMM yyyy') : 'Due: -'}">
+           Due date
+        </p>
+
+        <!-- Status -->
+        <p class="text-sm text-gray-500" th:text="'Status: ' + ${borrow.status}">Status</p>
     </div>
+</div>
+
+</div>
 
 </main>
 
