@@ -45,8 +45,9 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div class="bg-white shadow rounded p-4 flex items-center gap-4">
             <div class="text-blue-600 text-3xl">📚</div>
-                <p class="font-bold text-xl" th:text="${borrowedCount} ?: 0">0</p>
-
+            <div>
+                <p class="text-gray-500 text-sm">Borrowed Books (Active)</p>
+                <p class="font-bold text-xl" th:text="${(bookedCount ?: 0) + (borrowedCount ?: 0)}">0</p>
             </div>
         </div>
 
@@ -84,10 +85,21 @@
         </div>
     </div>
 
-    <!-- Recently Borrowed -->
-    <div th:each="borrow : ${recentBorrows}" class="flex items-center gap-4 mb-4 border-b border-gray-200 pb-2 last:border-none last:pb-0">
-    <div class="w-16 h-20 bg-gray-200 rounded"></div>
-    <div>
+        <!-- Recently Borrowed -->
+        <div th:each="borrow : ${recentBorrows}" class="flex items-center gap-4 mb-4 border-b border-gray-200 pb-2 last:border-none last:pb-0">
+        <!-- Book cover: use actual coverUrl when available, otherwise fallback to default image -->
+        <div class="w-16 h-20 overflow-hidden rounded">
+           <img th:if="${borrow.book != null and borrow.book.coverUrl != null}"
+               th:src="@{${borrow.book.coverUrl}}"
+               th:alt="${borrow.book != null ? borrow.book.title : 'Book cover'}"
+               class="w-full h-full object-cover" />
+
+           <img th:unless="${borrow.book != null and borrow.book.coverUrl != null}"
+               th:src="@{/images/default-book.png}"
+               th:alt="'Default cover'"
+               class="w-full h-full object-cover opacity-60" />
+        </div>
+        <div>
         <!-- Safe book title -->
         <p class="font-bold text-gray-800" 
            th:text="${borrow.book != null ? borrow.book.title : 'Unknown Book'}">Book Title</p>
