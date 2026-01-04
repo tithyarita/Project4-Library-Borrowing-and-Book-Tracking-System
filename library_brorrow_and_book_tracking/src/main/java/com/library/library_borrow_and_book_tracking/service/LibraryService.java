@@ -284,6 +284,14 @@ private int getActiveBorrowCount(Long userId) {
     long borrowed = borrowRecordRepository.countByUserIdAndStatus(userId, "BORROWED");
     return (int) (booked + borrowed);
 }
+@Transactional(readOnly = true)
+public List<BorrowRecord> searchBorrowRecords(String query) {
+    if (query == null || query.trim().isEmpty()) {
+        return borrowRecordRepository.findAllByOrderByCreatedAtDesc();
+    }
+    return borrowRecordRepository.searchBorrowRecords(query.trim());
+}
+
 
   
 }
