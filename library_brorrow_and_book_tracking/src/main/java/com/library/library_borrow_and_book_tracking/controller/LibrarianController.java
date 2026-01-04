@@ -43,13 +43,16 @@ public class LibrarianController {
     }
 
     // ================= USER MANAGEMENT =================
-@GetMapping("librarian/manage_user")
-public String manageUsers(@RequestParam(name = "q", required = false) String q,
-                          Model model, Principal principal) {
+    // ===================== MANAGE USERS =====================
+@GetMapping("/librarian/manage_user")
+public String manageUsers(@RequestParam(name = "q", required = false) String q, 
+                          Model model, 
+                          Principal principal) {
+    // Pass the principal to getCurrentUser
     model.addAttribute("user", libraryService.getCurrentUser(principal));
     model.addAttribute("users", libraryService.searchUsers(q));
     model.addAttribute("q", q);
-    return "librarian/manage_user"; // Thymeleaf template
+    return "librarian/manage_user";
 }
 
     @GetMapping("/add-user")
