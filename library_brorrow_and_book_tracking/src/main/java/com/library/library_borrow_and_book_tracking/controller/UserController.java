@@ -35,11 +35,12 @@ public class UserController {
 
     // ===== SEARCH BOOKS =====
     @GetMapping("/user/search")
-    public String search(@RequestParam(required = false) String q, Model model) {
-        List<Book> books = libraryService.searchBooks(q);
-        model.addAttribute("books", books);
-        return "user/search";
+    public String search(@RequestParam(name = "q", required = false) String q, Model model) {
+    List<Book> books = libraryService.searchBooks(q);
+    model.addAttribute("books", books);
+    return "user/search";
     }
+
 
     // ===== DASHBOARD =====
     @GetMapping("/user/dashboard")
