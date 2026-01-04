@@ -28,11 +28,11 @@ public class BorrowRecordController {
     // =====================
     // USER: VIEW BORROW RECORDS
     // =====================
-//   @GetMapping("/user/borrowRecord")
-// public String borrowRecord(Model model, Principal principal) {
-//     model.addAttribute("borrowRecord", libraryService.getAllBorrowRecords(principal.getName()));
-//     return "user/borrowRecord";
-// }
+  @GetMapping("/user/borrowRecord")
+public String borrowRecord(Model model, Principal principal) {
+    model.addAttribute("borrowRecord", libraryService.getAllBorrowRecords(principal.getName()));
+    return "user/borrowRecord";
+}
 
 
     // =====================

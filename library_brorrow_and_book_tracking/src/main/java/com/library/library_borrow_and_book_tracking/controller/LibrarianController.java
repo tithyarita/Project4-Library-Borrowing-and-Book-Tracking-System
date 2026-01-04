@@ -17,6 +17,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.library.library_borrow_and_book_tracking.entity.BorrowRecord;
 import com.library.library_borrow_and_book_tracking.entity.User;
 import com.library.library_borrow_and_book_tracking.service.LibraryService;
+import com.library.library_borrow_and_book_tracking.service.UserService;
+import java.util.List;
+
 
 @Controller
 @RequestMapping("/librarian") // Base URL for all librarian actions
@@ -116,29 +119,47 @@ public String reactivateUser(@PathVariable("id") Long id, RedirectAttributes red
         return "librarian/manage-borrows"; // Template: templates/librarian/manage-borrows.html
     }
 
-    @PostMapping("/borrow/confirm/{id}")
-    public String confirmBorrow(@PathVariable Long id, RedirectAttributes redirect) {
-        try {
-            libraryService.confirmBorrow(id);
-            redirect.addFlashAttribute("success", "Borrow confirmed successfully");
-        } catch (RuntimeException e) {
-            redirect.addFlashAttribute("error", e.getMessage());
-        }
-        return "redirect:/librarian/records";
+@PostMapping("/borrow/confirm/{id}")
+public String confirmBorrow(@PathVariable("id") Long id, RedirectAttributes redirect) {
+    try {
+        libraryService.confirmBorrow(id);
+        redirect.addFlashAttribute("success", "Borrow confirmed successfully");
+    } catch (RuntimeException e) {
+        redirect.addFlashAttribute("error", e.getMessage());
+    }
+    return "redirect:/librarian/records";
+}
+
+@GetMapping("/process_return") // ✅ Remove the extra /librarian
+    public String processReturnPage(Model model) {
+        List<BorrowRecord> borrowedItems =
+                libraryService.getAllBorrowRecordsForLibrarian();
+
+        model.addAttribute("borrowedItems", borrowedItems);
+        model.addAttribute("activeTab", "process_return");
+
+        return "librarian/process_return"; // Must exist in templates/librarian/process_return.html
     }
 
-    // ================= USER HISTORY =================
-    @GetMapping("/user/{id}/history")
-    public String viewUserHistory(@PathVariable Long id, Model model, RedirectAttributes redirect) {
-        return libraryService.findUserById(id)
-                .map(user -> {
-                    model.addAttribute("user", user);
-                    model.addAttribute("history", libraryService.getUserHistory(id));
-                    return "librarian/user_history"; // Template: templates/librarian/user_history.html
-                })
-                .orElseGet(() -> {
-                    redirect.addFlashAttribute("error", "User not found");
-                    return "redirect:/librarian/manage_user";
-                });
-    }
+@PostMapping("/borrow/confirm-return/{id}")
+public String confirmReturn(@PathVariable("id") Long id, RedirectAttributes redirect) {
+    libraryService.confirmReturn(id);
+    redirect.addFlashAttribute("successMessage", "Return confirmed successfully");
+    return "redirect:/librarian/process_return";
 }
+
+@PostMapping("/borrow/delete/{id}")
+public String deleteBorrow(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+    try {
+        libraryService.deleteBorrowRecord(id);
+        redirectAttributes.addFlashAttribute("successMessage", "Borrow record deleted.");
+    } catch (Exception e) {
+        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+    }
+    return "redirect:/librarian/process_return";
+}
+
+
+}
+
+
