@@ -39,18 +39,17 @@ public class UserController {
 
     // ===== SEARCH BOOKS =====
     @GetMapping("/user/search")
-    public String search(@RequestParam(name = "q", required = false) String q, Model model) {
-    List<Book> books = libraryService.searchBooks(q);
-    model.addAttribute("books", books);
-    return "user/search";
+    public String search(@RequestParam(required = false) String q, Model model) {
+        List<Book> books = libraryService.searchBooks(q);
+        model.addAttribute("books", books);
+        return "user/search";
     }
-
     // ===== BORROW RECORDS =====
-    @GetMapping("/user/borrowRecords")
-    public String borrowRecords(Model model, Principal principal) {
-        model.addAttribute("borrowRecords", libraryService.getRecentBorrows(principal.getName()));
-        return "user/borrowRecords";
-    }
+    // @GetMapping("/user/borrowRecords")
+    // public String borrowRecords(Model model, Principal principal) {
+    //     model.addAttribute("borrowRecords", libraryService.getRecentBorrows(principal.getName()));
+    //     return "user/borrowRecords";
+    // }
 
     // ===== BOOK (RESERVATION) =====
   @GetMapping("/user/booking/{bookId}")
