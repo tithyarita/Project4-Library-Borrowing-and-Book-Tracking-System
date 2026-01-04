@@ -1,5 +1,6 @@
 package com.library.library_borrow_and_book_tracking.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,7 @@ public class BorrowRecordController {
 
     private final LibraryService libraryService;
 
+
     // ✅ Constructor injection
     public BorrowRecordController(LibraryService libraryService) {
         this.libraryService = libraryService;
@@ -28,11 +30,12 @@ public class BorrowRecordController {
     // =====================
     // USER: VIEW BORROW RECORDS
     // =====================
-    @GetMapping("/user/borrowRecord")
-    public String borrowRecord(Model model) {
-        model.addAttribute("borrowRecords", libraryService.getRecentBorrows());
-        return "user/borrowRecord";
-    }
+  @GetMapping("/user/borrowRecord")
+public String borrowRecord(Model model, Principal principal) {
+    model.addAttribute("borrowRecord", libraryService.getAllBorrowRecords(principal.getName()));
+    return "user/borrowRecord";
+}
+
 
     // =====================
     // USER: SHOW ADD BORROW (BOOKING)
@@ -52,78 +55,66 @@ public class BorrowRecordController {
     // =====================
     // USER: CREATE BOOKING
     // =====================
-    @PostMapping("/user/borrowRecord/add")
-    public String createBooking(
-            @RequestParam("bookId") Long bookId,
-            RedirectAttributes redirectAttributes,
-            Model model) {
+ @PostMapping("/user/borrowRecord/add")
+public String createBooking(
+        @RequestParam("bookId") Long bookId,
+        RedirectAttributes redirectAttributes, Principal principal) {
 
-        try {
-            libraryService.bookReservation(bookId);
-            redirectAttributes.addFlashAttribute(
-                    "successMessage",
-                    "Book booked successfully. Waiting for confirmation."
-            );
-            return "redirect:/user/borrowRecord";
+    try {
+        libraryService.bookReservation(bookId, principal.getName());
 
-        } catch (Exception e) {
-            // Return to form with error and current book list
-            model.addAttribute("errorMessage", e.getMessage());
-            model.addAttribute("books", libraryService.getFeaturedBooks());
-            return "user/add-borrow";
-        }
+        redirectAttributes.addFlashAttribute(
+                "successMessage",
+                "Book booked successfully. Waiting for confirmation."
+        );
+
+        return "redirect:/user/dashboard";
+
+    } catch (Exception e) {
+        redirectAttributes.addFlashAttribute(
+                "errorMessage",
+                e.getMessage()
+        );
+        return "redirect:/user/home";
     }
+}
+
+
 
     // =====================
     // USER: RETURN BOOK
     // =====================
-    @PostMapping("/user/borrowRecord/{id}/return")
-    public String returnBook(
-            @PathVariable Long id,
-            RedirectAttributes redirectAttributes) {
-
-        try {
-            libraryService.returnBook(id);
-            redirectAttributes.addFlashAttribute(
-                    "successMessage",
-                    "Book returned successfully"
-            );
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute(
-                    "errorMessage",
-                    e.getMessage()
-            );
-        }
-        return "redirect:/user/borrowRecord";
+@PostMapping("/user/borrowRecord/{id}/return")
+public String returnBook(@PathVariable("id") Long recordId,
+                         RedirectAttributes redirectAttributes) {
+    try {
+        libraryService.returnBook(recordId);
+        redirectAttributes.addFlashAttribute("successMessage", "Book returned successfully");
+    } catch (Exception e) {
+        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
     }
+    return "redirect:/user/borrowRecord";
+}
 
     // =====================
     // USER: DELETE RECORD
     // =====================
     @PostMapping("/user/borrowRecord/{id}/delete")
-    public String deleteBorrowRecord(
-            @PathVariable Long id,
-            RedirectAttributes redirectAttributes) {
-
-        try {
-            libraryService.deleteBorrowRecord(id);
-            redirectAttributes.addFlashAttribute(
-                    "successMessage",
-                    "Borrow record deleted"
-            );
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute(
-                    "errorMessage",
-                    e.getMessage()
-            );
-        }
-        return "redirect:/user/borrowRecord";
+public String deleteBorrowRecord(@PathVariable("id") Long recordId,
+                                 RedirectAttributes redirectAttributes) {
+    try {
+        libraryService.deleteBorrowRecord(recordId);
+        redirectAttributes.addFlashAttribute("successMessage", "Borrow record deleted");
+    } catch (Exception e) {
+        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
     }
+    return "redirect:/user/borrowRecord";
+}
 
     // =====================
     // LIBRARIAN: CONFIRM BORROW
     // =====================
-    @GetMapping("/librarian/confirm/{id}")
+    @PostMapping("/librarian/borrow-requests/{id}/confirm")
     public String confirmBorrow(
             @PathVariable Long id,
             RedirectAttributes redirectAttributes) {

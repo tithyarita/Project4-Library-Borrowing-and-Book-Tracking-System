@@ -43,14 +43,6 @@
       <p th:text="${errorMessage}"></p>
     </div>
 
-    <!-- Add Borrow Button -->
-    <div class="action-buttons">
-      <a href="/user/add-borrow" 
-         class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded font-semibold transition">
-        <i class="ti ti-plus"></i> Borrow a Book
-      </a>
-    </div>
-
     <section class="table-section">
       <div th:if="${borrowRecord != null and not #lists.isEmpty(borrowRecord)}">
         <div class="overflow-x-auto">
@@ -214,4 +206,4 @@ body {
 
 /* EMPTY STATE */
 .empty-message { text-align: center; color: #6b7280; font-style: italic; padding: 1rem 0; }
-</style>
+</style> 

@@ -20,9 +20,9 @@
     <!-- Tabs -->
     <nav class="flex gap-6 mb-6 border-b border-gray-300 pb-2">
         <a th:href="@{/librarian/manage-book}" class="text-gray-600 hover:text-blue-700">Manage Books</a>
-        <a th:href="@{/librarian/manage_user}" class.text-gray-600 hover:text-blue-700">Manage Users</a>
+        <a th:href="@{/librarian/manage_user}" class="text-gray-600 hover:text-blue-700">Manage Users</a>
         <a th:href="@{/librarian/manage-borrows}" class="text-blue-700 font-semibold border-b-2 border-blue-700">Manage Borrows</a>
-        <a th:href="@{/librarian/process-return}" class="text-gray-600 hover:text-blue-700">Borrow / Return Logs</a>
+        <a th:href="@{/librarian/records}" class="text-gray-600 hover:text-blue-700">Borrow / Return Logs</a>
     </nav>
 
     <!-- Success/Error Messages -->
@@ -48,13 +48,14 @@
                 </thead>
                 <tbody>
                 <tr th:each="item : ${borrowedItems}" class="hover:bg-gray-50">
-                    <td class="px-4 py-2 border" th:text="${item.book.title}">Book Title</td>
+                    <td class="px-4 py-2 border" th:text="${item.book != null ? item.book.title : 'Unknown Book'}">Book Title</td>
+
                     <td class="px-4 py-2 border" th:text="${item.user.username}">User</td>
                     <td class="px-4 py-2 border">
                         <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-sm font-semibold" th:text="${item.status}"></span>
                     </td>
                     <td class="px-4 py-2 border">
-                        <form th:action="@{'/librarian/borrow-requests/' + ${item.id} + '/confirm'}" method="post">
+                        <form th:action="@{'/librarian/borrow/confirm/' + ${item.id}}" method="post">
                             <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold">Confirm Borrow</button>
                         </form>
                     </td>
