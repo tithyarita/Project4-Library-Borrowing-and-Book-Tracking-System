@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.library.library_borrow_and_book_tracking.entity.Book;
-import com.library.library_borrow_and_book_tracking.entity.BorrowRecord;
-import com.library.library_borrow_and_book_tracking.entity.User;
 import com.library.library_borrow_and_book_tracking.service.LibraryService;
 
 @Controller
@@ -30,11 +28,11 @@ public class BorrowRecordController {
     // =====================
     // USER: VIEW BORROW RECORDS
     // =====================
-  @GetMapping("/user/borrowRecord")
-public String borrowRecord(Model model, Principal principal) {
-    model.addAttribute("borrowRecord", libraryService.getAllBorrowRecords(principal.getName()));
-    return "user/borrowRecord";
-}
+//   @GetMapping("/user/borrowRecord")
+// public String borrowRecord(Model model, Principal principal) {
+//     model.addAttribute("borrowRecord", libraryService.getAllBorrowRecords(principal.getName()));
+//     return "user/borrowRecord";
+// }
 
 
     // =====================
