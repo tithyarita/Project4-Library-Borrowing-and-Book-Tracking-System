@@ -33,6 +33,7 @@ public interface BorrowRecordRepository extends JpaRepository<BorrowRecord, Long
         Long userId,
         List<String> statuses
 );
+List<BorrowRecord> findAllByOrderByCreatedAtDesc();
 
 
 

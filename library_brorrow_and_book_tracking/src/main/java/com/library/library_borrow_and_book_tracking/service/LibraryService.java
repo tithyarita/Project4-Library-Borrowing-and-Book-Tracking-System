@@ -265,5 +265,49 @@ public List<BorrowRecord> getAllPendingBorrowRecords() {
             .orElseThrow(() -> new RuntimeException("User not found"));
     return borrowRecordRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
 }
+@Transactional(readOnly = true)
+public List<BorrowRecord> getAllBorrowRecordsForLibrarian() {
+    return borrowRecordRepository.findAllByOrderByCreatedAtDesc();
+}
+
+
+@Transactional
+public void requestReturn(Long recordId) {
+    BorrowRecord record = borrowRecordRepository.findById(recordId)
+            .orElseThrow(() -> new RuntimeException("Borrow record not found"));
+
+    if (!"BORROWED".equals(record.getStatus())) {
+        throw new RuntimeException("Only borrowed books can be returned");
+    }
+
+    record.setStatus("RETURN_REQUESTED");
+    borrowRecordRepository.save(record);
+}
+@Transactional
+public void confirmReturn(Long recordId) {
+    BorrowRecord record = borrowRecordRepository.findById(recordId)
+            .orElseThrow(() -> new RuntimeException("Borrow record not found"));
+
+    if (!"RETURN_REQUESTED".equals(record.getStatus())) {
+        throw new RuntimeException("Return not requested yet");
+    }
+
+    LocalDate today = LocalDate.now();
+    record.setReturnDate(today);
+
+    if (today.isAfter(record.getDueDate())) {
+        record.setStatus("RETURNED_LATE");
+    } else {
+        record.setStatus("RETURNED_ON_TIME");
+    }
+
+    Book book = record.getBook();
+    book.setAvailable(true);
+
+    bookRepository.save(book);
+    borrowRecordRepository.save(record);
+}
+
+
 
 }
