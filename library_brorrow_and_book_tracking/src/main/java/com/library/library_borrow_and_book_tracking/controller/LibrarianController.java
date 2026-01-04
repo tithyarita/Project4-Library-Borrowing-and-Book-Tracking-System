@@ -53,4 +53,21 @@ public class LibrarianController {
         }
         return "redirect:/librarian/records";
     }
+    return "redirect:/librarian/manage_user";
+}
+   @GetMapping("/librarian/user/{id}/history")
+public String viewUserHistory(@PathVariable Long id, Model model) {
+    User user = libraryService.findUserById(id).orElse(null); // get user safely
+    // List<BorrowRecord> history = libraryService.getBorrowHistoryByUser(id);
+
+    model.addAttribute("user", user);
+    // model.addAttribute("history", history);
+
+    return "librarian/user_history";
+}
+
+
+
+
+
 }
