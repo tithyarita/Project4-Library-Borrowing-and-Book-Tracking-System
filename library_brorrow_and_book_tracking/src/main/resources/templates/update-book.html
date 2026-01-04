@@ -2,94 +2,200 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${book.id != null} ? 'Edit Book' : 'Add Book'">Edit Book</title>
+    <title th:text="${book.id != null} ? 'Edit Book' : 'Add Book'">Book Form</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
+
 <body class="bg-gray-100">
 
-<!-- Header -->
 <header class="bg-blue-700 text-white shadow p-4 flex justify-between items-center">
-    <h1 class="text-xl font-bold"><i class="fas fa-book-open"></i> Library System - Librarian</h1>
+    <h1 class="text-xl font-bold">
+        <i class="fas fa-book-open"></i> Library System - Librarian
+    </h1>
+
     <form th:action="@{/logout}" method="post">
-        <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-semibold">Logout</button>
+        <input type="hidden"
+               th:if="${_csrf != null}"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}" />
+        <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-semibold">
+            Logout
+        </button>
     </form>
 </header>
 
 <main class="container mx-auto p-6">
+
     <nav class="flex gap-6 mb-6 border-b border-gray-300 pb-2">
-        <a th:href="@{/books}" class="text-blue-700 font-semibold border-b-2 border-blue-700">Manage Books</a>
+        <a th:href="@{/books}"
+           class="text-blue-700 font-semibold border-b-2 border-blue-700">
+            Manage Books
+        </a>
     </nav>
 
     <section class="bg-white shadow rounded p-6 max-w-2xl mx-auto">
-        <h2 class="text-2xl font-bold mb-4" th:text="${book.id != null} ? 'Edit Book' : 'Add Book'">Edit Book</h2>
 
-        <form th:action="@{/books/save}" th:object="${book}" method="post" class="grid grid-cols-1 gap-4">
-            
-            <input type="hidden" th:field="*{id}" />
+        <h2 class="text-2xl font-bold mb-4"
+            th:text="${book.id != null} ? 'Edit Book' : 'Add Book'">
+            Book Form
+        </h2>
+
+        <!-- ================= ADD BOOK FORM ================= -->
+        <form th:if="${book.id == null}"
+              th:action="@{/books/save}"
+              th:object="${book}"
+              method="post"
+              enctype="multipart/form-data"
+              class="grid grid-cols-1 gap-4">
+
+            <input type="hidden"
+                   th:if="${_csrf != null}"
+                   th:name="${_csrf.parameterName}"
+                   th:value="${_csrf.token}" />
 
             <div>
                 <label class="block font-medium mb-1">Title *</label>
-                <input type="text" th:field="*{title}" placeholder="Title" required
-                       class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="text" th:field="*{title}" required
+                       class="w-full border rounded px-3 py-2">
             </div>
 
             <div>
                 <label class="block font-medium mb-1">Author *</label>
-                <input type="text" th:field="*{author}" placeholder="Author" required
-                       class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="text" th:field="*{author}" required
+                       class="w-full border rounded px-3 py-2">
             </div>
 
             <div>
                 <label class="block font-medium mb-1">ISBN</label>
-                <input type="text" th:field="*{isbn}" placeholder="ISBN"
-                       class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="text" th:field="*{isbn}"
+                       class="w-full border rounded px-3 py-2">
             </div>
 
             <div>
                 <label class="block font-medium mb-1">Publisher</label>
-                <input type="text" th:field="*{publisher}" placeholder="Publisher"
-                       class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="text" th:field="*{publisher}"
+                       class="w-full border rounded px-3 py-2">
             </div>
 
             <div>
                 <label class="block font-medium mb-1">Publish Year</label>
-                <input type="number" th:field="*{publishYear}" placeholder="Publish Year"
-                       class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="number" th:field="*{publishYear}"
+                       class="w-full border rounded px-3 py-2">
             </div>
 
             <div>
                 <label class="block font-medium mb-1">Category</label>
-                <input type="text" th:field="*{category}" placeholder="Category"
-                       class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="text" th:field="*{category}"
+                       class="w-full border rounded px-3 py-2">
             </div>
 
-            <!-- Available checkbox -->
-            <div class="flex items-center mt-2">
-                <input type="hidden" th:field="*{available}" value="false"/>
-                <input type="checkbox" th:field="*{available}" id="available" class="mr-2 h-5 w-5 text-blue-600">
-                <label for="available" class="font-medium">Available</label>
+            <div class="flex items-center">
+                <input type="checkbox" th:field="*{available}" class="mr-2">
+                <label>Available</label>
             </div>
 
-            <div class="flex gap-4 mt-4">
-                <button type="submit" 
-                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold flex items-center">
-                    <i class="fas fa-save mr-2"></i> Save
-                </button>
-
-                <a th:href="@{/books}" 
-                   class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded font-semibold flex items-center">
-                    <i class="fas fa-arrow-left mr-2"></i> Back
-                </a>
-
-                <!-- Delete button only for existing books -->
-                <a th:if="${book.id != null}" th:href="@{'/books/delete/' + ${book.id}}"
-                   class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-semibold flex items-center"
-                   onclick="return confirm('Are you sure you want to delete this book?');">
-                    <i class="fas fa-trash mr-2"></i> Delete
-                </a>
+            <div>
+                <label class="block font-medium mb-1">Cover Image</label>
+                <input type="file" name="coverFile"
+                       class="w-full border rounded px-3 py-2">
             </div>
+
+            <button type="submit"
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+                <i class="fas fa-save mr-2"></i> Save
+            </button>
         </form>
+
+        <!-- ================= EDIT BOOK FORM ================= -->
+        <form th:if="${book.id != null}"
+              th:action="@{/books/edit/{id}(id=${book.id})}"
+              th:object="${book}"
+              method="post"
+              enctype="multipart/form-data"
+              class="grid grid-cols-1 gap-4">
+
+            <input type="hidden" th:field="*{id}" />
+
+            <input type="hidden"
+                   th:if="${_csrf != null}"
+                   th:name="${_csrf.parameterName}"
+                   th:value="${_csrf.token}" />
+
+            <div>
+                <label class="block font-medium mb-1">Title *</label>
+                <input type="text" th:field="*{title}" required
+                       class="w-full border rounded px-3 py-2">
+            </div>
+
+            <div>
+                <label class="block font-medium mb-1">Author *</label>
+                <input type="text" th:field="*{author}" required
+                       class="w-full border rounded px-3 py-2">
+            </div>
+
+            <div>
+                <label class="block font-medium mb-1">ISBN</label>
+                <input type="text" th:field="*{isbn}"
+                       class="w-full border rounded px-3 py-2">
+            </div>
+
+            <div>
+                <label class="block font-medium mb-1">Publisher</label>
+                <input type="text" th:field="*{publisher}"
+                       class="w-full border rounded px-3 py-2">
+            </div>
+
+            <div>
+                <label class="block font-medium mb-1">Publish Year</label>
+                <input type="number" th:field="*{publishYear}"
+                       class="w-full border rounded px-3 py-2">
+            </div>
+
+            <div>
+                <label class="block font-medium mb-1">Category</label>
+                <input type="text" th:field="*{category}"
+                       class="w-full border rounded px-3 py-2">
+            </div>
+
+            <div class="flex items-center">
+                <input type="checkbox" th:field="*{available}" class="mr-2">
+                <label>Available</label>
+            </div>
+
+            <div>
+                <label class="block font-medium mb-1">Cover Image</label>
+                <input type="file" name="coverFile"
+                       class="w-full border rounded px-3 py-2">
+
+                <div th:if="${book.coverUrl != null}" class="mt-2">
+                    <img th:src="@{${book.coverUrl}}"
+                         class="w-24 h-32 object-cover rounded shadow">
+                </div>
+            </div>
+
+            <button type="submit"
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+                <i class="fas fa-save mr-2"></i> Update
+            </button>
+        </form>
+
+        <!-- DELETE -->
+        <div class="mt-4" th:if="${book.id != null}">
+            <form th:action="@{/books/delete/{id}(id=${book.id})}" method="post">
+                <input type="hidden"
+                       th:if="${_csrf != null}"
+                       th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}" />
+                <button type="submit"
+                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+                        onclick="return confirm('Are you sure you want to delete this book?')">
+                    <i class="fas fa-trash mr-2"></i> Delete
+                </button>
+            </form>
+        </div>
+
     </section>
 </main>
 
