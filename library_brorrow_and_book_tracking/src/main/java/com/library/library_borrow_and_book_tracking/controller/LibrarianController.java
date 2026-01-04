@@ -54,6 +54,9 @@ public class LibrarianController {
         return "redirect:/librarian/records";
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 53e183f6c1ffb69654c6ddc1f4727138eb71c6b5
     return "redirect:/librarian/manage_user";
 }
    @GetMapping("/librarian/user/{id}/history")
@@ -71,6 +74,9 @@ public String viewUserHistory(@PathVariable Long id, Model model) {
 
 
 
+<<<<<<< HEAD
 =======
 >>>>>>> f9e8e42c54e67c53bd9033959d9deaa5aa8667be
+=======
+>>>>>>> 53e183f6c1ffb69654c6ddc1f4727138eb71c6b5
 }
