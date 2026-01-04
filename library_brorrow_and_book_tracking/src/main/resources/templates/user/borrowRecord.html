@@ -68,32 +68,9 @@
                 <td th:text="${record.book.title}"></td>
                 <td th:text="${record.borrowDate}"></td>
                 <td th:text="${record.dueDate}"></td>
-                <td>
-    <span th:if="${record.returnDate != null}"
-          th:text="${record.returnDate}"></span>
-
-    <span th:if="${record.returnDate == null and record.status == 'RETURN_REQUESTED'}"
-          class="text-yellow-600 font-semibold">
-      Waiting for librarian
-    </span>
-
-    <span th:if="${record.returnDate == null and record.status != 'RETURN_REQUESTED'}">
-      —
-    </span>
-  </td>
                 <td th:text="${record.status}"></td>
+                
                 <td>
-                  
-                  
-                  <!-- Return Button -->
-                 <form th:if="${record.status == 'BORROWED'}"
-      th:action="@{/user/borrowRecord/{id}/return(id=${record.id})}"
-      method="post">
-  <button class="bg-green-500 text-white px-3 py-1 rounded">
-    Request Return
-  </button>
-</form>
-
 
                   <!-- Delete Button -->
                   <form th:action="@{/user/borrowRecord/{id}/delete(id=${record.id})}" method="post"

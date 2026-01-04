@@ -9,7 +9,7 @@ import com.library.library_borrow_and_book_tracking.entity.Book;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
     // Get latest 8 books for featured section
-    List<Book> findTop8ByOrderByCreatedAtDesc();
+    List<Book> findAllByOrderByCreatedAtDesc();
 
     // Search books by title, author, or category
     List<Book> findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCaseOrCategoryContainingIgnoreCase(

@@ -139,7 +139,7 @@ public String confirmBorrow(@PathVariable("id") Long id, RedirectAttributes redi
         return "librarian/process_return"; // Must exist in templates/librarian/process_return.html
     }
 
-@PostMapping("/borrow/confirm-return/{id}")
+@PostMapping("/borrow/return/{id}")
 public String confirmReturn(@PathVariable("id") Long id, RedirectAttributes redirect) {
     libraryService.confirmReturn(id);
     redirect.addFlashAttribute("successMessage", "Return confirmed successfully");
