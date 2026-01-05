@@ -61,22 +61,39 @@ public class BookController {
     }
 
     @PostMapping("/edit/{id}")
-    public String updateBook(@PathVariable("id") Long id,
-                             @ModelAttribute("book") Book updatedBook,
-                             @RequestParam(value = "coverFile", required = false) MultipartFile coverFile) throws IOException {
+public String updateBook(@PathVariable("id") Long id,
+                         @ModelAttribute("book") Book formBook,
+                         @RequestParam(value = "coverFile", required = false) MultipartFile coverFile) throws IOException {
 
-        if (coverFile != null && !coverFile.isEmpty()) {
-            String filename = System.currentTimeMillis() + "_" + coverFile.getOriginalFilename();
-            Path uploadPath = Paths.get(System.getProperty("user.dir"), "uploads/books");
-            Files.createDirectories(uploadPath);
-            Path filePath = uploadPath.resolve(filename);
-            coverFile.transferTo(filePath.toFile());
-            updatedBook.setCoverUrl("/uploads/books/" + filename);
-        }
+    // 1️⃣ Load the existing book from DB
+    Book existingBook = bookService.getBookById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid book Id: " + id));
 
-        bookService.updateBook(id, updatedBook);
-        return "redirect:/books";
+    // 2️⃣ Update all fields except cover
+    existingBook.setTitle(formBook.getTitle());
+    existingBook.setAuthor(formBook.getAuthor());
+    existingBook.setIsbn(formBook.getIsbn());
+    existingBook.setPublisher(formBook.getPublisher());
+    existingBook.setPublishYear(formBook.getPublishYear());
+    existingBook.setCategory(formBook.getCategory());
+    existingBook.setQuantity(formBook.getQuantity());
+    existingBook.setAvailable(formBook.getQuantity() != null && formBook.getQuantity() > 0);
+
+    // 3️⃣ Update cover only if a new file is uploaded
+    if (coverFile != null && !coverFile.isEmpty()) {
+        String filename = System.currentTimeMillis() + "_" + coverFile.getOriginalFilename();
+        Path uploadPath = Paths.get(System.getProperty("user.dir"), "uploads/books");
+        Files.createDirectories(uploadPath);
+        Path filePath = uploadPath.resolve(filename);
+        coverFile.transferTo(filePath.toFile());
+        existingBook.setCoverUrl("/uploads/books/" + filename);
     }
+
+    // 4️⃣ Save the updated book
+    bookService.saveBook(existingBook);
+
+    return "redirect:/books";
+}
 
     @PostMapping("/delete/{id}")
     public String deleteBook(@PathVariable("id") Long id) {
