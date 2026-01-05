@@ -30,9 +30,12 @@
 
   <!-- Navigation Tabs -->
   <nav class="tabs">
-    <a th:href="@{/books}" class="tab">Manage Books</a>
+    <a th:href="@{/librarian/dashboard}" class="tab">Dashboard</a>
+    <a th:href="@{/librarian/books}" class="tab">Manage Books</a>
     <a th:href="@{/librarian/manage_user}" class="tab active">Manage Users</a>
+    <a th:href="@{/librarian/manage-borrows}" class="tab">Manage Borrows</a>
     <a th:href="@{/librarian/process_return}" class="tab">Borrow / Return Logs</a>
+  
   </nav>
 
   <!-- Flash Messages -->
@@ -131,7 +134,7 @@
 
   <!-- Deactivate -->
   <form th:if="${user.active}"
-        th:action="@{/librarian/manage-user/deactivate/{id}(id=${user.id})}"
+        th:action="@{/librarian/manage_user/deactivate/{id}(id=${user.id})}"
         method="post">
     <button type="submit"
             onclick="return confirm('Deactivate this user?')"
@@ -142,7 +145,7 @@
 
   <!-- Reactivate -->
   <form th:if="${!user.active}"
-        th:action="@{/librarian/manage-user/reactivate/{id}(id=${user.id})}"
+        th:action="@{/librarian/manage_user/reactivate/{id}(id=${user.id})}"
         method="post">
     <button type="submit"
             class="text-green-600 font-semibold hover:underline">

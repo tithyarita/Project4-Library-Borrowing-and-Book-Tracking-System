@@ -13,16 +13,16 @@
 <!-- ================= HEADER ================= -->
 <header class="site-header">
   <div class="header-container">
-    <a href="/user/home" class="logo">Library System</a>
+    <a th:href="@{/user/home}" class="logo">
+      <i class="fas fa-book-open"></i>Library System</a>
     <div class="icon-bar">
-      <a href="/user/search"><i class="ti ti-search text-blue-500 hover:text-blue-700"></i></a>
+      <a th:href="@{/user/search}"><i class="ti ti-search text-blue-500 hover:text-blue-700"></i></a>
       <div class="icon-divider"></div>
-      <a href="/user/account"><i class="ti ti-user"></i></a>
+      <a th:href="@{/user/dashboard}"><i class="ti ti-books"></i></a>
       <div class="icon-divider"></div>
-      <a href="/user/dashboard"><i class="ti ti-books"></i></a>
+      <a th:href="@{/user/account}"><i class="ti ti-user"></i></a>
       <form th:action="@{/logout}" method="post" class="logout-form">
         <button type="submit" class="logout-btn">
-            <i class="ti ti-logout logout-icon"></i>
             Logout
         </button>
       </form>      
@@ -71,11 +71,16 @@
         <p class="author" th:text="${'by ' + book.author}">Author</p>
         <p class="category" th:text="${book.category}">Category</p>
 
-        <a href="javascript:void(0)"
+        <!-- <a href="javascript:void(0)"
            class="borrow-btn"
            th:data-book-id="${book.id}">
           Borrow
-        </a>
+        </a> -->
+
+        <form th:action="@{/user/borrowRecord/{id}(id=${book.id})}" method="post">
+          <button type="submit" class="borrow-btn">Borrow</button>
+        </form>
+
       </div>
     </div>
   </div>
@@ -175,14 +180,9 @@ body {
   transition: background-color 0.2s, transform 0.1s;
 }
 
-.logout-btn:hover {
-  background-color: #1d4ed8; /* darker blue on hover */
-  transform: translateY(-1px);
-}
-
-.logout-icon {
-  font-size: 1.2rem;
-}
+  .logout-btn:hover {
+    background: #b91c1c;
+  }
 
 /* ===== SEARCH ===== */
 .search-input {

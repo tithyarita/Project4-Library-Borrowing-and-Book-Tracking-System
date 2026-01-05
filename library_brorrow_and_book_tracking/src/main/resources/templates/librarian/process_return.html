@@ -5,128 +5,262 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Librarian - Borrow / Return</title>
 
-  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
 
-<body class="bg-gray-100 text-gray-800">
+<body class="bg-gray-100 min-h-screen text-gray-800">
 
-<!-- Header -->
-<header class="bg-blue-600 text-white p-4 flex justify-between items-center">
-  <h1 class="text-xl font-bold flex items-center gap-2">
-    <i class="fas fa-book-open"></i> Library System - Librarian
-  </h1>
-  <form th:action="@{/logout}" method="post">
-    <button type="submit" class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white flex items-center gap-1">
-      <i class="fas fa-sign-out-alt"></i> Logout
-    </button>
-  </form>
+<!-- ================= HEADER (SAME AS BOOKS) ================= -->
+<header class="site-header">
+  <div class="header-container">
+    <h1 class="title">
+      <i class="fas fa-book-open"></i> Library System - Librarian
+    </h1>
+
+    <form th:action="@{/logout}" method="post">
+      <button class="logout-btn">Logout</button>
+    </form>
+  </div>
 </header>
 
-<main class="max-w-6xl mx-auto p-6">
-
-  <!-- Navigation -->
-  <nav class="flex gap-4 mb-6 border-b border-gray-300 pb-2">
-    <a th:href="@{/librarian/manage_book}" class="px-3 py-1 rounded hover:bg-gray-100" th:classappend="${activeTab=='manage_book'}?'border-b-2 border-blue-600 font-semibold':''">Manage Books</a>
-    <a th:href="@{/librarian/manage_user}" class="px-3 py-1 rounded hover:bg-gray-100" th:classappend="${activeTab=='manage_user'}?'border-b-2 border-blue-600 font-semibold':''">Manage Users</a>
-    <a th:href="@{/librarian/process_return}" class="px-3 py-1 rounded hover:bg-gray-100" th:classappend="${activeTab=='process_return'}?'border-b-2 border-blue-600 font-semibold':''">Borrow / Return</a>
+<!-- ================= TABS (SAME AS BOOKS) ================= -->
+<main class="container mx-auto p-6">
+  <nav class="tabs">
+    <a th:href="@{/librarian/dashboard}" class="tab">Dashboard</a>
+    <a th:href="@{/librarian/books}" class="tab">Manage Books</a>
+    <a th:href="@{/librarian/manage_user}" class="tab">Manage Users</a>
+    <a th:href="@{/librarian/manage-borrows}" class="tab">Manage Borrows</a>
+    <a th:href="@{/librarian/process_return}" class="tab active">
+      Borrow / Return
+    </a>
   </nav>
+</main>
+
+<!-- ================= MAIN CONTENT ================= -->
+<main class="max-w-6xl mx-auto p-6">
 
   <!-- Borrow Records Table -->
   <section class="bg-white p-6 rounded shadow">
     <h2 class="text-xl font-bold mb-4">Borrow / Return Records</h2>
 
-    <!-- Optional search -->
-    <form th:action="@{/librarian/records/search}" method="get" class="mb-4 flex gap-2">
-  <input type="text"
-         name="query"
-         th:value="${query}"
-         placeholder="Search by Book, ISBN, User Email"
-         class="flex-1 border p-2 rounded"/>
-  <button type="submit"
-          class="bg-blue-600 text-white px-3 py-1 rounded">
-    Search
-  </button>
-</form>
+    <!-- Search -->
+    <form th:action="@{/librarian/records/search}" method="get"
+          class="mb-4 flex gap-2">
+      <input type="text" name="query"
+             placeholder="Search by Book, ISBN, User Email"
+             class="flex-1 border p-2 rounded"/>
+      <button type="submit"
+              class="bg-blue-600 text-white px-3 py-1 rounded">
+        Search
+      </button>
+    </form>
 
-    
     <div class="overflow-x-auto">
       <table class="w-full border border-gray-200">
+
         <thead class="bg-gray-100 text-left">
-          <tr>
-            <th class="p-2 border">ID</th>
-            <th class="p-2 border">User</th>
-            <th class="p-2 border">Book</th>
-            <th class="p-2 border">Borrow Date</th>
-            <th class="p-2 border">Due Date</th>
-            <th class="p-2 border">Return Date</th>
-            <th class="p-2 border">Status</th>
-            <th class="p-2 border">Action</th>
-          </tr>
+        <tr>
+          <th class="p-2 border">ID</th>
+          <th class="p-2 border">User</th>
+          <th class="p-2 border">Book</th>
+          <th class="p-2 border">Borrow Date</th>
+          <th class="p-2 border">Due Date</th>
+          <th class="p-2 border">Return Date</th>
+          <th class="p-2 border">Status</th>
+          <th class="p-2 border">Action</th>
+        </tr>
         </thead>
+
         <tbody>
-  <tr th:each="record : ${borrowedItems}" class="hover:bg-gray-50">
-    <td class="p-2 border" th:text="${record.id}"></td>
-    <td class="p-2 border" th:text="${record.user.username + ' (' + record.user.email + ')'}"></td>
-    <td class="p-2 border" th:text="${record.book.title}"></td>
-    <td class="p-2 border" th:text="${record.borrowDate} ?: '—'"></td>
-    <td class="p-2 border" th:text="${record.dueDate} ?: '—'"></td>
-    <td class="p-2 border" th:text="${record.returnDate} ?: '—'"></td>
-    <td class="p-2 border">
-  <!-- Borrowed books -->
-  <span th:if="${record.status == 'BORROWED'}" class="text-blue-600 font-semibold">Borrowed</span>
 
-  <!-- Returned on time -->
-  <span th:if="${record.status == 'RETURNED_ON_TIME'}" class="text-green-600 font-semibold">Returned on time</span>
+        <tr th:each="record : ${borrowedItems}" class="hover:bg-gray-50">
+          <td class="p-2 border" th:text="${record.id}"></td>
+          <td class="p-2 border"
+              th:text="${record.user.username + ' (' + record.user.email + ')'}"></td>
+          <td class="p-2 border" th:text="${record.book.title}"></td>
+          <td class="p-2 border" th:text="${record.borrowDate} ?: '—'"></td>
+          <td class="p-2 border" th:text="${record.dueDate} ?: '—'"></td>
+          <td class="p-2 border" th:text="${record.returnDate} ?: '—'"></td>
 
-  <!-- Returned late -->
-  <span th:if="${record.status == 'RETURNED_LATE'}" class="text-red-600 font-semibold">Returned late</span>
-</td>
+          <td class="p-2 border">
+            <span th:if="${record.status == 'BORROWED'}"
+                  class="text-blue-600 font-semibold">Borrowed</span>
 
-    <td class="p-2 border flex gap-2">
+            <span th:if="${record.status == 'RETURNED_ON_TIME'}"
+                  class="text-green-600 font-semibold">Returned on time</span>
 
-      <!-- Confirm Borrow: only if status is BOOKED -->
-      <form th:if="${record.status == 'BOOKED'}" 
-            th:action="@{'/librarian/borrow/confirm/' + ${record.id}}" method="post">
-        <button class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm">
-          Confirm Borrow
-        </button>
-      </form>
+            <span th:if="${record.status == 'RETURNED_LATE'}"
+                  class="text-red-600 font-semibold">Returned late</span>
+          </td>
 
-      <!-- Confirm Return: only if librarian and status is BORROWED -->
-     <!-- Only show button if status is BORROWED -->
-<form th:if="${record.status == 'BORROWED'}"
-      th:action="@{/librarian/borrow/return/{id}(id=${record.id})}" method="post">
-  <button class="bg-green-500 text-white px-3 py-1 rounded text-sm">
-    Confirm Return
-  </button>
-</form>
+          <td class="p-2 border flex gap-2">
 
+            <!-- Confirm Borrow -->
+            <form th:if="${record.status == 'BOOKED'}"
+                  th:action="@{'/librarian/borrow/confirm/' + ${record.id}}"
+                  method="post">
+              <button
+                class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm">
+                Confirm Borrow
+              </button>
+            </form>
 
-      <!-- Delete: always available -->
-      <form th:action="@{'/librarian/borrow/delete/' + ${record.id}}" method="post" 
-            onsubmit="return confirm('Are you sure you want to delete this record?');">
-        <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">
-          Delete
-        </button>
-      </form>
+            <!-- Confirm Return -->
+            <form th:if="${record.status == 'BORROWED'}"
+                  th:action="@{/librarian/borrow/return/{id}(id=${record.id})}"
+                  method="post">
+              <button
+                class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">
+                Confirm Return
+              </button>
+            </form>
 
-    </td>
-  </tr>
+            <!-- Delete -->
+            <form th:action="@{'/librarian/borrow/delete/' + ${record.id}}"
+                  method="post"
+                  onsubmit="return confirm('Are you sure you want to delete this record?');">
+              <button
+                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">
+                Delete
+              </button>
+            </form>
 
-  <!-- No records message -->
-  <tr th:if="${#lists.isEmpty(borrowedItems)}">
-    <td class="p-2 border text-center" colspan="8">No borrow records found.</td>
-  </tr>
-</tbody>
+          </td>
+        </tr>
 
+        <!-- No records -->
+        <tr th:if="${#lists.isEmpty(borrowedItems)}">
+          <td colspan="8" class="p-2 border text-center">
+            No borrow records found.
+          </td>
+        </tr>
+
+        </tbody>
       </table>
     </div>
   </section>
 
 </main>
 
+<!-- ================= STYLE (SAME AS BOOKS) ================= -->
+<style>
+  :root {
+    --primary: #1d4ed8;
+    --danger: #dc2626;
+    --success: #16a34a;
+  }
+
+  .site-header {
+    background: var(--primary);
+    color: white;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .header-container {
+    max-width: 1400px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .title {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .logout-btn {
+    background: var(--danger);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 1.5rem;
+    border-bottom: 1px solid #d1d5db;
+    margin-bottom: 1.5rem;
+  }
+
+  .tab {
+    padding-bottom: 0.5rem;
+    color: #6b7280;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .tab.active {
+    border-bottom: 2px solid var(--primary);
+    color: var(--primary);
+    font-weight: 600;
+  }
+</style>
+
 </body>
 </html>
+
+
+<style>
+  :root {
+    --primary: #1d4ed8;
+    --danger: #dc2626;
+    --success: #16a34a;
+  }
+
+  .site-header {
+    background: var(--primary);
+    color: white;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .header-container {
+    max-width: 1400px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .title {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .logout-btn {
+    background: var(--danger);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 1.5rem;
+    border-bottom: 1px solid #d1d5db;
+    margin-bottom: 1.5rem;
+  }
+
+  .tab {
+    padding-bottom: 0.5rem;
+    color: #6b7280;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .tab.active {
+    border-bottom: 2px solid var(--primary);
+    color: var(--primary);
+    font-weight: 600;
+  }
+</style>

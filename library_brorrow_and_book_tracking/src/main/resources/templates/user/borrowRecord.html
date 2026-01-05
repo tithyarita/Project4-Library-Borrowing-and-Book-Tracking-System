@@ -9,17 +9,16 @@
 
 <header class="site-header">
   <div class="header-container">
-    <a href="/user/home" class="logo">Library System</a>
+    <a th:href="@{/user/home}" class="logo">Library System</a>
 
     <div class="icon-bar">
-      <a href="/user/search"><i class="ti ti-search"></i></a>
+      <a th:href="@{/user/search}"><i class="ti ti-search"></i></a>
       <div class="icon-divider"></div>
-      <a href="/user/account"><i class="ti ti-user"></i></a>
+      <a th:href="@{/user/dashboard}"><i class="ti ti-books text-blue-500 hover:text-blue-700"></i></a>
       <div class="icon-divider"></div>
-      <a href="/user/dashboard"><i class="ti ti-books text-blue-500 hover:text-blue-700"></i></a>
+      <a th:href="@{/user/account}"><i class="ti ti-user"></i></a>
       <form th:action="@{/logout}" method="post" class="logout-form">
         <button type="submit" class="logout-btn">
-          <i class="ti ti-logout logout-icon"></i>
           Logout
         </button>
       </form>
@@ -165,10 +164,10 @@ body {
   cursor: pointer; font-size: 0.875rem;
   transition: background-color 0.2s, transform 0.1s;
 }
-.logout-btn:hover {
-  background-color: #1d4ed8; transform: translateY(-1px);
-}
-.logout-icon { font-size: 1.2rem; }
+  .logout-btn:hover {
+    background: #b91c1c;
+  }
+
 
 /* MESSAGE BOX */
 .message-box { padding: 0.75rem 1rem; margin: 1rem 1.5rem 0; border-radius: 0.25rem; }

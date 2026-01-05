@@ -173,19 +173,33 @@ public String deleteBorrow(@PathVariable("id") Long id, RedirectAttributes redir
                 });
     }
     @GetMapping("/records/search")
-public String searchBorrowRecords(
-        @RequestParam("query") String query,
-        Model model) {
+    public String searchBorrowRecords(
+            @RequestParam("query") String query,
+            Model model) {
 
-    List<BorrowRecord> results =
-            libraryService.searchBorrowRecords(query);
+        List<BorrowRecord> results =
+                libraryService.searchBorrowRecords(query);
 
-    model.addAttribute("borrowedItems", results);
-    model.addAttribute("activeTab", "process_return");
-    model.addAttribute("query", query);
+        model.addAttribute("borrowedItems", results);
+        model.addAttribute("activeTab", "process_return");
+        model.addAttribute("query", query);
 
-    return "librarian/process_return";
-}
+        return "librarian/process_return";
+    }
+
+    // ================= MANAGE BOOKS =================
+    @GetMapping("/books")
+    public String manageBooks(Model model) {
+        // Redirect to the central books listing to keep views consistent
+        return "redirect:/books";
+    }
+
+    // ================= MANAGE BORROWS =================
+    @GetMapping("/manage-borrows")
+    public String manageBorrow(Model model) {
+        // Redirect to the records handler (avoid redirect loop)
+        return "redirect:/librarian/records";
+    }
 
 
 

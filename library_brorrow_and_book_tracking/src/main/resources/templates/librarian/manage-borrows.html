@@ -6,38 +6,54 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-<body class="bg-gray-100">
 
-<!-- Header -->
-<header class="bg-blue-700 text-white shadow p-4 flex justify-between items-center">
-    <h1 class="text-xl font-bold"><i class="fas fa-book-open"></i> Library System - Librarian</h1>
+<body class="bg-gray-100 min-h-screen">
+
+<!-- ================= HEADER (SAME AS BOOKS) ================= -->
+<header class="site-header">
+  <div class="header-container">
+    <h1 class="title">
+      <i class="fas fa-book-open"></i> Library System - Librarian
+    </h1>
+
     <form th:action="@{/logout}" method="post">
-        <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-semibold">Logout</button>
+      <button class="logout-btn">Logout</button>
     </form>
+  </div>
 </header>
 
+<!-- ================= TABS (SAME AS BOOKS) ================= -->
 <main class="container mx-auto p-6">
-    <!-- Tabs -->
-    <nav class="flex gap-6 mb-6 border-b border-gray-300 pb-2">
-        <a th:href="@{/librarian/manage-book}" class="text-gray-600 hover:text-blue-700">Manage Books</a>
-        <a th:href="@{/librarian/manage_user}" class="text-gray-600 hover:text-blue-700">Manage Users</a>
-        <a th:href="@{/librarian/manage-borrows}" class="text-blue-700 font-semibold border-b-2 border-blue-700">Manage Borrows</a>
-        <a th:href="@{/librarian/process_return}" class="text-gray-600 hover:text-blue-700">Borrow / Return Logs</a>
+    <nav class="tabs">
+        <a th:href="@{/librarian/dashboard}" class="tab">Dashboard</a>
+        <a th:href="@{/librarian/books}" class="tab">Manage Books</a>
+        <a th:href="@{/librarian/manage_user}" class="tab">Manage Users</a>
+        <a th:href="@{/librarian/manage-borrows}" class="tab active">Manage Borrows</a>
+        <a th:href="@{/librarian/process_return}" class="tab">Borrow / Return Logs</a>
     </nav>
+</main>
+
+<!-- ================= MAIN CONTENT ================= -->
+<main class="container mx-auto p-6">
 
     <!-- Success/Error Messages -->
-    <div th:if="${successMessage}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-        <span class="block sm:inline" th:text="${successMessage}"></span>
+    <div th:if="${successMessage}"
+         class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+        <span th:text="${successMessage}"></span>
     </div>
-    <div th:if="${errorMessage}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-        <span class="block sm:inline" th:text="${errorMessage}"></span>
+
+    <div th:if="${errorMessage}"
+         class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+        <span th:text="${errorMessage}"></span>
     </div>
 
     <!-- Borrow Requests Table -->
     <section class="bg-white shadow rounded p-6">
         <h2 class="text-2xl font-bold mb-4">Booked Items</h2>
+
         <div class="overflow-x-auto">
             <table class="min-w-full border border-gray-200">
+
                 <thead class="bg-gray-100">
                 <tr>
                     <th class="px-4 py-2 border">ISBN</th>
@@ -47,6 +63,7 @@
                     <th class="px-4 py-2 border">Actions</th>
                 </tr>
                 </thead>
+
                 <tbody>
                 <tr th:each="item : ${borrowedItems}" class="hover:bg-gray-50">
                     <td class="px-4 py-2 border" th:text="${item.book != null ? item.book.isbn : 'Unknown ISBN'}">ISBN</td>
@@ -56,17 +73,94 @@
                     <td class="px-4 py-2 border">
                         <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-sm font-semibold" th:text="${item.status}"></span>
                     </td>
+
+                    <td class="px-4 py-2 border"
+                        th:text="${item.user.username}">
+                        User
+                    </td>
+
                     <td class="px-4 py-2 border">
-                        <form th:action="@{'/librarian/borrow/confirm/' + ${item.id}}" method="post">
-                            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold">Confirm Borrow</button>
+                        <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-sm font-semibold"
+                              th:text="${item.status}">
+                        </span>
+                    </td>
+
+                    <td class="px-4 py-2 border">
+                        <form th:action="@{'/librarian/borrow/confirm/' + ${item.id}}"
+                              method="post">
+                            <button type="submit"
+                                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold">
+                                Confirm Borrow
+                            </button>
                         </form>
                     </td>
                 </tr>
                 </tbody>
+
             </table>
         </div>
     </section>
+
 </main>
+
+<!-- ================= STYLE (SAME AS BOOKS) ================= -->
+<style>
+  :root {
+    --primary: #1d4ed8;
+    --danger: #dc2626;
+    --success: #16a34a;
+  }
+
+  .site-header {
+    background: var(--primary);
+    color: white;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .header-container {
+    max-width: 1400px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .title {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .logout-btn {
+    background: var(--danger);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 1.5rem;
+    border-bottom: 1px solid #d1d5db;
+    margin-bottom: 1.5rem;
+  }
+
+  .tab {
+    padding-bottom: 0.5rem;
+    color: #6b7280;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .tab.active {
+    border-bottom: 2px solid var(--primary);
+    color: var(--primary);
+    font-weight: 600;
+  }
+</style>
 
 </body>
 </html>

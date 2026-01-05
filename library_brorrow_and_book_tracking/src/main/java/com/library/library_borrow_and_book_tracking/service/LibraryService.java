@@ -284,6 +284,21 @@ private int getActiveBorrowCount(Long userId) {
     long borrowed = borrowRecordRepository.countByUserIdAndStatus(userId, "BORROWED");
     return (int) (booked + borrowed);
 }
+
+// ===================== USER PASSWORD MANAGEMENT =====================
+@Transactional
+public void changeUserPassword(String email, String currentPassword, String newPassword) {
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    if (user.getPassword() == null || !passwordEncoder.matches(currentPassword, user.getPassword())) {
+        throw new RuntimeException("Current password is incorrect");
+    }
+
+    user.setPassword(passwordEncoder.encode(newPassword));
+    userRepository.save(user);
+}
+
 @Transactional(readOnly = true)
 public List<BorrowRecord> searchBorrowRecords(String query) {
     if (query == null || query.trim().isEmpty()) {
