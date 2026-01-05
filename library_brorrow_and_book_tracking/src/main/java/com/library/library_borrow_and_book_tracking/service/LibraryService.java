@@ -95,6 +95,12 @@ public class LibraryService {
 
     // ===================== BORROW MANAGEMENT =====================
  @Transactional
+ private int getActiveBorrowCount(Long userId) {
+    long booked = borrowRecordRepository.countByUserIdAndStatus(userId, "BOOKED");
+    long borrowed = borrowRecordRepository.countByUserIdAndStatus(userId, "BORROWED");
+    return (int) (booked + borrowed);
+}
+
 public BorrowRecord bookReservation(Long bookId, String email) {
     User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new RuntimeException("User not found"));
@@ -263,7 +269,6 @@ public void confirmReturn(Long recordId) {
     LocalDate today = LocalDate.now();
     record.setReturnDate(today);
 
-    // Status: on time or late
     if (today.isAfter(record.getDueDate())) {
         record.setStatus("RETURNED_LATE");
     } else {
@@ -272,18 +277,15 @@ public void confirmReturn(Long recordId) {
 
     Book book = record.getBook();
     if (book != null) {
-        book.setAvailable(true);
+        Integer q = book.getQuantity() == null ? 0 : book.getQuantity();
+        book.setQuantity(q + 1);                 // ✅ FIX
+        book.setAvailable(book.getQuantity() > 0);
         bookRepository.save(book);
     }
 
     borrowRecordRepository.save(record);
 }
 
-private int getActiveBorrowCount(Long userId) {
-    long booked = borrowRecordRepository.countByUserIdAndStatus(userId, "BOOKED");
-    long borrowed = borrowRecordRepository.countByUserIdAndStatus(userId, "BORROWED");
-    return (int) (booked + borrowed);
-}
 
 // ===================== USER PASSWORD MANAGEMENT =====================
 @Transactional

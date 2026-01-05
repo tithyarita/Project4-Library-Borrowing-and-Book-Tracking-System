@@ -74,17 +74,6 @@
                         <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-sm font-semibold" th:text="${item.status}"></span>
                     </td>
 
-                    <td class="px-4 py-2 border"
-                        th:text="${item.user.username}">
-                        User
-                    </td>
-
-                    <td class="px-4 py-2 border">
-                        <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-sm font-semibold"
-                              th:text="${item.status}">
-                        </span>
-                    </td>
-
                     <td class="px-4 py-2 border">
                         <form th:action="@{'/librarian/borrow/confirm/' + ${item.id}}"
                               method="post">
