@@ -13,13 +13,13 @@
 <!-- ================= HEADER ================= -->
 <header class="site-header">
   <div class="header-container">
-    <a href="/user/home" class="logo">Library System</a>
+    <a th:href="@{/user/home}" class="logo">Library System</a>
     <div class="icon-bar">
-      <a href="/user/search"><i class="ti ti-search"></i></a>
+      <a th:href="@{/user/search}"><i class="ti ti-search"></i></a>
       <div class="icon-divider"></div>
-      <a href="/user/account"><i class="ti ti-user"></i></a>
+      <a th:href="@{/user/account}"><i class="ti ti-user"></i></a>
       <div class="icon-divider"></div>
-      <a href="/user/dshboard"><i class="ti ti-books text-blue-500 hover:text-blue-700"></i></a>
+      <a th:href="@{/user/dashboard}"><i class="ti ti-books text-blue-500 hover:text-blue-700"></i></a>
       <form th:action="@{/logout}" method="post" class="logout-form">
         <button type="submit" class="logout-btn">
             <i class="ti ti-logout logout-icon"></i>

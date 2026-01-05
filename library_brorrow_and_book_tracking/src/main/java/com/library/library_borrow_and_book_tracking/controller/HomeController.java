@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class HomeController {
-
+    // ===== USER HOME REDIRECT =====
     @GetMapping("/home")
     public String home() {
         // Redirect to /user/home which already loads books

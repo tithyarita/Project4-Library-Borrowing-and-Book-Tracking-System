@@ -1,147 +1,31 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
     <title>My Account - Library System</title>
-
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background-color: #f4f6f8;
-        }
-
-        /* Header */
-        header {
-            background: #ffffff;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .header-container {
-            max-width: 900px;
-            margin: auto;
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        header a {
-            text-decoration: none;
-            color: #2563eb;
-            font-weight: bold;
-        }
-
-        /* Main */
-        main {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 0 15px;
-        }
-
-        .title h1 {
-            margin: 0;
-            color: #333;
-        }
-
-        .title p {
-            color: #666;
-        }
-
-        /* Card */
-        .card {
-            background: white;
-            border-radius: 6px;
-            padding: 20px;
-            border: 1px solid #ddd;
-        }
-
-        .profile {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .avatar {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            background: #2563eb;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            font-weight: bold;
-            margin-right: 15px;
-        }
-
-        .profile h2 {
-            margin: 0;
-        }
-
-        .profile p {
-            margin: 5px 0 0;
-            color: #666;
-        }
-
-        /* Info Grid */
-        .info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .info div p {
-            margin: 0;
-            color: #666;
-            font-size: 14px;
-        }
-
-        .info div strong {
-            display: block;
-            margin-top: 4px;
-            color: #333;
-        }
-
-        /* Actions */
-        .actions {
-            border-top: 1px solid #ddd;
-            padding-top: 15px;
-        }
-
-        .actions a {
-            display: inline-block;
-            margin-right: 10px;
-            padding: 8px 14px;
-            border-radius: 4px;
-            color: white;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .edit {
-            background: #2563eb;
-        }
-
-        .password {
-            background: #6b7280;
-        }
-
-        .actions a:hover {
-            opacity: 0.9;
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 </head>
 <body>
 
 <!-- HEADER -->
 <header>
-    <div class="header-container">
-        <a href="/user/dashboard">Library System</a>
-        <a href="/user/dashboard">← Back</a>
+<header class="site-header">
+  <div class="header-container">
+    <a th:href="@{/user/home}" class="logo">Library System</a>
+
+    <div class="icon-bar">
+      <a th:href="@{/user/search}"><i class="ti ti-search"></i></a>
+      <div class="icon-divider"></div>
+      <a th:href="@{/user/dashboard}"><i class="ti ti-books"></i></a>
+      <div class="icon-divider"></div>
+      <a th:href="@{/user/account}"><i class="ti ti-user text-blue-500 hover:text-blue-700"></i></a>
+      <form th:action="@{/logout}" method="post" class="logout-form">
+        <button type="submit" class="logout-btn">
+          Logout
+        </button>
+      </form>
     </div>
+  </div>
 </header>
 
 <!-- MAIN -->
@@ -211,8 +95,8 @@
 
         <!-- Actions -->
         <div class="actions">
-            <a href="/user/account/edit" class="edit">Edit Profile</a>
-            <a href="/user/change_password" class="password">Change Password</a>
+            <a th:href="@{/user/account/edit}" class="edit">Edit Profile</a>
+            <a th:href="@{/user/change_password}" class="password">Change Password</a>
         </div>
 
     </div>
@@ -220,3 +104,179 @@
 
 </body>
 </html>
+
+<style>
+
+    /* GLOBAL */
+    body {
+        margin: 0;
+        font-family: Inter, system-ui, sans-serif;
+        background: #f9fafb;
+    }
+
+    /* HEADER */
+    .site-header {
+        position: sticky;
+        top: 0;
+        background: white;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        z-index: 50;
+    }
+
+    .header-container {
+        max-width: 1400px;
+        margin: auto;
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        color: #2563eb;
+        font-size: 1.5rem;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .icon-bar {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        font-size: 1.5rem;
+    }
+
+    .icon-divider {
+        width: 1px;
+        height: 1.5rem;
+        background: #ddd;
+    }
+
+    /* LOGOUT */
+    .logout-btn {
+        background: #dc2626;
+        color: white;
+        padding: 0.4rem 0.75rem;
+        border-radius: 0.5rem;
+        border: none;
+        cursor: pointer;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    .logout-btn:hover {
+        background: #b91c1c;
+    }
+
+    /* MAIN */
+    main {
+        max-width: 900px;
+        margin: 30px auto;
+        padding: 0 15px;
+    }
+
+    .title h1 {
+        margin: 0;
+        color: #333;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .title p {
+        color: #666;
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+
+    /* CARD */
+    .card {
+        background: white;
+        border-radius: 6px;
+        padding: 20px;
+        border: 1px solid #ddd;
+    
+    }
+
+    /* PROFILE */
+    .profile {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .avatar {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: #2563eb;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        font-weight: bold;
+        margin-right: 15px;
+    }
+
+    /* INFO BOX */
+    .info-box {
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 16px;
+    }
+
+    .info-box p {
+        font-size: 14px;
+        color: #6b7280;
+        margin: 0;
+    }
+
+    .info-box strong {
+        display: block;
+        margin-top: 6px;
+        font-size: 16px;
+        color: #1f2937;
+    }
+
+    /* STATUS */
+    .status-active {
+        display: inline-block;
+        margin-top: 6px;
+        padding: 4px 10px;
+        background: #dcfce7;
+        color: #166534;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    /* ACTIONS */
+    .actions {
+        border-top: 1px solid #ddd;
+        padding-top: 15px;
+    }
+
+    .actions a {
+        display: inline-block;
+        margin-right: 10px;
+        padding: 8px 14px;
+        border-radius: 4px;
+        color: white;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .edit {
+        background: #2563eb;
+    }
+
+    .password {
+        background: #6b7280;
+    }
+
+    .actions a:hover {
+        opacity: 0.9;
+    }
+
+</style>

@@ -21,23 +21,23 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-    User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-    String role = (user.getRole() != null && user.getRole().getRoleName() != null)
-                  ? user.getRole().getRoleName()
-                  : "USER"; // fallback role
+        String role = (user.getRole() != null && user.getRole().getRoleName() != null)
+                    ? user.getRole().getRoleName()
+                    : "USER"; // fallback role
 
-    boolean active = user.getActive() != null ? user.getActive() : true;
+        boolean active = user.getActive() != null ? user.getActive() : true;
 
-    return org.springframework.security.core.userdetails.User.builder()
-            .username(user.getEmail())
-            .password(user.getPassword())
-            .roles(role)
-            .disabled(!active)
-            .build();
-}
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(user.getEmail())
+                .password(user.getPassword())
+                .roles(role)
+                .disabled(!active)
+                .build();
+    }
 
 
     @Override
@@ -45,4 +45,6 @@ public UserDetails loadUserByUsername(String email) throws UsernameNotFoundExcep
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
+
+    
 }

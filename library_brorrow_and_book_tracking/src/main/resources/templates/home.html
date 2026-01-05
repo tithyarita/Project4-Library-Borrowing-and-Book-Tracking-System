@@ -5,26 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Library System | Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 </head>
 
 <body class="bg-slate-50 text-slate-800 antialiased">
 
 <!-- ================= HEADER ================= -->
-<header class="sticky top-0 z-50 bg-white border-b shadow-sm">
-    <div class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-        <a href="/user/home" class="text-xl font-bold text-blue-600 tracking-wide">Library System</a>
+<header class="site-header">
+    <div class="header-container">
+        <a th:href="@{/user/home}" class="logo">Library System</a>
 
         <nav class="hidden md:flex items-center gap-8">
             <a href="#featured" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition">Featured</a>
             <a href="#categories" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition">Categories</a>
         </nav>
 
-        <div class="flex items-center gap-4">
-            <a href="/user/search" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition">Search</a>
-            <a href="/user/dashboard" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition">Dashboard</a>
+        <div class="icon-bar">
+            <a th:href="@{/user/search}"><i class="ti ti-search"></i></a>
+            <div class="icon-divider"></div>
+            <a th:href="@{/user/dashboard}"><i class="ti ti-books"></i></a>
+            <div class="icon-divider"></div>
+            <a th:href="@{/user/account}"><i class="ti ti-user"></i></a>
+            <div class="icon-divider"></div>
 
-            <form th:action="@{/logout}" method="post">
-                <button type="submit" class="px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded hover:bg-red-700 transition">
+            <form th:action="@{/logout}" method="post" class="logout-form">
+                <button type="submit" class="logout-btn">
                     Logout
                 </button>
             </form>
@@ -46,7 +51,7 @@
             </a>
         </div>
         <div class="hidden md:block">
-            <img src="https://img.freepik.com/premium-photo/school-library-with-shelves-overflowing-with-books_741910-47067.jpg"
+            <img src="https://i.pinimg.com/1200x/9f/c0/07/9fc007618a90b1975e2c601458e33a07.jpg"
                  alt="Library"
                  class="rounded-2xl shadow-md w-full h-56 object-cover">
         </div>
@@ -65,7 +70,6 @@
         <p th:text="${error}"></p>
     </div>
 
-    <!-- Also handle controller flash keys `errorMessage` and `successMessage` -->
     <div th:if="${errorMessage}" id="server-error-message" style="display:none" th:text="${errorMessage}"></div>
     <div th:if="${successMessage}" id="server-success-message" style="display:none" th:text="${successMessage}"></div>
 
@@ -90,20 +94,19 @@
             <p class="text-slate-600 text-sm">Popular books available for borrowing</p>
         </header>
 
+
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
 
             <article th:each="book : ${books}" 
                      class="bg-white rounded-3xl shadow-lg hover:shadow-xl transition flex flex-col p-4 relative overflow-hidden">
 
-                <!-- Book Cover Floating -->
                 <div class="w-full h-56 mb-4 relative">
-                    <img th:if="${book.coverUrl != null}" th:src="@{${book.coverUrl}}" alt="Book Cover"
+                        <img th:if="${book.coverUrl != null}" th:src="${book.coverUrl}" alt="Book Cover"
                          class="w-full h-full object-cover shadow-lg transform hover:scale-105 transition">
                     <img th:unless="${book.coverUrl != null}" th:src="@{/images/default-book.png}" alt="Default Cover"
                          class="w-full h-full object-contain opacity-60 shadow-lg transform hover:scale-105 transition">
                 </div>
 
-                <!-- Book Info -->
                 <div class="flex flex-col flex-1">
                     <h3 class="text-sm font-bold text-slate-900 mb-1 truncate" th:text="${book.title}"></h3>
                     <p class="text-xs text-slate-600 mb-2 truncate" th:text="${book.author}"></p>
@@ -116,19 +119,13 @@
 
                     <p class="text-xs text-slate-500 mb-4 truncate" th:text="${book.publisher}"></p>
 
-                    <!-- Borrow Button -->
-                  <form th:if="${book.available}"
-      th:action="@{/user/borrowRecord/add}"
-      method="post">
-    <input type="hidden" name="bookId" th:value="${book.id}" />
-    <button type="submit"
-            class="w-full text-xs font-semibold text-white bg-blue-600 py-2.5 rounded-full">
-        Borrow
-    </button>
-</form>
-
-
-
+                    <form th:if="${book.available}" th:action="@{/user/borrowRecord/add}" method="post">
+                        <input type="hidden" name="bookId" th:value="${book.id}" />
+                        <button type="submit"
+                                class="w-full text-xs font-semibold text-white bg-blue-600 py-2.5 rounded-full hover:bg-blue-700 transition">
+                            Borrow
+                        </button>
+                    </form>
 
                     <span th:if="${!book.available}"
                           class="mt-auto w-full text-center text-xs font-semibold text-white bg-slate-400 py-2.5 rounded-full cursor-not-allowed">
@@ -173,6 +170,69 @@
         </div>
     </div>
 </section>
+
+
+<style>
+/* ========== GLOBAL ========== */
+* { box-sizing: border-box; }
+body {
+    margin: 0; padding: 0;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    font-weight: 400;
+    width: 100vw;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-color: #f9fafb;
+    text-rendering: optimizeLegibility;
+}
+:root {
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --text-dark: #1e293b;
+}
+
+/* HEADER */
+.site-header {
+    position: sticky;
+    top: 0;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    z-index: 50;
+    width: 100%;
+}
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+.logo {
+    color: var(--primary);
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+.icon-bar { display: flex; align-items: center; gap: 1rem; font-size: 1.5rem; }
+.icon-divider { width: 1px; height: 1.5rem; background-color: #ddd; }
+
+/* LOGOUT BUTTON */
+
+.logout-btn {
+    display: flex; align-items: center; gap: 0.5rem;
+    background-color: #dc2626;
+    color: white; font-weight: 600;
+    padding: 0.4rem 0.75rem;
+    border-radius: 0.5rem; border: none;
+    cursor: pointer; font-size: 0.875rem;
+    transition: background-color 0.2s, transform 0.1s;
+}
+.logout-btn:hover {
+  background-color: #b91c1c; 
+  transform: translateY(-1px);
+}
+</style>
 
 </body>
 </html>
