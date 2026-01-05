@@ -94,41 +94,41 @@ public class LibraryService {
     }
 
     // ===================== BORROW MANAGEMENT =====================
- @Transactional
-public BorrowRecord bookReservation(Long bookId, String email) {
-    User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+    @Transactional
+    public BorrowRecord bookReservation(Long bookId, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-    // ✅ ENFORCE MAX 3 BOOKS
-    if (getActiveBorrowCount(user.getId()) >= MAX_BORROW_LIMIT) {
-        throw new RuntimeException("You can only borrow up to 3 books at one time");
+        // ✅ ENFORCE MAX 3 BOOKS
+        if (getActiveBorrowCount(user.getId()) >= MAX_BORROW_LIMIT) {
+            throw new RuntimeException("You can only borrow up to 3 books at one time");
+        }
+
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
+
+        if (!book.getAvailable()) {
+            throw new RuntimeException("Book is not available");
+        }
+
+        BorrowRecord record = new BorrowRecord();
+        record.setUser(user);
+        record.setBook(book);
+        record.setIsbn(book.getIsbn());
+        record.setStatus("BOOKED");
+        record.setCreatedAt(LocalDateTime.now());
+
+        // decrement quantity for reservation
+        Integer currentQty = book.getQuantity() == null ? 0 : book.getQuantity();
+        book.setQuantity(currentQty - 1);
+        book.setAvailable(book.getQuantity() != null && book.getQuantity() > 0);
+        bookRepository.save(book);
+
+        return borrowRecordRepository.save(record);
     }
 
-    Book book = bookRepository.findById(bookId)
-            .orElseThrow(() -> new RuntimeException("Book not found"));
 
-    if (!book.getAvailable()) {
-        throw new RuntimeException("Book is not available");
-    }
-
-    BorrowRecord record = new BorrowRecord();
-    record.setUser(user);
-    record.setBook(book);
-    record.setIsbn(book.getIsbn());
-    record.setStatus("BOOKED");
-    record.setCreatedAt(LocalDateTime.now());
-
-    // decrement quantity for reservation
-    Integer currentQty = book.getQuantity() == null ? 0 : book.getQuantity();
-    book.setQuantity(currentQty - 1);
-    book.setAvailable(book.getQuantity() != null && book.getQuantity() > 0);
-    bookRepository.save(book);
-
-    return borrowRecordRepository.save(record);
-}
-
-
-       @Transactional
+    @Transactional
     public void confirmBorrow(Long recordId) {
         BorrowRecord record = borrowRecordRepository.findById(recordId)
                 .orElseThrow(() -> new RuntimeException("Borrow record not found"));

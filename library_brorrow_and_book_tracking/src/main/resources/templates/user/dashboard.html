@@ -8,130 +8,129 @@
 </head>
 <body class="bg-gray-50 min-h-screen">
 
-<!-- ================= HEADER ================= -->
-<header class="site-header">
-  <div class="header-container">
-    <a th:href="@{/user/home}" class="logo">Library System</a>
+    <!-- ================= HEADER ================= -->
+    <header class="site-header">
+    <div class="header-container">
+        <a th:href="@{/user/home}" class="logo">Library System</a>
 
-    <div class="icon-bar">
-        <a th:href="@{/user/search}"><i class="ti ti-search"></i></a>
-        <div class="icon-divider"></div>
-        <a th:href="@{/user/dashboard}"><i class="ti ti-books text-blue-500 hover:text-blue-700"></i></a>
-        <div class="icon-divider"></div>
-        <a th:href="@{/user/account}"><i class="ti ti-user"></i></a>
-        <form th:action="@{/logout}" method="post" class="logout-form">
-            <button type="submit" class="logout-btn">
-                Logout
-            </button>
-        </form>
+        <div class="icon-bar">
+            <a th:href="@{/user/search}"><i class="ti ti-search"></i></a>
+            <div class="icon-divider"></div>
+            <a th:href="@{/user/dashboard}"><i class="ti ti-books text-blue-500 hover:text-blue-700"></i></a>
+            <div class="icon-divider"></div>
+            <a th:href="@{/user/account}"><i class="ti ti-user"></i></a>
+            <form th:action="@{/logout}" method="post" class="logout-form">
+                <button type="submit" class="logout-btn">
+                    Logout
+                </button>
+            </form>
+        </div>
     </div>
-  </div>
-</header>
+    </header>
 
-<!-- ================= MAIN ================= -->
-<main class="max-w-6xl mx-auto p-6">
+    <!-- ================= MAIN ================= -->
+    <main class="max-w-6xl mx-auto p-6">
 
-    <!-- Welcome -->
-    <div class="mb-8">
-        <!-- Flash messages (success / error) -->
-        <div th:if="${successMessage}" id="dashboard-success" style="display:none" th:text="${successMessage}"></div>
-        <div th:if="${errorMessage}" id="dashboard-error" style="display:none" th:text="${errorMessage}"></div>
-        <script>
-            const ds = document.getElementById('dashboard-success');
-            if (ds && ds.textContent.trim()) alert(ds.textContent.trim());
-            const de = document.getElementById('dashboard-error');
-            if (de && de.textContent.trim()) alert(de.textContent.trim());
-        </script>
-        <h1 class="text-2xl font-bold text-gray-800">
-            Welcome back, <span th:text="${user.email} ?: 'Member'">Member</span>!
-        </h1>
-        <p class="text-gray-600">Here's an overview of your account.</p>
-    </div>
+        <!-- Welcome -->
+        <div class="mb-8">
+            <!-- Flash messages (success / error) -->
+            <div th:if="${successMessage}" id="dashboard-success" style="display:none" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" id="dashboard-error" style="display:none" th:text="${errorMessage}"></div>
+            <script>
+                const ds = document.getElementById('dashboard-success');
+                if (ds && ds.textContent.trim()) alert(ds.textContent.trim());
+                const de = document.getElementById('dashboard-error');
+                if (de && de.textContent.trim()) alert(de.textContent.trim());
+            </script>
+            <h1 class="text-2xl font-bold text-gray-800">
+                Welcome back, <span th:text="${user.email} ?: 'Member'">Member</span>!
+            </h1>
+            <p class="text-gray-600">Here's an overview of your account.</p>
+        </div>
 
-    <!-- Dashboard Stats -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="bg-white shadow rounded p-4 flex items-center gap-4">
-            <div class="text-blue-600 text-3xl">📚</div>
-            <div>
-                <p class="text-gray-500 text-sm">Borrowed Books (Active)</p>
-                <p class="font-bold text-xl" th:text="${(bookedCount ?: 0) + (borrowedCount ?: 0)}">0</p>
+        <!-- Dashboard Stats -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white shadow rounded p-4 flex items-center gap-4">
+                <div class="text-blue-600 text-3xl">📚</div>
+                <div>
+                    <p class="text-gray-500 text-sm">Borrowed Books (Active)</p>
+                    <p class="font-bold text-xl" th:text="${(bookedCount ?: 0) + (borrowedCount ?: 0)}">0</p>
+                </div>
+            </div>
+
+            <div class="bg-white shadow rounded p-4 flex items-center gap-4">
+                <div class="text-yellow-500 text-3xl">⏰</div>
+                <div>
+                    <p class="text-gray-500 text-sm">Due Soon</p>
+                    <p class="font-bold text-xl" th:text="${dueSoonCount} ?: 0">0</p>
+                </div>
+            </div>
+
+            <div class="bg-white shadow rounded p-4 flex items-center gap-4">
+                <div class="text-green-500 text-3xl">✅</div>
+                <div>
+                    <p class="text-gray-500 text-sm">Available Holds</p>
+                    <p class="font-bold text-xl" th:text="${availableHoldsCount} ?: 0">0</p>
+                </div>
+            </div>
+
+            <div class="bg-white shadow rounded p-4 flex items-center gap-4">
+                <div class="text-red-500 text-3xl">⚠️</div>
+                <div>
+                    <p class="text-gray-500 text-sm">Overdue Books</p>
+                    <p class="font-bold text-xl" th:text="${overdueCount} ?: 0">0</p>
+                </div>
             </div>
         </div>
 
-        <div class="bg-white shadow rounded p-4 flex items-center gap-4">
-            <div class="text-yellow-500 text-3xl">⏰</div>
-            <div>
-                <p class="text-gray-500 text-sm">Due Soon</p>
-                <p class="font-bold text-xl" th:text="${dueSoonCount} ?: 0">0</p>
+        <!-- Quick Actions -->
+        <div class="mb-8">
+            <h2 class="text-lg font-semibold mb-2">Quick Actions</h2>
+            <div class="flex gap-3 flex-wrap">
+                <a href="/user/search" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Search Books</a>
+                <a href="/user/borrowRecord" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Borrow Record</a>
             </div>
         </div>
-
-        <div class="bg-white shadow rounded p-4 flex items-center gap-4">
-            <div class="text-green-500 text-3xl">✅</div>
-            <div>
-                <p class="text-gray-500 text-sm">Available Holds</p>
-                <p class="font-bold text-xl" th:text="${availableHoldsCount} ?: 0">0</p>
-            </div>
-        </div>
-
-        <div class="bg-white shadow rounded p-4 flex items-center gap-4">
-            <div class="text-red-500 text-3xl">⚠️</div>
-            <div>
-                <p class="text-gray-500 text-sm">Overdue Books</p>
-                <p class="font-bold text-xl" th:text="${overdueCount} ?: 0">0</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="mb-8">
-        <h2 class="text-lg font-semibold mb-2">Quick Actions</h2>
-        <div class="flex gap-3 flex-wrap">
-            <a href="/user/search" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Search Books</a>
-            <a href="/user/borrowRecord" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Borrow Record</a>
-        </div>
-    </div>
 
 
         <!-- Recently Borrowed -->
         <div th:each="borrow : ${recentBorrows}" class="flex items-center gap-4 mb-4 border-b border-gray-200 pb-2 last:border-none last:pb-0">
-        <!-- Book cover: use actual coverUrl when available, otherwise fallback to default image -->
-        <div class="w-16 h-20 overflow-hidden rounded">
-           <img th:if="${borrow.book != null and borrow.book.coverUrl != null}"
-               th:src="${borrow.book.coverUrl}"
-               th:alt="${borrow.book != null ? borrow.book.title : 'Book cover'}"
-               class="w-full h-full object-cover" />
+            <!-- Book cover: use actual coverUrl when available, otherwise fallback to default image -->
+            <div class="w-16 h-20 overflow-hidden rounded">
+                <img th:if="${borrow.book != null and borrow.book.coverUrl != null}"
+                    th:src="${borrow.book.coverUrl}"
+                    th:alt="${borrow.book != null ? borrow.book.title : 'Book cover'}"
+                    class="w-full h-full object-cover" />
 
-           <img th:unless="${borrow.book != null and borrow.book.coverUrl != null}"
-               th:src="@{/images/default-book.png}"
-               th:alt="'Default cover'"
-               class="w-full h-full object-cover opacity-60" />
+                <img th:unless="${borrow.book != null and borrow.book.coverUrl != null}"
+                    th:src="@{/images/default-book.png}"
+                    th:alt="'Default cover'"
+                    class="w-full h-full object-cover opacity-60" />
+            </div>
+
+                <div>
+                    <!-- Safe book title -->
+                    <p class="font-bold text-gray-800" 
+                        th:text="${borrow.book != null ? borrow.book.title : 'Unknown Book'}">Book Title</p>
+
+                    <!-- Safe borrow date -->
+                    <p class="text-sm text-gray-500" 
+                        th:text="${borrow.borrowDate != null ? 'Borrowed: ' + #dates.format(borrow.borrowDate, 'dd MMM yyyy') : 'Borrowed: -'}">
+                        Borrowed date
+                    </p>
+
+                    <!-- Safe due date -->
+                    <p class="text-sm text-gray-500" 
+                        th:text="${borrow.dueDate != null ? 'Due: ' + #dates.format(borrow.dueDate, 'dd MMM yyyy') : 'Due: -'}">
+                        Due date
+                    </p>
+
+                    <!-- Status -->
+                    <p class="text-sm text-gray-500" th:text="'Status: ' + ${borrow.status}">Status</p>
+                </div>
+            </div>
         </div>
-        <div>
-        <!-- Safe book title -->
-        <p class="font-bold text-gray-800" 
-           th:text="${borrow.book != null ? borrow.book.title : 'Unknown Book'}">Book Title</p>
-
-        <!-- Safe borrow date -->
-        <p class="text-sm text-gray-500" 
-           th:text="${borrow.borrowDate != null ? 'Borrowed: ' + #dates.format(borrow.borrowDate, 'dd MMM yyyy') : 'Borrowed: -'}">
-           Borrowed date
-        </p>
-
-        <!-- Safe due date -->
-        <p class="text-sm text-gray-500" 
-           th:text="${borrow.dueDate != null ? 'Due: ' + #dates.format(borrow.dueDate, 'dd MMM yyyy') : 'Due: -'}">
-           Due date
-        </p>
-
-        <!-- Status -->
-        <p class="text-sm text-gray-500" th:text="'Status: ' + ${borrow.status}">Status</p>
-    </div>
-</div>
-
-</div>
-
-</main>
+    </main>
 
 </body>
 </html>
