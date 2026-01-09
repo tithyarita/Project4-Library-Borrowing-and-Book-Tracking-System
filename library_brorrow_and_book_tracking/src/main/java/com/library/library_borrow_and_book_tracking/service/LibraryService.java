@@ -94,12 +94,6 @@ public class LibraryService {
     }
 
     // ===================== BORROW MANAGEMENT =====================
-<<<<<<< HEAD
-    @Transactional
-    public BorrowRecord bookReservation(Long bookId, String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-=======
  @Transactional
  private int getActiveBorrowCount(Long userId) {
     long booked = borrowRecordRepository.countByUserIdAndStatus(userId, "BOOKED");
@@ -110,7 +104,6 @@ public class LibraryService {
 public BorrowRecord bookReservation(Long bookId, String email) {
     User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new RuntimeException("User not found"));
->>>>>>> 5dc9a37ae48d4888497b984b7577548480960234
 
         // ✅ ENFORCE MAX 3 BOOKS
         if (getActiveBorrowCount(user.getId()) >= MAX_BORROW_LIMIT) {
