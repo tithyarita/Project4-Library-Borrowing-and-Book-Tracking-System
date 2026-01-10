@@ -8,117 +8,117 @@
 </head>
 <body>
 
-<div class="card">
-    <h2>Edit Profile</h2>
+    <div class="card">
+        <h2>Edit Profile</h2>
 
-    <form th:action="@{/user/account/edit}" method="post">
-        <label>Full Name</label>
-        <input type="text" name="fullName" th:value="${user.fullName}" required>
+        <form th:action="@{/user/account/edit}" method="post">
+            <label>Full Name</label>
+            <input type="text" name="fullName" th:value="${user.fullName}" required>
 
-        <label>Email</label>
-        <input type="email" name="email" th:value="${user.email}" required>
+            <label>Email</label>
+            <input type="email" name="email" th:value="${user.email}" required>
 
-        <button type="submit">Save Changes</button>
-    </form>
+            <button type="submit">Save Changes</button>
+        </form>
 
-    <a th:href="@{/user/account}" class="cancel-link">Cancel</a>
-</div>
+        <a th:href="@{/user/account}" class="cancel-link">Cancel</a>
+    </div>
 
 </body>
 </html>
 
 <style>
     /* ===== Body ===== */
-body {
-    background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
-    font-family: 'Inter', Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-}
+    body {
+        background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+        font-family: 'Inter', Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+    }
 
-/* ===== Card ===== */
-.card {
-    background: #ffffff;
-    padding: 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    width: 100%;
-    max-width: 450px;
-    text-align: center;
-}
+    /* ===== Card ===== */
+    .card {
+        background: #ffffff;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 450px;
+        text-align: center;
+    }
 
-/* ===== Heading ===== */
-.card h2 {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: #1e293b;
-    margin-bottom: 1.5rem;
-}
+    /* ===== Heading ===== */
+    .card h2 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 1.5rem;
+    }
 
-/* ===== Labels ===== */
-label {
-    display: block;
-    margin-top: 1rem;
-    margin-bottom: 0.25rem;
-    font-weight: 600;
-    color: #334155;
-    text-align: left;
-}
+    /* ===== Labels ===== */
+    label {
+        display: block;
+        margin-top: 1rem;
+        margin-bottom: 0.25rem;
+        font-weight: 600;
+        color: #334155;
+        text-align: left;
+    }
 
-/* ===== Inputs ===== */
-input[type="text"],
-input[type="email"] {
-    width: 100%;
-    padding: 0.75rem;
-    border-radius: 0.5rem;
-    border: 1px solid #cbd5e1;
-    font-size: 1rem;
-    transition: all 0.2s;
-}
+    /* ===== Inputs ===== */
+    input[type="text"],
+    input[type="email"] {
+        width: 26.5rem;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        border: 1px solid #cbd5e1;
+        font-size: 1rem;
+        transition: all 0.2s;
+    }
 
-input[type="text"]:focus,
-input[type="email"]:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
-}
+    input[type="text"]:focus,
+    input[type="email"]:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+    }
 
-/* ===== Buttons ===== */
-button {
-    margin-top: 1.5rem;
-    width: 100%;
-    padding: 0.75rem;
-    background: linear-gradient(90deg, #3b82f6, #2563eb);
-    color: #fff;
-    font-weight: 600;
-    font-size: 1rem;
-    border: none;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    transition: all 0.2s;
-}
+    /* ===== Buttons ===== */
+    button {
+        margin-top: 1.5rem;
+        width: 100%;
+        padding: 0.75rem;
+        background: linear-gradient(90deg, #3b82f6, #2563eb);
+        color: #fff;
+        font-weight: 600;
+        font-size: 1rem;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
 
-button:hover {
-    background: linear-gradient(90deg, #2563eb, #1e40af);
-    transform: translateY(-1px);
-}
+    button:hover {
+        background: linear-gradient(90deg, #2563eb, #1e40af);
+        transform: translateY(-1px);
+    }
 
-/* ===== Cancel Link ===== */
-.cancel-link {
-    display: block;
-    margin-top: 1rem;
-    font-weight: 500;
-    color: #2563eb;
-    text-decoration: none;
-    transition: color 0.2s;
-}
+    /* ===== Cancel Link ===== */
+    .cancel-link {
+        display: block;
+        margin-top: 1rem;
+        font-weight: 500;
+        color: #2563eb;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
 
-.cancel-link:hover {
-    text-decoration: underline;
-    color: #1e40af;
-}
+    .cancel-link:hover {
+        text-decoration: underline;
+        color: #1e40af;
+    }
 
 </style>

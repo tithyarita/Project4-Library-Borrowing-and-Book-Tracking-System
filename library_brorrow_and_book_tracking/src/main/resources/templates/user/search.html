@@ -110,14 +110,6 @@
 </html>
 
 <style>
-  /* ===== GLOBAL ===== */
-:root {
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
-  --border: #e2e8f0;
-  --text-dark: #1e293b;
-}
-
 body {
   font-family: Inter, system-ui, sans-serif;
 }
@@ -141,7 +133,7 @@ body {
 }
 
 .logo {
-  color: var(--primary);
+  color: #2563eb;
   font-size: 1.5rem;
   font-weight: 700;
   text-decoration: none;
@@ -157,7 +149,7 @@ body {
 .icon-divider {
   width: 1px;
   height: 1.5rem;
-  background: var(--border);
+  background: #ddd;
 }
 
   /* ===== LOGOUT BUTTON ===== */
@@ -194,7 +186,7 @@ body {
 
 .search-input:focus {
   outline: none;
-  border-color: var(--primary);
+  border-color: #2563eb;
 }
 
 .search-icon {
@@ -202,12 +194,12 @@ body {
   left: 0.75rem;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--primary);
+  color: #2563eb;
 }
 
 /* ===== BUTTON ===== */
 .search-button {
-  background: var(--primary);
+  background: #2563eb;
   color: white;
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
@@ -217,7 +209,7 @@ body {
 }
 
 .search-button:hover {
-  background: var(--primary-hover);
+  background: #1d4ed8;
 }
 
 /* ===== BOOK CARD ===== */
@@ -245,7 +237,7 @@ body {
 .book-card h3 {
   font-size: 1.125rem;
   font-weight: 600;
-  color: var(--text-dark);
+  color: #1e293b;
 }
 
 .author,
@@ -259,15 +251,16 @@ body {
   display: block;
   margin-top: 0.75rem;
   padding: 0.5rem;
-  background: var(--primary);
+  background: #2563eb;
   color: white;
   border-radius: 0.375rem;
   text-decoration: none;
   font-weight: 600;
+  justify-self: center;
 }
 
 .borrow-btn:hover {
-  background: var(--primary-hover);
+  background: #1d4ed8;
 }
 
 /* ===== NO RESULTS ===== */

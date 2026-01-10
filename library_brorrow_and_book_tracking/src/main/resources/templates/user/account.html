@@ -7,100 +7,100 @@
 </head>
 <body>
 
-<!-- HEADER -->
-<header>
-<header class="site-header">
-  <div class="header-container">
-    <a th:href="@{/user/home}" class="logo">Library System</a>
+    <!-- HEADER -->
+    <header class="site-header">
+        <div class="header-container">
+            <a th:href="@{/user/home}" class="logo">Library System</a>
 
-    <div class="icon-bar">
-      <a th:href="@{/user/search}"><i class="ti ti-search"></i></a>
-      <div class="icon-divider"></div>
-      <a th:href="@{/user/dashboard}"><i class="ti ti-books"></i></a>
-      <div class="icon-divider"></div>
-      <a th:href="@{/user/account}"><i class="ti ti-user text-blue-500 hover:text-blue-700"></i></a>
-      <form th:action="@{/logout}" method="post" class="logout-form">
-        <button type="submit" class="logout-btn">
-          Logout
-        </button>
-      </form>
-    </div>
-  </div>
-</header>
-
-<!-- MAIN -->
-<main>
-
-    <div class="title">
-        <h1>My Account</h1>
-        <p>Manage your personal information</p>
-    </div>
-
-    <div class="card">
-
-        <!-- Profile -->
-        <div class="profile">
-            <div class="avatar">
-                <span th:text="${#strings.substring(user.fullName,0,1)}">U</span>
-            </div>
-            <div>
-                <h2 th:text="${user.fullName}">User Name</h2>
-                <p th:text="${user.email}">user@email.com</p>
+            <div class="icon-bar">
+                <a th:href="@{/user/search}"><i class="ti ti-search"></i></a>
+                <div class="icon-divider"></div>
+                <a th:href="@{/user/dashboard}"><i class="ti ti-books"></i></a>
+                <div class="icon-divider"></div>
+                <a th:href="@{/user/account}"><i class="ti ti-user text-blue-500 hover:text-blue-700"></i></a>    
+        
+                <form th:action="@{/logout}" method="post" class="logout-form">
+                    <button type="submit" class="logout-btn">
+                        Logout
+                    </button>
+                </form>
             </div>
         </div>
+    </header>
 
-        <!-- Info -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+    <!-- MAIN -->
+    <main>
 
-        <!-- Full Name -->
-        <div class="bg-gray-50 border rounded-lg p-4">
-            <p class="text-sm text-gray-500 mb-1">Full Name</p>
-            <p class="text-lg font-semibold text-gray-800"
-            th:text="${user.fullName}">
-                User Name
-            </p>
+        <div class="title">
+            <h1>My Account</h1>
+            <p>Manage your personal information</p>
         </div>
 
-    <!-- Email -->
-    <div class="bg-gray-50 border rounded-lg p-4">
-        <p class="text-sm text-gray-500 mb-1">Email</p>
-        <p class="text-lg font-semibold text-gray-800"
-           th:text="${user.email}">
-            user@email.com
-        </p>
-    </div>
+        <div class="card">
 
-    <!-- User ID -->
-    <div class="bg-gray-50 border rounded-lg p-4">
-        <p class="text-sm text-gray-500 mb-1">User ID</p>
-        <p class="text-lg font-semibold text-gray-800"
-           th:text="${user.id}">
-            1
-        </p>
-    </div>
+            <!-- Profile -->
+            <div class="profile">
+                <div class="avatar">
+                    <span th:text="${#strings.substring(user.fullName,0,1)}">U</span>
+                </div>
 
-    <!-- Account Status -->
-    <div class="bg-gray-50 border rounded-lg p-4">
-        <p class="text-sm text-gray-500 mb-2">Account Status</p>
-        <span class="inline-flex items-center gap-2
-                     bg-green-100 text-green-700
-                     px-3 py-1 rounded-full text-sm font-medium">
-            ● Active
-        </span>
-    </div>
+                <div>
+                    <h2 th:text="${user.fullName}">User Name</h2>
+                    <p th:text="${user.email}">user@email.com</p>
+                </div>
+            </div>
 
-</div>
+            <!-- Info -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
 
+                <!-- Full Name -->
+                <div class="bg-gray-50 border rounded-lg p-4">
+                    <p class="text-sm text-gray-500 mb-1">Full Name</p>
+                    <p class="text-lg font-semibold text-gray-800"
+                        th:text="${user.fullName}">
+                        User Name
+                    </p>
+                </div>
 
+            <!-- Email -->
+            <div class="bg-gray-50 border rounded-lg p-4">
+                <p class="text-sm text-gray-500 mb-1">Email</p>
+                <p class="text-lg font-semibold text-gray-800"
+                    th:text="${user.email}">
+                    user@email.com
+                </p>
+            </div>
 
-        <!-- Actions -->
-        <div class="actions">
-            <a th:href="@{/user/account/edit}" class="edit">Edit Profile</a>
-            <a th:href="@{/user/change_password}" class="password">Change Password</a>
+            <!-- User ID -->
+            <div class="bg-gray-50 border rounded-lg p-4">
+                <p class="text-sm text-gray-500 mb-1">User ID</p>
+                <p class="text-lg font-semibold text-gray-800"
+                    th:text="${user.id}">
+                    1
+                </p>
+            </div>
+
+            <!-- Account Status -->
+            <div class="bg-gray-50 border rounded-lg p-4">
+                <p class="text-sm text-gray-500 mb-2">Account Status</p>
+                <span class="inline-flex items-center gap-2
+                        bg-green-100 text-green-700
+                        px-3 py-1 rounded-full text-sm font-medium">
+                    ● Active
+                </span>
+            </div>
         </div>
 
-    </div>
-</main>
+
+
+            <!-- Actions -->
+            <div class="actions">
+                <a th:href="@{/user/account/edit}" class="edit">Edit Profile</a>
+                <a th:href="@{/user/change_password}" class="password">Change Password</a>
+            </div>
+
+        </div>
+    </main>
 
 </body>
 </html>
