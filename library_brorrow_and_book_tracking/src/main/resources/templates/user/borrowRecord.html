@@ -7,40 +7,41 @@
 </head>
 <body>
 
-<header class="site-header">
-  <div class="header-container">
-    <a th:href="@{/user/home}" class="logo">Library System</a>
+  <header class="site-header">
+    <div class="header-container">
+      <a th:href="@{/user/home}" class="logo">Library System</a>
 
-    <div class="icon-bar">
-      <a th:href="@{/user/search}"><i class="ti ti-search"></i></a>
-      <div class="icon-divider"></div>
-      <a th:href="@{/user/dashboard}"><i class="ti ti-books text-blue-500 hover:text-blue-700"></i></a>
-      <div class="icon-divider"></div>
-      <a th:href="@{/user/account}"><i class="ti ti-user"></i></a>
-      <form th:action="@{/logout}" method="post" class="logout-form">
-        <button type="submit" class="logout-btn">
-          Logout
-        </button>
-      </form>
+      <div class="icon-bar">
+        <a th:href="@{/user/search}"><i class="ti ti-search"></i></a>
+        <div class="icon-divider"></div>
+        <a th:href="@{/user/dashboard}"><i class="ti ti-books text-blue-500 hover:text-blue-700"></i></a>
+        <div class="icon-divider"></div>
+        <a th:href="@{/user/account}"><i class="ti ti-user"></i></a>
+        
+        <form th:action="@{/logout}" method="post" class="logout-form">
+          <button type="submit" class="logout-btn">
+            Logout
+          </button>
+        </form>
+      </div>
     </div>
-  </div>
-</header>
+  </header>
 
-<div class="max-w-6xl mx-auto px-4 py-6">
-  <div class="bg-white rounded-xl shadow-md overflow-hidden">
-    <div class="header">
-      <h1>📚 My Borrow Records</h1>
-    </div>
+  <div class="max-w-6xl mx-auto px-4 py-6">
+    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+      <div class="header">
+        <h1>📚 My Borrow Records</h1>
+      </div>
 
-    <!-- Success Message -->
-    <div th:if="${successMessage}" class="message-box bg-green-100 text-green-700 border border-green-300">
-      <p th:text="${successMessage}"></p>
-    </div>
+      <!-- Success Message -->
+      <div th:if="${successMessage}" class="message-box bg-green-100 text-green-700 border border-green-300">
+        <p th:text="${successMessage}"></p>
+      </div>
 
-    <!-- Error Message -->
-    <div th:if="${errorMessage}" class="message-box bg-red-100 text-red-700 border border-red-300">
-      <p th:text="${errorMessage}"></p>
-    </div>
+      <!-- Error Message -->
+      <div th:if="${errorMessage}" class="message-box bg-red-100 text-red-700 border border-red-300">
+        <p th:text="${errorMessage}"></p>
+      </div>
 
     <section class="table-section">
       <div th:if="${borrowRecord != null and not #lists.isEmpty(borrowRecord)}">
@@ -88,113 +89,177 @@
             </tbody>
           </table>
         </div>
-      </div>
 
-      <div th:if="${borrowRecord == null or #lists.isEmpty(borrowRecord)}">
-        <p class="empty-message">
-          You haven’t borrowed any books yet.
-        </p>
-      </div>
-    </section>
+        <div th:if="${borrowRecord == null or #lists.isEmpty(borrowRecord)}">
+          <p class="empty-message">
+            You haven’t borrowed any books yet.
+          </p>
+        </div>
+      </section>
+    </div>
   </div>
-</div>
 
 </body>
 </html>
 
 <style>
-/* ========== GLOBAL ========== */
-* { box-sizing: border-box; }
-body {
-  margin: 0; padding: 0;
-  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-  font-weight: 400;
-  width: 100vw;
-  min-height: 100vh;
-  overflow-x: hidden;
-  background-color: #f9fafb;
-  text-rendering: optimizeLegibility;
-}
-:root {
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
-  --text-dark: #1e293b;
-}
+  * { box-sizing: border-box; }
 
-/* HEADER */
-.site-header {
-  position: sticky;
-  top: 0;
-  background: white;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  z-index: 50;
-  width: 100%;
-}
-.header-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 1.5rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-.logo {
-  color: var(--primary);
-  font-size: 1.5rem;
-  font-weight: 700;
-  text-decoration: none;
-}
-.icon-bar { display: flex; align-items: center; gap: 1rem; font-size: 1.5rem; }
-.icon-divider { width: 1px; height: 1.5rem; background-color: #ddd; }
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    font-weight: 400;
+    width: 100vw;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-color: #f9fafb;
+    text-rendering: optimizeLegibility;
+  }
 
-/* PAGE HEADER */
-.header {
-  background-color: #2563eb;
-  padding: 1rem 1.5rem;
-}
-.header h1 { font-size: 1.5rem; color: white; font-weight: bold; margin: 0; }
+  /* HEADER */
+  .site-header {
+    position: sticky;
+    top: 0;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    z-index: 50;
+    width: 100%;
+  }
 
-/* LOGOUT BUTTON */
-.logout-form { display: inline-block; }
-.logout-btn {
-  display: flex; align-items: center; gap: 0.5rem;
-  background-color: #dc2626;
-  color: white; font-weight: 600;
-  padding: 0.4rem 0.75rem;
-  border-radius: 0.5rem; border: none;
-  cursor: pointer; font-size: 0.875rem;
-  transition: background-color 0.2s, transform 0.1s;
-}
-  .logout-btn:hover {
-    background: #b91c1c;
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .logo {
+    color: #2563eb;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .icon-bar { 
+    display: flex; 
+    align-items: center; 
+    gap: 1rem; 
+    font-size: 1.5rem; 
+  }
+
+  .icon-divider { 
+    width: 1px; 
+    height: 1.5rem; 
+    background-color: #ddd; 
   }
 
 
-/* MESSAGE BOX */
-.message-box { padding: 0.75rem 1rem; margin: 1rem 1.5rem 0; border-radius: 0.25rem; }
+  /* PAGE HEADER */
+  .header {
+    background-color: #2563eb;
+    padding: 1rem 1.5rem;
+  }
 
-/* ACTION BUTTONS */
-.action-buttons { padding: 0 1.5rem 1rem; display: flex; gap: 0.5rem; }
-.action-buttons a { display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; }
-.action-buttons a i { font-size: 0.875rem; }
+  .header h1 { 
+    font-size: 1.5rem; 
+    color: white; 
+    font-weight: bold; 
+    margin: 0; 
+  }
 
-/* TABLE */
-.table-section { padding: 1.25rem 1.5rem; }
-.records-table {
-  width: 100%;
-  border-collapse: collapse;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
-}
-.records-table th, .records-table td { padding: 0.75rem 1rem; }
-.records-table th {
-  background-color: #f9fafb;
-  text-align: left; font-size: 0.75rem; font-weight: 500;
-  color: #6b7280; text-transform: uppercase;
-}
-.records-table td { font-size: 0.875rem; color: #374151; }
-.records-table tr:hover { background-color: #f3f4f6; }
 
-/* EMPTY STATE */
-.empty-message { text-align: center; color: #6b7280; font-style: italic; padding: 1rem 0; }
+  /* LOGOUT BUTTON */
+  .logout-form { 
+    display: inline-block; 
+  }
+
+  .logout-btn {
+    display: flex; 
+    align-items: center; 
+    gap: 0.5rem;
+    background-color: #dc2626;
+    color: white; 
+    font-weight: 600;
+    padding: 0.4rem 0.75rem;
+    border-radius: 0.5rem; 
+    border: none;
+    cursor: pointer; 
+    font-size: 0.875rem;
+    transition: background-color 0.2s, transform 0.1s;
+  }
+
+  .logout-btn:hover {
+      background: #b91c1c;
+  }
+
+
+  /* MESSAGE BOX */
+  .message-box { 
+    padding: 0.75rem 1rem; 
+    margin: 1rem 1.5rem 0; 
+    border-radius: 0.25rem; 
+  }
+
+  /* ACTION BUTTONS */
+  .action-buttons { 
+    padding: 0 1.5rem 1rem; 
+    display: flex; 
+    gap: 0.5rem; 
+  }
+
+  .action-buttons a { 
+    display: inline-flex; 
+    align-items: center; 
+    gap: 0.5rem; 
+    text-decoration: none; 
+  }
+
+  .action-buttons a i { 
+    font-size: 0.875rem; 
+  }
+
+
+  /* TABLE */
+  .table-section { 
+    padding: 1.25rem 1.5rem; 
+  }
+
+  .records-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+  }
+  .records-table th, .records-table td { 
+    padding: 0.75rem 1rem; 
+  }
+
+  .records-table th {
+    background-color: #f9fafb;
+    text-align: left; 
+    font-size: 0.75rem; 
+    font-weight: 500;
+    color: #6b7280; 
+    text-transform: uppercase;
+  }
+
+  .records-table td { 
+    font-size: 0.875rem; 
+    color: #374151; 
+  }
+
+  .records-table tr:hover { 
+    background-color: #f3f4f6; 
+  }
+
+  /* EMPTY STATE */
+  .empty-message { 
+    text-align: center; 
+    color: #6b7280; 
+    font-style: italic; 
+    padding: 1rem 0; 
+  }
+
 </style> 
