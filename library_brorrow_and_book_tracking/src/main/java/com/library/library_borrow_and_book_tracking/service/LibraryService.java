@@ -83,9 +83,19 @@ public class LibraryService {
         return bookRepository.findAllByOrderByCreatedAtDesc();
     }
 
-    public List<Book> searchBooks(String query) {
-        if (query == null || query.isEmpty()) return List.of();
-        return bookRepository.findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCaseOrCategoryContainingIgnoreCase(query, query, query);
+    public List<Book> searchBooks(String query, String category) {
+        boolean hasQuery = query != null && !query.trim().isEmpty();
+        boolean hasCategory = category != null && !category.trim().isEmpty();
+
+        if (hasCategory && hasQuery) {
+            return bookRepository.findByCategoryIgnoreCaseAndTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(category, query, query);
+        } else if (hasCategory) {
+            return bookRepository.findByCategoryIgnoreCase(category);
+        } else if (hasQuery) {
+            return bookRepository.findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCaseOrCategoryContainingIgnoreCase(query, query, query);
+        } else {
+            return List.of();
+        }
     }
 
     @Transactional
@@ -228,9 +238,9 @@ public BorrowRecord bookReservation(Long bookId, String email) {
         return borrowRecordRepository.countByStatusAndDueDateBefore("BORROWED", LocalDate.now());
     }
     
-public List<BorrowRecord> getAllPendingBorrowRecords() {
-    return borrowRecordRepository.findByStatus("BOOKED");
-}
+    public List<BorrowRecord> getAllPendingBorrowRecords() {
+        return borrowRecordRepository.findByStatus("BOOKED");
+    }
 
 
     
@@ -278,7 +288,7 @@ public void confirmReturn(Long recordId) {
     Book book = record.getBook();
     if (book != null) {
         Integer q = book.getQuantity() == null ? 0 : book.getQuantity();
-        book.setQuantity(q + 1);                 // ✅ FIX
+        book.setQuantity(q + 1);                 
         book.setAvailable(book.getQuantity() > 0);
         bookRepository.save(book);
     }

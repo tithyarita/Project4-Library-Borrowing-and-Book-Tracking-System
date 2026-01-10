@@ -2,6 +2,8 @@ package com.library.library_borrow_and_book_tracking.controller;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -36,25 +38,23 @@ public class UserController {
         return "index";
     }
 
-
     // ===== HOME PAGE =====
     @GetMapping("/user/home")
     public String home(Model model) {
-        model.addAttribute("books", libraryService.getFeaturedBooks());
+        List<Book> books = libraryService.getFeaturedBooks();
+        Map<String, List<Book>> booksByCategory = books.stream()
+                .collect(Collectors.groupingBy(Book::getCategory));
+        model.addAttribute("booksByCategory", booksByCategory);
         return "home";
-
-        // compatibility: some templates/link use /register while controller is under /api/auth
-        // @GetMapping("/register")
-        // public String registerRedirect() {
-        //     return "redirect:/api/auth/register";
-        // }
     }
 
 
     // ===== SEARCH BOOKS =====
     @GetMapping("/user/search")
-        public String search(@RequestParam(name = "q", required = false) String q, Model model) {
-        List<Book> books = libraryService.searchBooks(q);
+    public String search(@RequestParam(name = "q", required = false) String q,
+                         @RequestParam(name = "category", required = false) String category,
+                         Model model) {
+        List<Book> books = libraryService.searchBooks(q, category);
         model.addAttribute("books", books);
         return "user/search";
     }
@@ -164,6 +164,9 @@ public class UserController {
         redirectAttributes.addFlashAttribute("successMessage", "Book borrowed successfully!");
         return "redirect:/user/dashboard";
     }
+
+  
+
 
     
 
