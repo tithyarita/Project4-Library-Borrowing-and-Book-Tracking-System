@@ -31,7 +31,7 @@
 </header>
 
 <!-- ================= MAIN ================= -->
-<main class="max-w-4xl mx-auto px-4 py-8">
+<main class="max-w-7xl mx-auto px-4 py-8">
 
   <div class="text-center mb-8">
     <h1 class="text-3xl font-bold text-gray-800">Search Books</h1>
@@ -56,13 +56,37 @@
     </button>
   </form>
 
+  <!-- Categories -->
+  <div class="mb-8">
+    <h2 class="text-xl font-semibold text-gray-700 mb-4 text-center">Categories</h2>
+    <div class="category-scroll-container">
+        <div class="flex space-x-4 pb-4">
+            <a th:href="@{/user/search(category='Fiction')}" class="category-chip">Fiction</a>
+            <a th:href="@{/user/search(category='Non-Fiction')}" class="category-chip">Non-Fiction</a>
+            <a th:href="@{/user/search(category='Science')}" class="category-chip">Science</a>
+            <a th:href="@{/user/search(category='History')}" class="category-chip">History</a>
+            <a th:href="@{/user/search(category='Technology')}" class="category-chip">Technology</a>
+            <a th:href="@{/user/search(category='Biography')}" class="category-chip">Biography</a>
+            <a th:href="@{/user/search(category='Fantasy')}" class="category-chip">Fantasy</a>
+            <a th:href="@{/user/search(category='Mystery')}" class="category-chip">Mystery</a>
+            <a th:href="@{/user/search(category='Thriller')}" class="category-chip">Thriller</a>
+            <a th:href="@{/user/search(category='Romance')}" class="category-chip">Romance</a>
+            <a th:href="@{/user/search(category='Self-Help')}" class="category-chip">Self-Help</a>
+            <a th:href="@{/user/search(category='Business')}" class="category-chip">Business</a>
+            <a th:href="@{/user/search(category='Cooking')}" class="category-chip">Cooking</a>
+            <a th:href="@{/user/search(category='Art')}" class="category-chip">Art</a>
+            <a th:href="@{/user/search(category='Poetry')}" class="category-chip">Poetry</a>
+        </div>
+    </div>
+  </div>
+
   <!-- Search Results -->
   <div th:if="${books != null && !books.empty}" class="space-y-6">
     <h2 class="text-xl font-semibold text-gray-700 text-center">
       Found <span th:text="${books.size()}"></span> book(s)
     </h2>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-9 gap-6">
       <div th:each="book : ${books}" class="book-card">
         <img th:src="${book.coverUrl ?: '/images/default-book.png'}"
              onerror="this.src='/images/default-book.png'">
@@ -80,7 +104,6 @@
         <form th:action="@{/user/borrowRecord/{id}(id=${book.id})}" method="post">
           <button type="submit" class="borrow-btn">Borrow</button>
         </form>
-
       </div>
     </div>
   </div>
@@ -236,7 +259,7 @@ body {
 
 .book-card img {
   width: 100%;
-  height: 12rem;
+  aspect-ratio: 2 / 3;
   object-fit: cover;
   border-radius: 0.375rem;
   margin-bottom: 0.75rem;
@@ -268,6 +291,34 @@ body {
 
 .borrow-btn:hover {
   background: var(--primary-hover);
+}
+
+/* ===== CATEGORY SCROLL ===== */
+.category-scroll-container {
+  overflow-x: auto;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.category-scroll-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, and Opera */
+}
+
+/* ===== CATEGORY CHIP ===== */
+.category-chip {
+  flex-shrink: 0;
+  background-color: #e5e7eb;
+  color: #374151;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  text-decoration: none;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background-color 0.2s;
+}
+
+.category-chip:hover {
+  background-color: #d1d5db;
 }
 
 /* ===== NO RESULTS ===== */

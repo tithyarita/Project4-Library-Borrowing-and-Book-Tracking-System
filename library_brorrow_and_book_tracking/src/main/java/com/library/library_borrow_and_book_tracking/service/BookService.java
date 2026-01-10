@@ -14,7 +14,6 @@ public class BookService {
 
     private final BookRepository bookRepository;
 
-    // ✅ Constructor injection
     public BookService(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }

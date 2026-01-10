@@ -19,8 +19,8 @@ public class DashboardController {
 
     @Autowired
     private UserService userService;
-@GetMapping("/user/dashboard")
-public String dashboard(Model model, Principal principal) {
+    @GetMapping("/user/dashboard")
+    public String dashboard(Model model, Principal principal) {
     if (principal == null || principal.getName() == null) {
         return "redirect:/login";
     }

@@ -67,12 +67,13 @@
                 <td th:text="${record.book.title}"></td>
                 <td th:text="${record.borrowDate}"></td>
                 <td th:text="${record.dueDate}"></td>
+                <td th:text="${record.returnDate}"></td>
                 <td th:text="${record.status}"></td>
                 
                 <td>
 
                   <!-- Delete Button -->
-                  <form th:action="@{/user/borrowRecord/{id}/delete(id=${record.id})}" method="post"
+                  <form th:if="${record.status == 'BOOKED'}" th:action="@{/user/borrowRecord/{id}/delete(id=${record.id})}" method="post"
                         class="inline-block"
                         onsubmit="return confirm('Are you sure you want to delete this record?');">
                     <button type="submit"
@@ -81,7 +82,7 @@
                     </button>
                   </form>
 
-                  <span th:if="${record.status == 'RETURNED'}" class="text-gray-500 text-sm">No actions</span>
+                  <span th:if="${record.status != 'BOOKED'}" class="text-gray-500 text-sm">No actions</span>
                 </td>
               </tr>
             </tbody>

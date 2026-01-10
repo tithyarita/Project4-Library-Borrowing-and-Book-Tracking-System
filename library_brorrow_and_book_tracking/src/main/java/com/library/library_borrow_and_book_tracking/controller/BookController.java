@@ -13,6 +13,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 @Controller
 @RequestMapping("/books")
 public class BookController {
@@ -96,8 +99,15 @@ public String updateBook(@PathVariable("id") Long id,
 }
 
     @PostMapping("/delete/{id}")
-    public String deleteBook(@PathVariable("id") Long id) {
-        bookService.deleteBook(id);
+    public String deleteBook(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+        try {
+            bookService.deleteBook(id);
+            redirectAttributes.addFlashAttribute("message", "Book deleted successfully!");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("error", "Cannot delete book: It is currently borrowed or referenced elsewhere.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error deleting book: " + e.getMessage());
+        }
         return "redirect:/books";
     }
     

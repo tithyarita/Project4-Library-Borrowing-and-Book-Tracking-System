@@ -33,6 +33,7 @@ public class LibrarianController {
         model.addAttribute("user", librarian);
         model.addAttribute("totalBooks", libraryService.getTotalBooks());
         model.addAttribute("pendingBorrowRequests", libraryService.getPendingBorrowRequests());
+    
         model.addAttribute("overdueBooks", libraryService.getOverdueBooks());
         return "librarian/dashboard"; // Template: templates/librarian/dashboard.html
     }
@@ -65,7 +66,7 @@ public class LibrarianController {
     }
 
     @GetMapping("/edit-user/{id}")
-    public String editUserForm(@PathVariable Long id, Model model, RedirectAttributes redirect) {
+    public String editUserForm(@PathVariable("id") Long id, Model model, RedirectAttributes redirect) {
         return libraryService.findUserById(id)
                 .map(user -> {
                     model.addAttribute("user", user);
@@ -78,7 +79,7 @@ public class LibrarianController {
     }
 
     @PostMapping("/edit-user/{id}")
-    public String updateUser(@PathVariable Long id,
+    public String updateUser(@PathVariable("id") Long id,
                              @ModelAttribute("user") User updatedUser,
                              RedirectAttributes redirect) {
         return libraryService.findUserById(id)
