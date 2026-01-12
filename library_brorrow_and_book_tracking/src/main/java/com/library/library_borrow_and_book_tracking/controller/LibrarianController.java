@@ -96,15 +96,17 @@ public class LibrarianController {
                     return "redirect:/librarian/manage_user";
                 });
     }
-@PostMapping("/manage-user/deactivate/{id}")
-public String deactivateUser(@PathVariable("id") Long id, RedirectAttributes redirect) {
+@PostMapping("/manage_user/deactivate/{id}")
+public String deactivateUser(@PathVariable("id") Long id,
+                             RedirectAttributes redirect) {
     libraryService.deactivateUser(id);
     redirect.addFlashAttribute("message", "User deactivated successfully");
     return "redirect:/librarian/manage_user";
 }
 
-@PostMapping("/manage-user/reactivate/{id}")
-public String reactivateUser(@PathVariable("id") Long id, RedirectAttributes redirect) {
+@PostMapping("/manage_user/reactivate/{id}")
+public String reactivateUser(@PathVariable("id") Long id,
+                             RedirectAttributes redirect) {
     libraryService.reactivateUser(id);
     redirect.addFlashAttribute("message", "User reactivated successfully");
     return "redirect:/librarian/manage_user";
