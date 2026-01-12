@@ -44,7 +44,7 @@ public class BookController {
 
         if (coverFile != null && !coverFile.isEmpty()) {
             String filename = System.currentTimeMillis() + "_" + coverFile.getOriginalFilename();
-            Path uploadPath = Paths.get(System.getProperty("user.dir"), "uploads/books");
+            Path uploadPath = Paths.get(System.getProperty("user.dir"), "uploads", "books");
             Files.createDirectories(uploadPath);
             Path filePath = uploadPath.resolve(filename);
             coverFile.transferTo(filePath.toFile());
@@ -85,7 +85,7 @@ public String updateBook(@PathVariable("id") Long id,
     // 3️⃣ Update cover only if a new file is uploaded
     if (coverFile != null && !coverFile.isEmpty()) {
         String filename = System.currentTimeMillis() + "_" + coverFile.getOriginalFilename();
-        Path uploadPath = Paths.get(System.getProperty("user.dir"), "uploads/books");
+        Path uploadPath = Paths.get(System.getProperty("user.dir"), "uploads", "books");
         Files.createDirectories(uploadPath);
         Path filePath = uploadPath.resolve(filename);
         coverFile.transferTo(filePath.toFile());
@@ -101,6 +101,18 @@ public String updateBook(@PathVariable("id") Long id,
     @PostMapping("/delete/{id}")
     public String deleteBook(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         try {
+            // Optional: Delete the image file from disk before deleting the record
+            Book book = bookService.getBookById(id).orElse(null);
+            if (book != null && book.getCoverUrl() != null) {
+                try {
+                    // Construct the full path based on how it was saved
+                    Path filePath = Paths.get(System.getProperty("user.dir"), book.getCoverUrl());
+                    Files.deleteIfExists(filePath);
+                } catch (IOException e) {
+                    // Log error but continue with DB deletion
+                    e.printStackTrace();
+                }
+            }
             bookService.deleteBook(id);
             redirectAttributes.addFlashAttribute("message", "Book deleted successfully!");
         } catch (DataIntegrityViolationException e) {
