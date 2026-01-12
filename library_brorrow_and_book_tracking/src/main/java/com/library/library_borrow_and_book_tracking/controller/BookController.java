@@ -44,7 +44,7 @@ public class BookController {
 
         if (coverFile != null && !coverFile.isEmpty()) {
             String filename = System.currentTimeMillis() + "_" + coverFile.getOriginalFilename();
-            Path uploadPath = Paths.get(System.getProperty("user.dir"), "uploads/books");
+            Path uploadPath = Paths.get(System.getProperty("user.dir"), "uploads", "books");
             Files.createDirectories(uploadPath);
             Path filePath = uploadPath.resolve(filename);
             coverFile.transferTo(filePath.toFile());
@@ -85,7 +85,7 @@ public String updateBook(@PathVariable("id") Long id,
     // 3️⃣ Update cover only if a new file is uploaded
     if (coverFile != null && !coverFile.isEmpty()) {
         String filename = System.currentTimeMillis() + "_" + coverFile.getOriginalFilename();
-        Path uploadPath = Paths.get(System.getProperty("user.dir"), "uploads/books");
+        Path uploadPath = Paths.get(System.getProperty("user.dir"), "uploads", "books");
         Files.createDirectories(uploadPath);
         Path filePath = uploadPath.resolve(filename);
         coverFile.transferTo(filePath.toFile());
