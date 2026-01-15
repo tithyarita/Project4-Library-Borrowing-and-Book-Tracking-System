@@ -18,10 +18,8 @@ public class Role {
     @Column(name = "role_name", nullable = false, unique = true)
     private String roleName;
 
-    // Default constructor
     public Role() { }
 
-    // Constructor for creating roles
     public Role(String roleName) {
         this.roleName = roleName;
     }

@@ -78,7 +78,7 @@
         <tr th:each="record : ${borrowedItems}" class="hover:bg-gray-50">
           <td class="p-2 border" th:text="${record.id}"></td>
           <td class="p-2 border"
-              th:text="${record.user.username + ' (' + record.user.email + ')'}"></td>
+              th:text="${record.user.username}"></td>
           <td class="p-2 border" th:text="${record.book.title}"></td>
           <td class="p-2 border" th:text="${record.borrowDate} ?: '—'"></td>
           <td class="p-2 border" th:text="${record.dueDate} ?: '—'"></td>

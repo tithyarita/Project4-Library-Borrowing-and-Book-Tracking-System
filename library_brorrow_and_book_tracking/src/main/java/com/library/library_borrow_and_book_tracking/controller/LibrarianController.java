@@ -117,7 +117,7 @@ public String reactivateUser(@PathVariable("id") Long id,
     public String manageBorrows(Model model) {
         List<BorrowRecord> pendingRecords = libraryService.getAllPendingBorrowRecords();
         model.addAttribute("borrowedItems", pendingRecords);
-        return "librarian/manage-borrows"; // Template: templates/librarian/manage-borrows.html
+        return "librarian/manage-borrows"; 
     }
 
 @PostMapping("/borrow/confirm/{id}")
@@ -131,7 +131,7 @@ public String confirmBorrow(@PathVariable("id") Long id, RedirectAttributes redi
     return "redirect:/librarian/records";
 }
 
-@GetMapping("/process_return") // ✅ Remove the extra /librarian
+@GetMapping("/process_return") 
     public String processReturnPage(Model model) {
         List<BorrowRecord> borrowedItems =
                 libraryService.getAllBorrowRecordsForLibrarian();
@@ -139,7 +139,7 @@ public String confirmBorrow(@PathVariable("id") Long id, RedirectAttributes redi
         model.addAttribute("borrowedItems", borrowedItems);
         model.addAttribute("activeTab", "process_return");
 
-        return "librarian/process_return"; // Must exist in templates/librarian/process_return.html
+        return "librarian/process_return"; 
     }
 
 @PostMapping("/borrow/return/{id}")
