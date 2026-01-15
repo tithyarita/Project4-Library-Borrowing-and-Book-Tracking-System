@@ -115,7 +115,6 @@ public BorrowRecord bookReservation(Long bookId, String email) {
     User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // ✅ ENFORCE MAX 3 BOOKS
         if (getActiveBorrowCount(user.getId()) >= MAX_BORROW_LIMIT) {
             throw new RuntimeException("You can only borrow up to 3 books at one time");
         }
@@ -151,7 +150,7 @@ public BorrowRecord bookReservation(Long bookId, String email) {
 
         record.setStatus("BORROWED");
         record.setBorrowDate(LocalDate.now());
-        record.setDueDate(LocalDate.now().plusDays(14));
+        record.setDueDate(LocalDate.now().plusDays(1));
 
         borrowRecordRepository.save(record);
     }
@@ -242,18 +241,16 @@ public BorrowRecord bookReservation(Long bookId, String email) {
         return borrowRecordRepository.findByStatus("BOOKED");
     }
 
+    @Transactional(readOnly = true)
+    public List<BorrowRecord> getAllBorrowRecordsForLibrarian() {
+    return borrowRecordRepository.findAllByOrderByCreatedAtDesc();
+    }
 
-    
-    public List<BorrowRecord> getAllBorrowRecords(String email) {
+        public List<BorrowRecord> getAllBorrowRecords(String email) {
     User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new RuntimeException("User not found"));
     return borrowRecordRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
-}
-@Transactional(readOnly = true)
-public List<BorrowRecord> getAllBorrowRecordsForLibrarian() {
-    return borrowRecordRepository.findAllByOrderByCreatedAtDesc();
-}
-
+    }
 
 @Transactional
 public void requestReturn(Long recordId) {
@@ -294,6 +291,16 @@ public void confirmReturn(Long recordId) {
     }
 
     borrowRecordRepository.save(record);
+
+      if ("RETURNED_LATE".equals(record.getStatus())) {
+        User user = record.getUser();
+        long lateCount = borrowRecordRepository.countByUserIdAndStatus(user.getId(), "RETURNED_LATE");
+
+        if (lateCount >= 3 && user.getActive()) {
+            user.setActive(false); 
+            userRepository.save(user);
+        }
+    }
 }
 
 

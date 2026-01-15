@@ -40,7 +40,6 @@ public class Book {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // ✅ NEW field for cover image
     private String coverUrl;
 
     @PrePersist

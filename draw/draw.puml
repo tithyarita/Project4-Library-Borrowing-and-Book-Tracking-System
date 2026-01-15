@@ -1,83 +1,110 @@
-@startuml
+ @startuml
 !pragma teoz true
 
-' =====================
-' MEMBER BORROW & RETURN FLOW
-' =====================
-
-|Member|
+|User|
 start
 :Register / Login;
-:Search Book;
+' =====================
+' Main Home Page Loop
+' =====================
 
-|System|
-if (Book Available?) then (Yes)
+    :Go to Home Page;
 
-    if (Has Unreturned Book?) then (Yes)
-        :Reject Borrow;
-        :Send Fail Message;
-        stop
-    else (No)
-
-        if (Borrowed 3 Books This Week?) then (Yes)
-            :Reject Borrow;
-            :Send Fail Message;
-            stop
-        else (No)
-
-            |Member|
-            :Choose Borrow or Booking;
-
-            |System|
-            :Generate Receipt;
-
-            ' =====================
-            ' Receipt goes to both Member and Librarian
-            ' =====================
-            fork
-                |Member|
-                :Receive Receipt;
-            fork again
-                |Librarian|
-                :Receive Receipt;
-                :Record Receipt;
-                :Set Book Status (Booked / Borrowed);
-            end fork
-
-            |Member|
-            :Come to Library;
-
-            |Librarian|
-            :Approve Receipt;
-            :Confirm Borrow;
-            :Set Return Date;
-
-        endif
+    ' User chooses action
+    if (Choose Action?) then (Search)
+        :Search Book;
+    else (Scroll)
+        :Scroll Book List;
     endif
 
-else (No)
-    :Display "Book Unavailable";
-    stop
-endif
+    |System|
+    if (Book Available?) then (Yes)
+
+        if (Returned the old book?) then (No)
+            :Reject Borrow;
+            :Notify User to Return Book First;
+            stop
+        else (Yes)
+
+            if (How many books?) then (book <= 3)
+                |System|
+                if (User Status = Blacklisted?) then (Yes)
+                    :Reject Booking;
+                    :Notify Punishment / Cannot Borrow;
+                    stop
+                else (Active)
+                    ' =====================
+                    ' Booking Stage
+                    ' =====================
+                    |User|
+                    :Booking;
+
+                    |System|
+                    :Generate Receipt;
+
+                    ' =====================
+                    ' Both receive receipt (Booking)
+                    ' =====================
+                    fork
+                        |User|
+                        :Receive Receipt (Booked);
+                    fork again
+                        |Librarian|
+                        :Receive Receipt (Booked);
+                       
+                    end fork
+
+                    ' =====================
+                    ' Borrowing Stage
+                    ' =====================
+                    |User|
+                    :Come to Library to take book;
+
+                    |Librarian|
+                    :Search Receipt by User ID;
+                    :Set Book Status (Borrowed);
+
+                    |System|
+                    :Set Return Date (starts now);
+                endif
+
+            else (book > 3)
+                :Reject Borrow;
+                :Notify Weekly Limit Reached;
+                stop
+            endif
+
+        endif
+
+    else (No)
+        :Display "Book Unavailable";
+        stop
+    endif
+
+
 
 ' =====================
 ' RETURN FLOW
 ' =====================
 
-|Member|
+|User|
 :Return Book;
 
 |Librarian|
 :Process Return;
-:Update Book Status;
+:Set Book Status to Returned;
 
 |System|
-if (Returned On Time?) then (Yes)
-    :Record Return;
-    :Member Status = Active;
-else (Late > 3 Days)
+if (Returned On Time?) then (Before day or On the day)
+    :Record Ontime;
+    :User Status = Active;
+else (Late)
     :Record Late Return;
-    :Member Status = Blacklisted;
+    if (User Late Count = 3times) then (Yes)
+        :User Status = Blacklisted;
+    else (No)
+        :User Status = Active;
+    endif
 endif
 
 ' =====================
@@ -90,14 +117,11 @@ endif
 :Update Books;
 
 :Search User;
-:Check User Details;
-:Fill in User Info;
+:View User Details;
 :Edit User;
 :Delete User;
 
-:Check Book Details;
-:Process Returns;
-:Update Status;
+:Update System Status;
 
 stop
 @enduml
