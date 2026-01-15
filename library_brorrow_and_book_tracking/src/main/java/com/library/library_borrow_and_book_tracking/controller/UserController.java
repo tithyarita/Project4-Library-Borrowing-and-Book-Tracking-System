@@ -156,14 +156,14 @@ public class UserController {
     }
 
 
-    @PostMapping("/user/borrowRecord/{bookId}")
-    public String borrowBook(@PathVariable("bookId") Long bookId,
-                            Principal principal,
-                            RedirectAttributes redirectAttributes) {
-        libraryService.bookReservation(bookId, principal.getName());
-        redirectAttributes.addFlashAttribute("successMessage", "Book borrowed successfully!");
-        return "redirect:/user/dashboard";
-    }
+    // @PostMapping("/user/borrowRecord/{bookId}")
+    // public String borrowBook(@PathVariable("bookId") Long bookId,
+    //                         Principal principal,
+    //                         RedirectAttributes redirectAttributes) {
+    //     libraryService.bookReservation(bookId, principal.getName());
+    //     redirectAttributes.addFlashAttribute("successMessage", "Book borrowed successfully!");
+    //     return "redirect:/user/dashboard";
+    // }
 
   
 

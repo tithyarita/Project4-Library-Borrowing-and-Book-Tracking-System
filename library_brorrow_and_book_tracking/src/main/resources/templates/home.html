@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -89,6 +89,7 @@
 <section id="categories" class="py-14">
     <div class="max-w-7xl mx-auto px-6">
 
+
         <div th:each="category : ${booksByCategory.keySet()}">
             <header class="mb-4">
                 <h2 class="text-xl font-bold mb-1" th:text="${category}">Category Name</h2>
@@ -100,19 +101,12 @@
                     <article th:each="book : ${booksByCategory.get(category)}"
                              class="book-card-home">
 
-                       <div class="w-full mb-4 relative book-cover-container">
-    <img th:if="${book.coverUrl != null}"
-         th:src="@{/${book.coverUrl}}"
-         alt="Book Cover"
-         class="w-full h-full object-cover shadow-lg transform hover:scale-105 transition">
-
-    <img th:unless="${book.coverUrl != null}"
-         th:src="@{/images/default-book.png}"
-         alt="Default Cover"
-         class="w-full h-full object-contain opacity-60 shadow-lg transform hover:scale-105 transition">
-</div>
-
-
+                        <div class="w-full mb-4 relative book-cover-container">
+                            <img th:if="${book.coverUrl != null}" th:src="${book.coverUrl}" alt="Book Cover"
+                                 class="w-full h-full object-cover shadow-lg transform hover:scale-105 transition">
+                            <img th:unless="${book.coverUrl != null}" th:src="@{/images/default-book.png}" alt="Default Cover"
+                                 class="w-full h-full object-contain opacity-60 shadow-lg transform hover:scale-105 transition">
+                        </div>
 
                         <div class="flex flex-col flex-1">
                             <h3 class="text-sm font-bold text-slate-900 mb-1 truncate" th:text="${book.title}"></h3>
@@ -150,59 +144,116 @@
 <style>
 /* ========== GLOBAL ========== */
 * { box-sizing: border-box; }
+/* ========== GLOBAL ========== */
+* { box-sizing: border-box; }
+
 body {
-    margin: 0; padding: 0;
-    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-    font-weight: 400;
-    width: 100vw;
-    min-height: 100vh;
-    overflow-x: hidden;
-    background-color: #f9fafb;
-    text-rendering: optimizeLegibility;
+    margin: 0;
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #f9fafb;
 }
 
-
-/* HEADER */
+/* ================= HEADER ================= */
 .site-header {
     position: sticky;
     top: 0;
     background: white;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,.05);
     z-index: 50;
-    width: 100%;
 }
 
 .header-container {
+    max-width: 1400px;
+    margin: auto;
+    padding: 1rem 1.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 1.5rem;
-    max-width: 1400px;
-    margin: 0 auto;
 }
 
 .logo {
     color: #2563eb;
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 1.6rem;
+    font-weight: 800;
     text-decoration: none;
 }
 
-.icon-bar { 
-    display: flex; 
-    align-items: center; 
-    gap: 1rem; 
-    font-size: 1.5rem; 
+.icon-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.5rem;
 }
 
-.icon-divider { 
-    width: 1px; 
-    height: 1.5rem; 
-    background-color: #ddd; 
+.icon-divider {
+    width: 1px;
+    height: 1.5rem;
+    background: #ddd;
 }
 
-/* LOGOUT BUTTON */
+/* ================= BOOK SCROLL ================= */
+.book-scroll-container {
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.book-scroll-container::-webkit-scrollbar { display: none; }
 
+/* ================= BOOK CARD ================= */
+.book-card-home {
+    flex: 0 0 160px;
+    max-width: 160px;
+
+    background: white;
+    box-shadow: rgb(0, 0, 0);
+
+    padding: 0.7rem;
+    display: flex;
+    flex-direction: column;
+
+    height: 400px;
+    transition: .3s ease;
+}
+
+.book-card-home:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 16px 30px rgba(0,0,0,.05);
+}
+
+/* ================= COVER ================= */
+.book-cover-container {
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+    background: #e0e7ff;
+    margin-bottom: 0.5rem;
+}
+
+.book-cover-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ================= TEXT ================= */
+.book-card-home h3 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.book-card-home p {
+    font-size: 0.7rem;
+    color: #64748b;
+}
+
+/* Keep cards equal height */
+.book-card-home h3,
+.book-card-home p {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
 .logout-btn {
     display: flex; align-items: center; 
     gap: 0.5rem;
@@ -221,65 +272,26 @@ body {
   background-color: #b91c1c; 
   transform: translateY(-1px);
 }
-
-/* BOOK SCROLL */
-.book-scroll-container {
-  overflow-x: auto;
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-}
-.book-scroll-container::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, and Opera */
-}
-.book-card-home {
-  flex: 0 0 calc(11.111% - 1.333rem); /* 9 cards */
-  max-width: calc(11.111% - 1.333rem);
-  background-color: white;
-  border-radius: 1.5rem; /* rounded-3xl */
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  transition: box-shadow 0.3s ease-in-out;
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-  position: relative;
-  overflow: hidden;
-}
-.book-card-home:hover {
-    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+/* ================= BUTTON POSITION ================= */
+.book-card-home .flex.flex-col {
+    flex: 1;
+    display: flex;
 }
 
-.book-cover-container {
-    aspect-ratio: 2 / 3;
-    width: 100%;
+.book-card-home form,
+.book-card-home span {
+    margin-top: auto;
 }
 
-/* Responsive adjustments for smaller screens */
-@media (max-width: 1280px) {
-  .book-card-home {
-    flex: 0 0 calc(16.666% - 1.25rem); /* 6 cards */
-    max-width: calc(16.666% - 1.25rem);
-  }
-}
-@media (max-width: 1024px) {
-  .book-card-home {
-    flex: 0 0 calc(20% - 1.2rem); /* 5 cards */
-    max-width: calc(20% - 1.2rem);
-  }
+/* ================= RESPONSIVE ================= */
+/* @media (max-width: 1024px) {
+  .book-card-home { flex: 0 0 140px; max-width: 140px; height: 280px; }
 }
 @media (max-width: 768px) {
-  .book-card-home {
-    flex: 0 0 calc(25% - 1.125rem); /* 4 cards */
-    max-width: calc(25% - 1.125rem);
-  }
+  .book-card-home { flex: 0 0 130px; max-width: 130px; height: 260px; }
 }
 @media (max-width: 640px) {
-  .book-card-home {
-    flex: 0 0 45%; /* 2 cards */
-    max-width: 45%;
-  }
-}
+  .book-card-home { flex: 0 0 48%; max-width: 48%; height: 260px; }
+} */
 
 </style>
-
-</body>
-</html>
