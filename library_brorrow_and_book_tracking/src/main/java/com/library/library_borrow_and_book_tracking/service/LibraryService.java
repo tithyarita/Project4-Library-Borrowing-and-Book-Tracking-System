@@ -150,7 +150,7 @@ public BorrowRecord bookReservation(Long bookId, String email) {
 
         record.setStatus("BORROWED");
         record.setBorrowDate(LocalDate.now());
-        record.setDueDate(LocalDate.now().plusDays(1));
+        record.setDueDate(LocalDate.now().plusDays(14));
 
         borrowRecordRepository.save(record);
     }
